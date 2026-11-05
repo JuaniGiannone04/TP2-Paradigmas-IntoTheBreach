@@ -1,0 +1,72 @@
+Modelo tentativo – Into the Breach
+
+1. Descripción general
+El diseño se organiza alrededor de una clase principal, Juego, encargada de coordinar la partida, y de un conjunto de clases que representan los elementos del dominio: 
+tablero, casillas, terrenos, unidades, armas y turnos.
+Se propone utilizar los patrones de diseño Facade, State y Strategy para separar los distintos comportamientos del juego y reducir el acoplamiento entre sus componentes.
+
+2. Gestión de la partida – Facade
+La clase Juego funciona como fachada del sistema, ofreciendo un punto de acceso a las principales acciones que puede realizar el jugador.
+Entre sus responsabilidades se encuentran coordinar los movimientos y ataques de los Mechs, permitir deshacer movimientos, finalizar los turnos y verificar las 
+condiciones de finalización de la partida.
+Para cumplir estas funciones, mantiene referencias al Tablero, al Turno actual y a la RedElectrica.
+Por su parte, RedElectrica administra la energía disponible y permite determinar cuándo esta se ha agotado.
+
+3. Administración de turnos – State
+La clase Turno administra el número de turno, la fase actual y los ataques anunciados por los enemigos.
+Para representar las distintas etapas de la partida se propone utilizar el patrón State, mediante la interfaz Fase y sus implementaciones:
+FaseVek: representa la etapa en la que los enemigos realizan sus movimientos y anuncian sus ataques.
+FaseJugador: representa la etapa en la que el jugador puede controlar sus Mechs.
+FaseResolucion: se encarga de ejecutar los ataques previamente anunciados.
+FaseEmergencia: representa la etapa de aparición de nuevos enemigos.
+4. Representación del tablero
+
+El espacio de juego se representa mediante la clase Tablero, que administra una colección de casillas organizadas en una cuadrícula de 8×8.
+Sus responsabilidades principales son localizar casillas, determinar posiciones alcanzables, coordinar movimientos y resolver empujes (esto queda pendiente todavia).
+Cada objeto Casilla representa una posición específica y mantiene referencias al terreno correspondiente y a la unidad que puede ocuparla.
+
+Terrenos
+La clase abstracta Terreno representa las características comunes de los distintos tipos de terreno.
+Se definen cinco:
+Suelo
+Agua
+Acido
+Montaña
+Edificio
+En particular, Edificio mantiene una referencia a RedElectrica, de manera que pueda solicitar una reducción de energía cuando recibe daño.
+Todos los edificios comparten la misma red eléctrica de la partida.
+
+5. Unidades del juego
+Clase abstracta Unidad, que concentra las características y comportamientos comunes de las unidades.
+Entre sus responsabilidades se encuentran administrar la vida actual, el rango de movimiento, la recepción de daño y el estado de contaminación.
+De esta clase heredan:
+Mech: representa las unidades controladas por el jugador. Cada Mech posee un arma y registra si ya se movió o atacó durante el turno.
+Vek: representa las unidades enemigas. Su comportamiento incluye decidir movimientos y anunciar ataques
+
+
+6. Estrategias de movimiento – Strategy
+Para representar los distintos tipos de desplazamiento se utiliza la interfaz Movimiento, con dos implementaciones:
+Terrestre
+Volador
+Esta separación también facilita incorporar nuevas formas de desplazamiento sin modificar la estructura general de las unidades.
+
+7. Estado de salud – State
+Para administrar la contaminación de las unidades se propone utilizar el patrón State.
+La interfaz EstadoSalud define el comportamiento relacionado con el cálculo del daño recibido, mientras que las clases Sano y Contaminado representan los posibles estados.
+Una unidad sana recibe el daño correspondiente al ataque, mientras que una unidad contaminada recibe el doble.
+
+8. Armas y ataques
+Los ataques de los Mechs se representan mediante una clase abstracta Arma, que define las operaciones comunes para atacar y obtener objetivos válidos.
+Puño
+Cañón
+Artillería
+
+9. Ataques anunciados
+La clase AtaqueAnunciado representa los ataques que los Vek preparan durante su fase y que serán ejecutados.
+
+10. Empujes y colisiones
+Cuando se solicita un empuje, Tablero determina la posición de destino y consulta las características de la casilla correspondiente.
+Si el desplazamiento es válido, se actualiza la ubicación de la unidad y se aplican los efectos del terreno.
+Si existe un obstáculo o una unidad que impide el desplazamiento, Tablero coordina la colisión y solicita a los objetos involucrados que reciban el daño correspondiente.
+Cada Unidad administra su propia salud, mientras que los distintos terrenos responden al daño de acuerdo con su comportamiento particular.
+En el caso de una colisión contra un edificio, este se encarga de comunicar el daño a la RedElectrica.
