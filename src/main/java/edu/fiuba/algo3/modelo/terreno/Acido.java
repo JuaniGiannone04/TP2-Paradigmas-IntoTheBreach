@@ -1,6 +1,8 @@
-package edu.fiuba.algo3.modelo;
+package edu.fiuba.algo3.modelo.terreno;
 
-public class Suelo implements Terreno {
+import edu.fiuba.algo3.modelo.unidad.Unidad;
+
+public class Acido implements Terreno {
     @Override
     public boolean esTransitablePorTerrestre() {
         return true;
@@ -13,7 +15,7 @@ public class Suelo implements Terreno {
 
     @Override
     public void aplicarEfecto(Unidad unidad) {
-        // El suelo normal no aplica efectos especiales al pisarlo
+        unidad.aplicarEfectoAcido();
     }
 
     @Override

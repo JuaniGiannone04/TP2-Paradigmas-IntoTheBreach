@@ -1,4 +1,7 @@
-package edu.fiuba.algo3.modelo;
+package edu.fiuba.algo3.modelo.terreno;
+
+import edu.fiuba.algo3.modelo.RedElectrica;
+import edu.fiuba.algo3.modelo.unidad.Unidad;
 
 public class Edificio implements Terreno {
     private final RedElectrica redElectrica;

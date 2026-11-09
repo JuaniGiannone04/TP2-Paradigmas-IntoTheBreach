@@ -1,7 +1,12 @@
 package edu.fiuba.algo3.modelo;
 
+import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.unidad.Unidad;
+import edu.fiuba.algo3.modelo.terreno.Suelo;
+
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class Tablero {
     public static final int DIMENSION = 8;

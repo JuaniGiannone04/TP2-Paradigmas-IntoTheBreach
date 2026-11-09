@@ -1,5 +1,7 @@
 package edu.fiuba.algo3.modelo;
 
+import edu.fiuba.algo3.modelo.terreno.*;
+
 public class Juego {
     private static final int ENERGIA_INICIAL = 5;
     private final Tablero tablero;
