@@ -6,15 +6,27 @@ import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 
 public class Mech implements Unidad {
-    private final Arma arma;
 
-    public Mech(Arma arma) {
-    this.arma = arma;
+    private final Arma arma;
+    private int vidaActual;
+    private boolean contaminado;
+
+    public Mech(Arma arma, int vidaInicial) {
+        this.arma = arma;
+        this.vidaActual = vidaInicial;
+        this.contaminado = false;
     }
+
 
     @Override
     public void recibirDanio(int danio) {
+        int danioFinal = danio;
 
+        if (contaminado) {
+            danioFinal *= 2;
+        }
+
+        vidaActual = Math.max(0, vidaActual - danioFinal);
     }
 
     @Override
@@ -24,7 +36,7 @@ public class Mech implements Unidad {
 
     @Override
     public void aplicarEfectoAcido() {
-
+        this.contaminado = true;
     }
 
     @Override
@@ -34,7 +46,7 @@ public class Mech implements Unidad {
 
     @Override
     public int getVidaActual() {
-        return 0;
+        return this.vidaActual;
     }
 
     public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
