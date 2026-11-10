@@ -12,7 +12,7 @@ public class MechTest {
     @Test
     public void test01MechCombateGolpeaCasillaAdyacente() {
         Arma punio = new Punio();
-        Mech mech = new Mech(punio);
+        Mech mech = new Mech(punio, 3);
         Vek vek = new Saltador();
 
         Tablero tablero = new Tablero();
@@ -33,7 +33,7 @@ public class MechTest {
     @Test
     public void test02MechCombateGolpea2DeDaño() {
         Arma punio = new Punio();
-        Mech mech = new Mech(punio);
+        Mech mech = new Mech(punio, 3);
         Vek vek = new Saltador();
 
         Tablero tablero = new Tablero();
@@ -54,7 +54,7 @@ public class MechTest {
     @Test
     public void test03MechCombateEmpuja1CasillaEnDireccionDelGolpe(){
         Arma punio = new Punio();
-        Mech mech = new Mech(punio);
+        Mech mech = new Mech(punio, 3);
         Vek vek = new Luciernaga();
 
         Tablero tablero = new Tablero();
@@ -77,7 +77,7 @@ public class MechTest {
     @Test
     public void test04MechCañonGolpeaLineaRecta(){
         Arma canion = new Canion();
-        Mech mech = new Mech(canion);
+        Mech mech = new Mech(canion, 3);
         Vek vek = new Saltador();
 
         Tablero tablero = new Tablero();
@@ -99,7 +99,7 @@ public class MechTest {
     @Test
     public void test05MechCañonGolpea1DeDaño(){
         Arma canion = new Canion();
-        Mech mech = new Mech(canion);
+        Mech mech = new Mech(canion, 3);
         Vek vek = new Saltador();
 
         Tablero tablero = new Tablero();
@@ -121,7 +121,7 @@ public class MechTest {
     @Test
     public void test06MechCañonEmpujaUnaCasilla(){
         Arma canion = new Canion();
-        Mech mech = new Mech(canion);
+        Mech mech = new Mech(canion, 3);
         Vek vek = new Luciernaga();
 
         Tablero tablero = new Tablero();
@@ -143,20 +143,88 @@ public class MechTest {
 
     @Test
     public void test07MechArtilleroDisparaEnArco(){
+        Arma artilleria = new Artilleria();
+        Mech mech = new Mech(artilleria, 2);
+        Vek vek = new Luciernaga();
 
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 5);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        int vidaInicial = vek.getVidaActual();
+
+        mech.atacar(origen, destino, tablero);
+
+        assertEquals(vidaInicial - 1, vek.getVidaActual());
     }
 
 
 
-//    @test
-//    public void test08MechArtilleroGolpea1DeDaño
-//
-//    @test
-//    public void test09MechArtilleroEmpujaHaciaAfueraCasillasAdyacentes
-//
-//    @test
-//    public void test10MechContaminadoRecibeDobleDeDañoYNoSeAcumula
-//
+    @Test
+    public void test08MechArtilleroGolpea1DeDaño(){
+        Arma artilleria = new Artilleria();
+        Mech mech = new Mech(artilleria, 2);
+        Vek vek = new Saltador();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 5);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        int vidaInicial = vek.getVidaActual();
+
+        mech.atacar(origen, destino, tablero);
+
+        assertEquals(vidaInicial - 1, vek.getVidaActual());
+    }
+
+
+    @Test
+    public void test09MechArtilleroEmpujaHaciaAfueraCasillaAdyacente(){
+        Arma artilleria = new Artilleria();
+        Mech mech = new Mech(artilleria, 2);
+        Vek vek = new Luciernaga();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(3, 0);
+        Posicion impacto = new Posicion(3, 3);
+        Posicion posicionVek = new Posicion(3, 4);
+        Posicion posicionEsperada = new Posicion(3, 5);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(posicionVek, vek);
+
+        mech.atacar(origen, impacto, tablero);
+
+        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad());
+        assertFalse(tablero.obtenerCasilla(posicionVek).estaOcupada());
+    }
+
+
+    @Test
+    public void test10MechContaminadoRecibeDobleDeDanioYNoSeAcumula() {
+        Arma punio = new Punio();
+        Mech mech = new Mech(punio, 3);
+
+        int vidaInicial = mech.getVidaActual();
+
+        mech.aplicarEfectoAcido();
+        mech.aplicarEfectoAcido();
+
+        mech.recibirDanio(1);
+
+        assertEquals(vidaInicial - 2, mech.getVidaActual());
+    }
+
+
 //    @test
 //    public void test11MechSoloPuedeMoverseACasillasDentroDeSuRangoDeMovimiento
 //
