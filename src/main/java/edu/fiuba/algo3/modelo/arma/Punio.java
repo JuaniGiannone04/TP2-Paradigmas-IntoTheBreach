@@ -12,6 +12,8 @@ public class Punio implements Arma {
         }
 
         tablero.obtenerCasilla(destino).recibirDanio(2);
+
+        tablero.empujarUnidad(origen, destino);
     }
 
 
