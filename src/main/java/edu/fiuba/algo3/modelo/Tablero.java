@@ -60,4 +60,22 @@ public class Tablero {
     public int cantidadDeCasillas() {
         return this.casillas.size();
     }
+
+
+    public void empujarUnidad(Posicion origen, Posicion destino) {
+
+        int desplazamientoFila = Integer.signum(destino.getFila() - origen.getFila());
+        int desplazamientoColumna = Integer.signum(destino.getColumna() - origen.getColumna());
+
+        Posicion posicionEmpuje = new Posicion(
+                destino.getFila() + desplazamientoFila,
+                destino.getColumna() + desplazamientoColumna
+        );
+
+        if (contienePosicion(posicionEmpuje)) {
+            moverUnidad(destino, posicionEmpuje);
+        }
+    }
+
 }
+

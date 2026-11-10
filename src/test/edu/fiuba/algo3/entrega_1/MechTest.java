@@ -11,7 +11,6 @@ public class MechTest {
 
     @Test
     public void test01MechCombateGolpeaCasillaAdyacente() {
-
         Arma punio = new Punio();
         Mech mech = new Mech(punio);
         Vek vek = new Saltador();
@@ -26,31 +25,129 @@ public class MechTest {
 
         int vidaInicial = vek.getVidaActual();
 
+        mech.atacar(origen, destino, tablero);
+
+        assertTrue(vek.getVidaActual() < vidaInicial);
+    }
+
+    @Test
+    public void test02MechCombateGolpea2DeDaño() {
+        Arma punio = new Punio();
+        Mech mech = new Mech(punio);
+        Vek vek = new Saltador();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 3);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        int vidaInicial = vek.getVidaActual();
+
+        mech.atacar(origen, destino, tablero);
+
+        assertEquals(vidaInicial - 2, vek.getVidaActual());
+    }
+
+    @Test
+    public void test03MechCombateEmpuja1CasillaEnDireccionDelGolpe(){
+        Arma punio = new Punio();
+        Mech mech = new Mech(punio);
+        Vek vek = new Luciernaga();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 3);
+        Posicion posicionEsperada = new Posicion (2, 4);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        mech.atacar(origen, destino, tablero);
+
+        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad()); //Comprueba que sean el mismo objeto
+        // el Vek y la casilla donde deberia terminar
+        assertFalse(tablero.obtenerCasilla(destino).estaOcupada()); //Comprueba que la celda quedo vacia
+    }
+
+
+    @Test
+    public void test04MechCañonGolpeaLineaRecta(){
+        Arma canion = new Canion();
+        Mech mech = new Mech(canion);
+        Vek vek = new Saltador();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 5);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        int vidaInicial = vek.getVidaActual();
 
         mech.atacar(origen, destino, tablero);
 
         assertTrue(vek.getVidaActual() < vidaInicial);
     }
 
-//
-//    @test
-//    public void test02MechCombateGolpea2DeDaño
-//
-//    @test
-//    public void test03MechCombateEmpuja1Casilla
-//
-//    @test
-//    public void test04MechCañonGolpeaLineaRecta
-//
-//    @test
-//    public void test05MechCañonGolpea1DeDaño
-//
-//    @test
-//    public void test06MechCañonEmpujaUnaCasilla
-//
-//    @test
-//    public void test07MechArtilleroDisparaEnLineaRecta
-//
+
+    @Test
+    public void test05MechCañonGolpea1DeDaño(){
+        Arma canion = new Canion();
+        Mech mech = new Mech(canion);
+        Vek vek = new Saltador();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 5);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        int vidaInicial = vek.getVidaActual();
+
+        mech.atacar(origen, destino, tablero);
+
+        assertEquals(vidaInicial - 1, vek.getVidaActual());
+    }
+
+
+    @Test
+    public void test06MechCañonEmpujaUnaCasilla(){
+        Arma canion = new Canion();
+        Mech mech = new Mech(canion);
+        Vek vek = new Luciernaga();
+
+        Tablero tablero = new Tablero();
+
+        Posicion origen = new Posicion(2, 2);
+        Posicion destino = new Posicion(2, 5);
+        Posicion posicionEsperada = new Posicion (2, 6);
+
+        tablero.colocarUnidad(origen, mech);
+        tablero.colocarUnidad(destino, vek);
+
+        mech.atacar(origen, destino, tablero);
+
+        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad()); //Comprueba que sean el mismo objeto
+        // el Vek y la casilla donde deberia terminar
+        assertFalse(tablero.obtenerCasilla(destino).estaOcupada()); //Comprueba que la celda quedo vacia
+    }
+
+
+    @Test
+    public void test07MechArtilleroDisparaEnArco(){
+
+    }
+
+
+
 //    @test
 //    public void test08MechArtilleroGolpea1DeDaño
 //
