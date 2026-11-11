@@ -52,11 +52,20 @@ public class Mech implements Unidad {
     }
 
     public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
-
         if( estado == EstadoAccion.ATACO ) {
-            throw new IllegalStateException("El Mech ya atacó");
+            throw new IllegalStateException("El Mech ya atacó en este turno");
         }
+
         arma.atacar(origen, destino, tablero);
         estado = EstadoAccion.ATACO;
+    }
+
+    public void mover(Posicion origen, Posicion destino, Tablero tablero) {
+        if( estado == EstadoAccion.MOVIDO ) {
+            throw new IllegalStateException("El Mech ya se movió en este turno");
+        }
+
+        tablero.moverUnidad(origen, destino);
+        estado = EstadoAccion.MOVIDO;
     }
 }
