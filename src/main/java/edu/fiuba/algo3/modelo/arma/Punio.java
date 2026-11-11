@@ -1,19 +1,26 @@
 package edu.fiuba.algo3.modelo.arma;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Posicion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
 public class Punio implements Arma {
 
     @Override
     public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
         if (!origen.esAdyacenteA(destino)) {
-            throw new IllegalArgumentException("El destino no es adyacente");
+            throw new IllegalArgumentException("El Puño solo puede atacar casillas adyacentes");
         }
 
-        tablero.obtenerCasilla(destino).recibirDanio(2);
+        Casilla casillaDestino = tablero.obtenerCasilla(destino);
 
-        tablero.empujarUnidad(origen, destino);
+        casillaDestino.recibirDanio(2);
+
+        Direccion dirGolpe = origen.direccionHacia(destino);
+        Posicion posEmpuje = destino.sumar(dirGolpe);
+
+        tablero.empujarUnidad(destino, posEmpuje);
     }
 
 

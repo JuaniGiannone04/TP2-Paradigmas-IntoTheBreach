@@ -1,10 +1,10 @@
 package edu.fiuba.algo3.modelo.arma;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Posicion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
 public class Artilleria implements Arma {
-
 
     @Override
     public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
@@ -23,24 +23,15 @@ public class Artilleria implements Arma {
 
         tablero.obtenerCasilla(destino).recibirDanio(1);
 
-        Posicion[] desplazamientos = {
-                new Posicion(-1, 0),
-                new Posicion(1, 0),
-                new Posicion(0, -1),
-                new Posicion(0, 1)
-        };
+        for (Direccion direccion : Direccion.values()) {
 
-        for (Posicion desplazamiento : desplazamientos) {
+            Posicion posAdyacente = destino.sumar(direccion);
 
-            Posicion adyacente = new Posicion(
-                    destino.getFila() + desplazamiento.getFila(),
-                    destino.getColumna() + desplazamiento.getColumna()
-            );
+            if (tablero.contienePosicion(posAdyacente) && tablero.obtenerCasilla(posAdyacente).estaOcupada()) {
 
-            if (tablero.contienePosicion(adyacente)
-                    && tablero.obtenerCasilla(adyacente).estaOcupada()) {
+                Posicion posEmpuje = posAdyacente.sumar(direccion);
 
-                tablero.empujarUnidad(destino, adyacente);
+                tablero.empujarUnidad(posAdyacente, posEmpuje);
             }
         }
     }

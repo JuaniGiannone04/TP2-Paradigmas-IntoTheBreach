@@ -5,4 +5,6 @@ module edu.fiuba.algo3 {
     exports edu.fiuba.algo3.modelo;
     opens edu.fiuba.algo3.modelo to org.mockito;
     exports edu.fiuba.algo3.vistas;
+    exports edu.fiuba.algo3.modelo.ubicacion;
+    opens edu.fiuba.algo3.modelo.ubicacion to org.mockito;
 }

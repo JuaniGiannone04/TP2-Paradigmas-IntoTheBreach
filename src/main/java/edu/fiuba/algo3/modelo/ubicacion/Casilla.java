@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.modelo;
+package edu.fiuba.algo3.modelo.ubicacion;
 
 
 import edu.fiuba.algo3.modelo.terreno.Terreno;
@@ -13,6 +13,27 @@ public class Casilla {
         this.terreno = terrenoInicial;
         this.unidad = null;
     }
+    public void empujarHacia(Casilla casillaDestino) {
+        if (!this.estaOcupada()) return;
+
+        Unidad unidadEmpujada = this.unidad;
+
+        boolean pudoEntrar = casillaDestino.recibirChoqueOEntrar(unidadEmpujada);
+
+        if (pudoEntrar) {
+            casillaDestino.colocarUnidad(this.quitarUnidad());
+        }
+    }
+
+    public boolean recibirChoqueOEntrar(Unidad unidadEmpujada) {
+        if (this.estaOcupada() || this.terreno.bloqueaDisparoDirecto()) {
+            this.recibirDanio(1);
+            unidadEmpujada.recibirDanio(1);
+            return false;
+        }
+        return true;
+    }
+
 
     public boolean estaOcupada() {
         return this.unidad != null;
@@ -53,5 +74,20 @@ public class Casilla {
 
     public Unidad getUnidad() {
         return this.unidad;
+    }
+    public boolean recibirUnidadOColisionar(Unidad unidadEmpujada) {
+        if (this.estaOcupada() || this.terreno.bloqueaDisparoDirecto()) {
+            this.recibirDanio(1);
+            unidadEmpujada.recibirDanio(1);
+
+            return false;
+        }
+
+        this.colocarUnidad(unidadEmpujada);
+        return true;
+    }
+
+    public boolean detieneDisparoDirecto() {
+        return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
     }
 }

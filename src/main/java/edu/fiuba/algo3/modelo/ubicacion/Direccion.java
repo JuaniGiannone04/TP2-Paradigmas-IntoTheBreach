@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.modelo;
+package edu.fiuba.algo3.modelo.ubicacion;
 
 public enum Direccion {
     NORTE(-1, 0),

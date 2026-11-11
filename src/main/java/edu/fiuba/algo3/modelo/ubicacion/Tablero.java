@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.modelo;
+package edu.fiuba.algo3.modelo.ubicacion;
 
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
@@ -60,20 +60,24 @@ public class Tablero {
     public int cantidadDeCasillas() {
         return this.casillas.size();
     }
+    public void empujarUnidad(Posicion posOrigen, Posicion posDestino) {
+        if (!contienePosicion(posDestino)) {
+            return;
+        }
 
+        Casilla casillaOrigen = obtenerCasilla(posOrigen);
+        Casilla casillaDestino = obtenerCasilla(posDestino);
 
-    public void empujarUnidad(Posicion origen, Posicion destino) {
+        if (!casillaOrigen.estaOcupada()) {
+            return;
+        }
 
-        int desplazamientoFila = Integer.signum(destino.getFila() - origen.getFila());
-        int desplazamientoColumna = Integer.signum(destino.getColumna() - origen.getColumna());
+        Unidad unidadEmpujada = casillaOrigen.quitarUnidad();
 
-        Posicion posicionEmpuje = new Posicion(
-                destino.getFila() + desplazamientoFila,
-                destino.getColumna() + desplazamientoColumna
-        );
+        boolean pudoEntrar = casillaDestino.recibirUnidadOColisionar(unidadEmpujada);
 
-        if (contienePosicion(posicionEmpuje)) {
-            moverUnidad(destino, posicionEmpuje);
+        if (!pudoEntrar) {
+            casillaOrigen.colocarUnidad(unidadEmpujada);
         }
     }
 

@@ -1,7 +1,7 @@
 package edu.fiuba.algo3.modelo.unidad;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Posicion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 
