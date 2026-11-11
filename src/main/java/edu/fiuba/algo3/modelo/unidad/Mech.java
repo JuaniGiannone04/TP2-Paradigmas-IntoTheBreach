@@ -10,11 +10,13 @@ public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
     private boolean contaminado;
+    private EstadoAccion estado;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.contaminado = false;
+        this.estado = EstadoAccion.DISPONIBLE;
     }
 
 
@@ -50,6 +52,11 @@ public class Mech implements Unidad {
     }
 
     public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
+
+        if( estado == EstadoAccion.ATACO ) {
+            throw new IllegalStateException("El Mech ya atacó");
+        }
         arma.atacar(origen, destino, tablero);
+        estado = EstadoAccion.ATACO;
     }
 }
