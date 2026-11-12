@@ -258,7 +258,7 @@ public class MechTest {
     }
 
     @Test
-    public void test16MechNoSePuedeMoverDosVecesEnElMismoTurno(){
+    public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
         Tablero tablero = mock(Tablero.class);
         Arma arma = mock(Arma.class);
         Mech mech = new Mech(arma, 3);
@@ -274,6 +274,23 @@ public class MechTest {
 
         verify(tablero, times(1)).moverUnidad(origen, intermedia);
         verify(tablero, never()).moverUnidad(intermedia, destino);
+    }
+
+    @Test
+    public void test18MechPuedeMoverseYAtacarEnElMismoTurno(){
+        Tablero tablero = mock(Tablero.class);
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion nuevaPosicion = new Posicion(1, 2);
+        Posicion objetivo = new Posicion(1, 3);
+
+        mech.mover(origen, nuevaPosicion, tablero);
+        mech.atacar(nuevaPosicion, objetivo, tablero);
+
+        verify(tablero, times(1)).moverUnidad(origen, nuevaPosicion);
+        verify(arma, times(1)).atacar(nuevaPosicion, objetivo, tablero);
     }
 
 
