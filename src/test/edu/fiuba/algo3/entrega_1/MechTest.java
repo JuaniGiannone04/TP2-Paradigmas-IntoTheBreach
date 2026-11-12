@@ -316,5 +316,25 @@ public void test13MechPuedeDeshacerSuMovimientoSiNoAtacoYVolverAlaPosicionAnteri
         verify(arma, times(1)).atacar(nuevaPosicion, objetivo, tablero);
     }
 
+    @Test
+    public void test19UnMechNoPuedeMoverseDespuesDeAtacarEnUnMismoTurno(){
+        Tablero tablero = mock(Tablero.class);
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion objetivo = new Posicion(1, 2);
+        Posicion destino = new Posicion(1, 3);
+
+        mech.atacar(origen, objetivo, tablero);
+
+        assertThrows(IllegalStateException.class,
+                () -> mech.mover(objetivo, destino, tablero));
+
+        verify(arma, times(1)).atacar(origen, objetivo, tablero);
+        verify(tablero, never()).moverUnidad(objetivo, destino);
+    }
+
+
 
 }

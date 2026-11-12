@@ -63,8 +63,8 @@ public class Mech implements Unidad {
     }
 
     public void mover(Posicion origen, Posicion destino, Tablero tablero) {
-        if (estado == EstadoAccion.MOVIDO) {
-            throw new IllegalStateException("El Mech ya se movió en este turno");
+        if (estado != EstadoAccion.DISPONIBLE) {
+            throw new IllegalStateException("El Mech ya se movió o atacó en este turno");
         }
 
         tablero.moverUnidad(origen, destino);
