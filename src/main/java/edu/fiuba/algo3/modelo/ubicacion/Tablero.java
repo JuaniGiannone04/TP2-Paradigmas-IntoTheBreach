@@ -60,26 +60,31 @@ public class Tablero {
     public int cantidadDeCasillas() {
         return this.casillas.size();
     }
+
     public void empujarUnidad(Posicion posOrigen, Posicion posDestino) {
-        if (!contienePosicion(posDestino)) {
+        if (!contienePosicion(posOrigen) || !contienePosicion(posDestino)) {
             return;
         }
-
         Casilla casillaOrigen = obtenerCasilla(posOrigen);
         Casilla casillaDestino = obtenerCasilla(posDestino);
-
         if (!casillaOrigen.estaOcupada()) {
             return;
         }
-
         Unidad unidadEmpujada = casillaOrigen.quitarUnidad();
-
         boolean pudoEntrar = casillaDestino.recibirUnidadOColisionar(unidadEmpujada);
-
         if (!pudoEntrar) {
             casillaOrigen.colocarUnidad(unidadEmpujada);
         }
     }
 
+    public void aplicarDanio(Posicion posicion, int danio) {
+        if (contienePosicion(posicion)) {
+            obtenerCasilla(posicion).recibirDanio(danio);
+        }
+    }
+
+    public boolean detieneDisparoDirecto(Posicion posicion) {
+        return contienePosicion(posicion) && obtenerCasilla(posicion).detieneDisparoDirecto();
+    }
 }
 
