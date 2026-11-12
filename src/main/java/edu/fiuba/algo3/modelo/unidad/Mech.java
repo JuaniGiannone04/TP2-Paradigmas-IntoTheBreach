@@ -12,6 +12,7 @@ public class Mech implements Unidad {
     private boolean contaminado;
     private EstadoAccion estado;
     private Posicion posicionAnterior;
+    private Posicion posicionActual;
     private boolean yaDeshizoMovimiento;
 
     public Mech(Arma arma, int vidaInicial) {
@@ -64,6 +65,8 @@ public class Mech implements Unidad {
     }
 
     public void mover(Posicion origen, Posicion destino, Tablero tablero) {
+        if (estado != EstadoAccion.DISPONIBLE) {
+            throw new IllegalStateException("El Mech ya se movió o atacó en este turno");
 
         if (estado != EstadoAccion.DISPONIBLE) {
             throw new IllegalStateException(
@@ -79,6 +82,21 @@ public class Mech implements Unidad {
 
         tablero.moverUnidad(origen, destino);
         posicionAnterior = origen;
+        posicionActual = destino;
+        estado = EstadoAccion.MOVIDO;
+    }
+
+    public void deshacerMovimiento(Tablero tablero) {
+        if (estado != EstadoAccion.MOVIDO) {
+            throw new IllegalStateException("No hay un movimiento para deshacer");
+        }
+
+        tablero.moverUnidad(posicionActual, posicionAnterior);
+        estado = EstadoAccion.DISPONIBLE;
+    }
+
+    public boolean yaAtaco() {
+        return estado == EstadoAccion.ATACO;
         estado = EstadoAccion.MOVIDO;
     }
 
