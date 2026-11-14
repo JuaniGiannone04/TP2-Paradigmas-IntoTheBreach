@@ -13,14 +13,12 @@ public class Mech implements Unidad {
     private EstadoAccion estado;
     private Posicion posicionAnterior;
     private Posicion posicionActual;
-    private boolean yaDeshizoMovimiento;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.contaminado = false;
         this.estado = EstadoAccion.DISPONIBLE;
-        this.yaDeshizoMovimiento = false;
     }
 
 
