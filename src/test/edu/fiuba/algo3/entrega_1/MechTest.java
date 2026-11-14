@@ -274,7 +274,7 @@ public class MechTest {
         tablero.colocarUnidad(origen, mech);
 
         mech.mover(origen, destino, tablero);
-        mech.deshacerMovimiento(destino, tablero);
+        mech.deshacerMovimiento(tablero);
 
         assertSame(mech, tablero.obtenerCasilla(origen).getUnidad());
         assertFalse(tablero.obtenerCasilla(destino).estaOcupada());
@@ -296,34 +296,23 @@ public class MechTest {
         mech.atacar(destino, objetivo, tablero);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.deshacerMovimiento(destino, tablero));
+                () -> mech.deshacerMovimiento(tablero));
 
         assertSame(mech, tablero.obtenerCasilla(destino).getUnidad());
         assertFalse(tablero.obtenerCasilla(origen).estaOcupada());
     }
 
     @Test
-    public void test15MechSoloPuedeDeshacerMovimientoUnaVezPorTurno() {
-        Arma arma = new Punio();
-        Mech mech = new Mech(arma, 3);
+    public void test15MechPuedeDeshacerSuMovimientoUnaVez() {
         Tablero tablero = new Tablero();
-
+        Mech mech = new Mech(mock(Arma.class), 3);
         Posicion origen = new Posicion(2, 2);
-        Posicion destino1 = new Posicion(2, 4);
-        Posicion destino2 = new Posicion(3, 2);
-
         tablero.colocarUnidad(origen, mech);
 
-        mech.mover(origen, destino1, tablero);
-        mech.deshacerMovimiento(destino1, tablero);
+        mech.mover(origen, new Posicion(2, 3), tablero);
+        mech.deshacerMovimiento(tablero);
 
-        mech.mover(origen, destino2, tablero);
-
-        assertThrows(IllegalStateException.class,
-                () -> mech.deshacerMovimiento(destino2, tablero));
-
-        assertSame(mech, tablero.obtenerCasilla(destino2).getUnidad());
-        assertFalse(tablero.obtenerCasilla(origen).estaOcupada());
+        assertSame(mech, tablero.obtenerCasilla(origen).getUnidad());
     }
 
     @Test

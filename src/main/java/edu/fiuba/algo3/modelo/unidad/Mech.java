@@ -67,24 +67,24 @@ public class Mech implements Unidad {
     public void mover(Posicion origen, Posicion destino, Tablero tablero) {
         if (estado != EstadoAccion.DISPONIBLE) {
             throw new IllegalStateException("El Mech ya se movió o atacó en este turno");
+        }
+            if (origen.distanciaOrtogonalA(destino) > 3) {
+                throw new IllegalArgumentException(
+                        "El destino supera el rango de movimiento"
+                );
+            }
 
-        if (estado != EstadoAccion.DISPONIBLE) {
-            throw new IllegalStateException(
-                    "El Mech ya se movió en este turno"
-            );
+            tablero.moverUnidad(origen, destino);
+            posicionAnterior = origen;
+            posicionActual = destino;
+            estado = EstadoAccion.MOVIDO;
         }
 
-        if (origen.distanciaOrtogonalA(destino) > 3) {
-            throw new IllegalArgumentException(
-                    "El destino supera el rango de movimiento"
-            );
-        }
 
-        tablero.moverUnidad(origen, destino);
-        posicionAnterior = origen;
-        posicionActual = destino;
-        estado = EstadoAccion.MOVIDO;
+    public boolean yaAtaco() {
+        return estado == EstadoAccion.ATACO;
     }
+
 
     public void deshacerMovimiento(Tablero tablero) {
         if (estado != EstadoAccion.MOVIDO) {
@@ -94,26 +94,4 @@ public class Mech implements Unidad {
         tablero.moverUnidad(posicionActual, posicionAnterior);
         estado = EstadoAccion.DISPONIBLE;
     }
-
-    public boolean yaAtaco() {
-        return estado == EstadoAccion.ATACO;
-        estado = EstadoAccion.MOVIDO;
-    }
-
-    public void deshacerMovimiento(Posicion posicionActual, Tablero tablero) {
-
-        if (estado != EstadoAccion.MOVIDO) {
-            throw new IllegalStateException("El Mech no puede deshacer su movimiento");
-        }
-
-        if (yaDeshizoMovimiento) {
-            throw new IllegalStateException("El Mech ya deshizo un movimiento");
-        }
-
-        tablero.moverUnidad(posicionActual, posicionAnterior);
-
-        estado = EstadoAccion.DISPONIBLE;
-        yaDeshizoMovimiento = true;
-    }
-
 }
