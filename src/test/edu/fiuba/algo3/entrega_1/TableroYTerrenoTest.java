@@ -1,18 +1,17 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.GeneradorDeTablero;
 import edu.fiuba.algo3.modelo.terreno.Acido;
 import edu.fiuba.algo3.modelo.terreno.Agua;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
-import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.ubicacion.Posicion;
-import edu.fiuba.algo3.modelo.ubicacion.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.*;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 public class TableroYTerrenoTest {
-
-
 
     @Test
     public void test03ColocarUnidadEnAcidoOAguaDisparaElEfectoDelTerreno() {
@@ -41,29 +40,31 @@ public class TableroYTerrenoTest {
     }
 
     @Test
-    public void test05MoverUnidadEnTableroActualizaCasillaOrigenYDestino() {
-        Tablero tablero = new Tablero();
+    public void test05MoverUnidadEntreCasillasActualizaOrigenYDestino() {
         Unidad unidadMock = mock(Unidad.class);
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 3);
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        tablero.colocarUnidad(origen, unidadMock);
-        tablero.moverUnidad(origen, destino);
+        origen.colocarUnidad(unidadMock);
+        origen.moverUnidadHacia(destino);
 
-        assertFalse(tablero.obtenerCasilla(origen).estaOcupada());
-        assertTrue(tablero.obtenerCasilla(destino).estaOcupada());
-        assertEquals(unidadMock, tablero.obtenerCasilla(destino).getUnidad());
+        assertFalse(origen.estaOcupada());
+        assertTrue(destino.estaOcupada());
+        assertSame(unidadMock, destino.getUnidad());
     }
 
     @Test
-    public void test06PedirCasillaFueraDeLosLimitesDe8x8LanzaExcepcion() {
-        Tablero tablero = new Tablero();
+    public void test06EmpujarUnidadHaciaElBordeDelMapaNoLaMueveNiLaDania() {
+        GeneradorDeTablero fabrica = new GeneradorDeTablero();
+        Tablero tablero = fabrica.crearTableroVacio();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            tablero.obtenerCasilla(new Posicion(-1, 0));
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            tablero.obtenerCasilla(new Posicion(8, 8));
-        });
+        Casilla esquinaNoroeste = (Casilla) tablero.getCasillaInicial();
+        Unidad unidadMock = mock(Unidad.class);
+        esquinaNoroeste.colocarUnidad(unidadMock);
+
+        esquinaNoroeste.empujarUnidadInterna(Direccion.NORTE);
+
+        assertSame(unidadMock, esquinaNoroeste.getUnidad());
+        verify(unidadMock, never()).recibirDanio(anyInt());
     }
 }

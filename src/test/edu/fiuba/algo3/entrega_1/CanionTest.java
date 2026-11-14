@@ -1,69 +1,97 @@
 package edu.fiuba.algo3.entrega_1;
 
-import edu.fiuba.algo3.modelo.*;
+import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Canion;
-import edu.fiuba.algo3.modelo.terreno.Montana;
-import edu.fiuba.algo3.modelo.ubicacion.Posicion;
-import edu.fiuba.algo3.modelo.ubicacion.Tablero;
-import edu.fiuba.algo3.modelo.unidad.Luciernaga;
+import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.Mech;
+import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class CanionTest {
 
     @Test
-    public void test01CanionDaniaALaUnidadYLaEmpujaAOtraPosicionVacia() {
-        // Arrange
-        Tablero tablero = new Tablero();
-        Mech mech = new Mech(new Canion(), 3);
-        Luciernaga vek = new Luciernaga();
+    public void test01CanionDisparaProyectilRectoALaCeldaVecina() {
+        Celda origenMock = mock(Celda.class);
+        Celda vecinaMock = mock(Celda.class);
+        when(origenMock.vecinaAl(Direccion.ESTE)).thenReturn(vecinaMock);
 
-        Posicion posMech = new Posicion(2, 1);
-        Posicion posVek = new Posicion(2, 3);
-        Posicion posDestinoEmpuje = new Posicion(2, 4);
+        Arma canion = new Canion();
+        canion.atacar(origenMock, Direccion.ESTE, 1);
 
-        tablero.colocarUnidad(posMech, mech);
-        tablero.colocarUnidad(posVek, vek);
-
-        // Act - El cañón dispara hacia el este
-        mech.atacar(posMech, new Posicion(2, 7), tablero);
-
-        // Assert
-        // 1 de daño por el arma
-        assertEquals(2, vek.getVidaActual());
-
-        //  la posición original queda vacía
-        assertFalse(tablero.obtenerCasilla(posVek).estaOcupada());
-
-        //  Se movio a aca
-        assertEquals(vek, tablero.obtenerCasilla(posDestinoEmpuje).getUnidad());
+        verify(vecinaMock, times(1)).recibirProyectilRecto(Direccion.ESTE, 1);
     }
 
     @Test
-    public void test02CanionDaniaALaUnidadYSiChocaConObstaculoNoSeMueveYRecibeDanioExtra() {
-        // Arrange
-        Tablero tablero = new Tablero();
+    public void test02CanionImpactaALaPrimeraUnidadEnLineaRectaYNoALaQueEstaDetras() {
+        Terreno sueloMock = mock(Terreno.class);
+        when(sueloMock.recibirDanio(anyInt())).thenReturn(sueloMock);
+
+        Casilla origen = new Casilla(sueloMock);
+        Casilla intermedia = new Casilla(sueloMock);
+        Casilla primeraOcupada = new Casilla(sueloMock);
+        Casilla empuje = new Casilla(sueloMock);
+        Casilla segundaOcupada = new Casilla(sueloMock);
+
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, primeraOcupada);
+        primeraOcupada.conectarVecina(Direccion.ESTE, empuje);
+        empuje.conectarVecina(Direccion.ESTE, segundaOcupada);
+
+        Unidad primeraUnidadMock = mock(Unidad.class);
+        Unidad segundaUnidadMock = mock(Unidad.class);
+        primeraOcupada.colocarUnidad(primeraUnidadMock);
+        segundaOcupada.colocarUnidad(segundaUnidadMock);
+
         Mech mech = new Mech(new Canion(), 3);
-        Luciernaga vek = new Luciernaga();
+        mech.atacar(origen, Direccion.ESTE);
 
-        Posicion posMech = new Posicion(5, 1);
-        Posicion posVek = new Posicion(5, 3);
-        Posicion posObstaculo = new Posicion(5, 4);
+        verify(primeraUnidadMock, times(1)).recibirDanio(1);
+        assertSame(primeraUnidadMock, empuje.getUnidad());
+        verify(segundaUnidadMock, never()).recibirDanio(anyInt());
+        assertSame(segundaUnidadMock, segundaOcupada.getUnidad());
+    }
 
-        tablero.colocarUnidad(posMech, mech);
-        tablero.colocarUnidad(posVek, vek);
+    @Test
+    public void test03CanionImpactaAlPrimerObstaculoYNoDaniaUnidadDetras() {
+        Terreno sueloMock = mock(Terreno.class);
+        when(sueloMock.recibirDanio(anyInt())).thenReturn(sueloMock);
 
-        tablero.configurarTerreno(posObstaculo, new Montana());
+        Terreno obstaculoMock = mock(Terreno.class);
+        when(obstaculoMock.bloqueaDisparoDirecto()).thenReturn(true);
+        when(obstaculoMock.recibirDanio(anyInt())).thenReturn(obstaculoMock);
 
-        // Act
-        mech.atacar(posMech, new Posicion(5, 7), tablero);
+        Casilla origen = new Casilla(sueloMock);
+        Casilla casillaObstaculo = new Casilla(obstaculoMock);
+        Casilla casillaDetras = new Casilla(sueloMock);
 
-        // Assert
-        //  que NO cambie de posición
-        assertEquals(vek, tablero.obtenerCasilla(posVek).getUnidad());
+        origen.conectarVecina(Direccion.SUR, casillaObstaculo);
+        casillaObstaculo.conectarVecina(Direccion.SUR, casillaDetras);
 
-        assertEquals(1, vek.getVidaActual());
+        Unidad unidadDetrasMock = mock(Unidad.class);
+        casillaDetras.colocarUnidad(unidadDetrasMock);
+
+        Mech mech = new Mech(new Canion(), 3);
+        mech.atacar(origen, Direccion.SUR);
+
+        verify(obstaculoMock, times(1)).recibirDanio(1);
+        verify(unidadDetrasMock, never()).recibirDanio(anyInt());
+    }
+
+    @Test
+    public void test04CanionDisparandoAlVacioSeAbsorbeEnElBordeDelMapa() {
+        Terreno sueloMock = mock(Terreno.class);
+        Casilla origen = new Casilla(sueloMock);
+        Casilla borde = new Casilla(sueloMock);
+        origen.conectarVecina(Direccion.OESTE, borde);
+
+        Mech mech = new Mech(new Canion(), 3);
+
+        assertDoesNotThrow(() -> mech.atacar(origen, Direccion.OESTE));
     }
 }

@@ -1,12 +1,11 @@
 package edu.fiuba.algo3.modelo.unidad;
 
-import edu.fiuba.algo3.modelo.ubicacion.Posicion;
-import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Mech implements Unidad {
-
     private final Arma arma;
     private int vidaActual;
     private boolean contaminado;
@@ -17,21 +16,14 @@ public class Mech implements Unidad {
         this.contaminado = false;
     }
 
-
     @Override
     public void recibirDanio(int danio) {
-        int danioFinal = danio;
-
-        if (contaminado) {
-            danioFinal *= 2;
-        }
-
-        vidaActual = Math.max(0, vidaActual - danioFinal);
+        int danioFinal = this.contaminado ? danio * 2 : danio;
+        this.vidaActual = Math.max(0, this.vidaActual - danioFinal);
     }
 
     @Override
     public void aplicarEfectoAgua() {
-
     }
 
     @Override
@@ -41,7 +33,7 @@ public class Mech implements Unidad {
 
     @Override
     public boolean puedeTransitar(Terreno terreno) {
-        return false;
+        return terreno.esTransitablePorTerrestre();
     }
 
     @Override
@@ -49,7 +41,11 @@ public class Mech implements Unidad {
         return this.vidaActual;
     }
 
-    public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
-        arma.atacar(origen, destino, tablero);
+    public void atacar(Celda origen, Direccion direccion) {
+        this.arma.atacar(origen, direccion, 1);
+    }
+
+    public void atacar(Celda origen, Direccion direccion, int distancia) {
+        this.arma.atacar(origen, direccion, distancia);
     }
 }

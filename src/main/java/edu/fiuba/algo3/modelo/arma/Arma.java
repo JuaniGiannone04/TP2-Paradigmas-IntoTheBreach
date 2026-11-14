@@ -1,8 +1,8 @@
 package edu.fiuba.algo3.modelo.arma;
 
-import edu.fiuba.algo3.modelo.ubicacion.Posicion;
-import edu.fiuba.algo3.modelo.ubicacion.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public interface Arma {
-    public void atacar(Posicion origen, Posicion destino, Tablero tablero);
+    void atacar(Celda origen, Direccion direccion, int distancia);
 }

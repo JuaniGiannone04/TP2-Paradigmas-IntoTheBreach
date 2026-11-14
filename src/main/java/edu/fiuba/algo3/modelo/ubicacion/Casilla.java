@@ -1,46 +1,89 @@
 package edu.fiuba.algo3.modelo.ubicacion;
 
-
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
+import java.util.EnumMap;
+import java.util.Map;
 
-
-public class Casilla {
+public class Casilla implements Celda {
     private Terreno terreno;
     private Unidad unidad;
+    private final Map<Direccion, Celda> vecinas;
 
     public Casilla(Terreno terrenoInicial) {
         this.terreno = terrenoInicial;
         this.unidad = null;
-    }
-    public void empujarHacia(Casilla casillaDestino) {
-        if (!this.estaOcupada()) return;
-
-        Unidad unidadEmpujada = this.unidad;
-
-        boolean pudoEntrar = casillaDestino.recibirChoqueOEntrar(unidadEmpujada);
-
-        if (pudoEntrar) {
-            casillaDestino.colocarUnidad(this.quitarUnidad());
+        this.vecinas = new EnumMap<>(Direccion.class);
+        BordeDelMapa borde = new BordeDelMapa();
+        for (Direccion direccion : Direccion.values()) {
+            this.vecinas.put(direccion, borde);
         }
     }
 
-    public boolean recibirChoqueOEntrar(Unidad unidadEmpujada) {
-        if (this.estaOcupada() || this.terreno.bloqueaDisparoDirecto()) {
+    public void conectarVecina(Direccion direccion, Celda vecina) {
+        this.vecinas.put(direccion, vecina);
+    }
+
+    @Override
+    public Celda vecinaAl(Direccion direccion) {
+        return this.vecinas.get(direccion);
+    }
+
+    @Override
+    public void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio) {
+        this.recibirDanio(danio);
+        this.empujarUnidadInterna(direccion);
+    }
+
+    @Override
+    public void recibirProyectilRecto(Direccion direccion, int danio) {
+        if (this.detieneProyectil()) {
+            this.recibirDanio(danio);
+            this.empujarUnidadInterna(direccion);
+        } else {
+            this.vecinaAl(direccion).recibirProyectilRecto(direccion, danio);
+        }
+    }
+
+    @Override
+    public void recibirProyectilEnArco(Direccion direccion, int pasosRestantes, int danio) {
+        if (pasosRestantes > 0) {
+            this.vecinaAl(direccion).recibirProyectilEnArco(direccion, pasosRestantes - 1, danio);
+        } else {
+            this.recibirDanio(danio);
+            for (Direccion direccionEmpuje : Direccion.values()) {
+                this.vecinaAl(direccionEmpuje).empujarUnidadInterna(direccionEmpuje);
+            }
+        }
+    }
+
+    @Override
+    public void empujarUnidadInterna(Direccion direccion) {
+        if (!this.estaOcupada()) {
+            return;
+        }
+        Celda celdaDestino = this.vecinaAl(direccion);
+        if (celdaDestino.recibirUnidadEmpujada(this.unidad)) {
+            this.unidad = null;
+        }
+    }
+
+    @Override
+    public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
+        if (this.detieneProyectil()) {
             this.recibirDanio(1);
             unidadEmpujada.recibirDanio(1);
             return false;
         }
+        this.colocarUnidad(unidadEmpujada);
         return true;
     }
 
-
-    public boolean estaOcupada() {
-        return this.unidad != null;
-    }
-
-    public boolean puedeSerOcupadaPor(Unidad nuevaUnidad) {
-        return !this.estaOcupada() && nuevaUnidad.puedeTransitar(this.terreno);
+    public void recibirDanio(int danio) {
+        if (this.estaOcupada()) {
+            this.unidad.recibirDanio(danio);
+        }
+        this.terreno = this.terreno.recibirDanio(danio);
     }
 
     public void colocarUnidad(Unidad nuevaUnidad) {
@@ -57,11 +100,23 @@ public class Casilla {
         return unidadRetirada;
     }
 
-    public void recibirDanio(int danio) {
-        if (this.estaOcupada()) {
-            this.unidad.recibirDanio(danio);
+    public void moverUnidadHacia(Casilla destino) {
+        if (!this.estaOcupada()) {
+            throw new IllegalStateException("No hay unidad para mover en la casilla de origen.");
         }
-        this.terreno = this.terreno.recibirDanio(danio);
+        destino.colocarUnidad(this.quitarUnidad());
+    }
+
+    public boolean puedeSerOcupadaPor(Unidad nuevaUnidad) {
+        return !this.estaOcupada() && nuevaUnidad.puedeTransitar(this.terreno);
+    }
+
+    public boolean estaOcupada() {
+        return this.unidad != null;
+    }
+
+    private boolean detieneProyectil() {
+        return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
     }
 
     public void cambiarTerreno(Terreno nuevoTerreno) {
@@ -74,20 +129,5 @@ public class Casilla {
 
     public Unidad getUnidad() {
         return this.unidad;
-    }
-    public boolean recibirUnidadOColisionar(Unidad unidadEmpujada) {
-        if (this.estaOcupada() || this.terreno.bloqueaDisparoDirecto()) {
-            this.recibirDanio(1);
-            unidadEmpujada.recibirDanio(1);
-
-            return false;
-        }
-
-        this.colocarUnidad(unidadEmpujada);
-        return true;
-    }
-
-    public boolean detieneDisparoDirecto() {
-        return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
     }
 }
