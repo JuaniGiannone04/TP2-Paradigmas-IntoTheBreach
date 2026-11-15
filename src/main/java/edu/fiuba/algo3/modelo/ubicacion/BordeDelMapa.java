@@ -10,6 +10,21 @@ public class BordeDelMapa implements Celda {
     }
 
     @Override
+    public boolean esAdyacenteA(Celda otraCelda) {
+        return false;
+    }
+
+    @Override
+    public Direccion direccionHacia(Celda destino) {
+        throw new IllegalArgumentException("El borde no puede ser origen de un ataque");
+    }
+
+    @Override
+    public boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino) {
+        return false;
+    }
+
+    @Override
     public void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio) {
         throw new IllegalArgumentException("No se puede golpear fuera del tablero");
     }
@@ -19,7 +34,7 @@ public class BordeDelMapa implements Celda {
     }
 
     @Override
-    public void recibirProyectilEnArco(Direccion direccion, int pasosRestantes, int danio) {
+    public void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio) {
         throw new IllegalArgumentException("No se puede disparar fuera del tablero");
     }
 
@@ -30,14 +45,5 @@ public class BordeDelMapa implements Celda {
     @Override
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         return false;
-    }
-    @Override
-    public Direccion direccionEnLineaRectaHacia(Celda destino) {
-        throw new IllegalArgumentException("El borde no puede ser origen de búsqueda");
-    }
-
-    @Override
-    public int distanciaEnDireccionHacia(Direccion direccion, Celda destino) {
-        return -1;
     }
 }

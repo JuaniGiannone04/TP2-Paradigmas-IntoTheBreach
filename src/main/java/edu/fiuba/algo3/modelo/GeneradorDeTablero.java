@@ -6,12 +6,15 @@ import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GeneradorDeTablero {
     private static final int DIMENSION = 8;
 
     public Tablero crearTableroVacio() {
         Casilla[][] grillaTemporal = this.construirGrafoBase();
-        return new Tablero(grillaTemporal[0][0]);
+        return new Tablero(this.convertirALista(grillaTemporal));
     }
 
     public Tablero crearTableroPredefinido(RedElectrica redElectrica) {
@@ -31,7 +34,7 @@ public class GeneradorDeTablero {
         grillaTemporal[3][5].cambiarTerreno(new Acido());
         grillaTemporal[4][5].cambiarTerreno(new Acido());
 
-        return new Tablero(grillaTemporal[0][0]);
+        return new Tablero(this.convertirALista(grillaTemporal));
     }
 
     private Casilla[][] construirGrafoBase() {
@@ -65,5 +68,15 @@ public class GeneradorDeTablero {
                 }
             }
         }
+    }
+
+    private List<Casilla> convertirALista(Casilla[][] grilla) {
+        List<Casilla> lista = new ArrayList<>();
+        for (int fila = 0; fila < DIMENSION; fila++) {
+            for (int columna = 0; columna < DIMENSION; columna++) {
+                lista.add(grilla[fila][columna]);
+            }
+        }
+        return lista;
     }
 }

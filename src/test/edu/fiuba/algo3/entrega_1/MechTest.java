@@ -249,14 +249,15 @@ public class MechTest {
     public void test16MechNoPuedeAtacarDosVecesEnElMismoTurno(){
         Arma arma = mock(Arma.class);
         Celda origen = mock(Celda.class);
+        Celda destino = mock(Celda.class);
         Mech mech = new Mech(arma, 3);
 
-        mech.atacar(origen, Direccion.ESTE, 1);
+        mech.atacar(origen, destino);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.atacar(origen, Direccion.ESTE, 1));
+                () -> mech.atacar(origen, destino));
 
-        verify(arma, times(1)).atacar(origen, Direccion.ESTE, 1);
+        verify(arma, times(1)).atacar(origen, destino);
     }
 
     @Test
@@ -284,12 +285,13 @@ public class MechTest {
         Mech mech = new Mech(arma, 3);
         Casilla origen = mock(Casilla.class);
         Casilla destino = mock(Casilla.class);
+        Casilla objetivo = mock(Casilla.class);
 
         mech.mover(origen, destino);
-        mech.atacar(destino, Direccion.ESTE, 1);
+        mech.atacar(destino, objetivo);
 
         verify(origen, times(1)).moverUnidadHacia(destino);
-        verify(arma, times(1)).atacar(destino, Direccion.ESTE, 1);
+        verify(arma, times(1)).atacar(destino, objetivo);
     }
 
     @Test
@@ -297,14 +299,15 @@ public class MechTest {
         Arma arma = mock(Arma.class);
         Mech mech = new Mech(arma, 3);
         Casilla origen = mock(Casilla.class);
+        Casilla objetivo = mock(Casilla.class);
         Casilla destino = mock(Casilla.class);
 
-        mech.atacar(origen, Direccion.ESTE, 1);
+        mech.atacar(origen, objetivo);
 
         assertThrows(IllegalStateException.class,
                 () -> mech.mover(origen, destino));
 
-        verify(arma, times(1)).atacar(origen, Direccion.ESTE, 1);
+        verify(arma, times(1)).atacar(origen, objetivo);
         verify(origen, never()).moverUnidadHacia(destino);
     }
 

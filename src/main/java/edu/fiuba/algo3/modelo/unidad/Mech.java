@@ -43,21 +43,13 @@ public class Mech implements Unidad {
     public int getVidaActual() {
         return this.vidaActual;
     }
-    public void atacar(Celda origen, Celda destino) {
-        Direccion direccion = origen.direccionEnLineaRectaHacia(destino);
-        int distancia = origen.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino);
-        this.arma.atacar(origen, direccion, distancia);
-    }
-    public void atacar(Celda origen, Direccion direccion) {
-        this.arma.atacar(origen, direccion, 1);
-    }
 
-    public void atacar(Celda origen, Direccion direccion, int distancia) {
-        if(estado == EstadoAccion.ATACO) {
+    public void atacar(Celda origen, Celda destino) {
+        if (estado == EstadoAccion.ATACO) {
             throw new IllegalStateException("El Mech ya atacó en este turno");
         }
 
-        this.arma.atacar(origen, direccion, distancia);
+        arma.atacar(origen, destino);
         estado = EstadoAccion.ATACO;
     }
 
