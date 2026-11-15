@@ -1,13 +1,20 @@
 package edu.fiuba.algo3.modelo.ubicacion;
 
-public class Tablero {
-    private  Celda casillaInicial;
+import java.util.Collections;
+import java.util.List;
 
-    public Tablero(Celda casillaInicial) {
-        this.casillaInicial = casillaInicial;
+public class Tablero {
+    private final List<Casilla> casillas;
+
+    public Tablero(List<Casilla> casillas) {
+        this.casillas = casillas;
     }
 
-    public Celda getCasillaInicial() {
-        return this.casillaInicial;
+    public List<Casilla> getCasillas() {
+        return Collections.unmodifiableList(this.casillas);
+    }
+
+    public Casilla getCasillaInicial() {
+        return this.casillas.get(0);
     }
 }

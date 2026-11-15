@@ -18,4 +18,6 @@ module edu.fiuba.algo3 {
 
     exports edu.fiuba.algo3.modelo.arma;
     opens edu.fiuba.algo3.modelo.arma to org.mockito;
+    exports edu.fiuba.algo3.modelo.turno;
+    opens edu.fiuba.algo3.modelo.turno to org.mockito;
 }

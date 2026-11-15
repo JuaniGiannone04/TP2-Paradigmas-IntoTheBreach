@@ -23,10 +23,21 @@ public class Casilla implements Celda {
     public void conectarVecina(Direccion direccion, Celda vecina) {
         this.vecinas.put(direccion, vecina);
     }
+
     @Override
-    public Direccion direccionEnLineaRectaHacia(Celda destino) {
+    public Celda vecinaAl(Direccion direccion) {
+        return this.vecinas.get(direccion);
+    }
+
+    @Override
+    public boolean esAdyacenteA(Celda otraCelda) {
+        return this.vecinas.containsValue(otraCelda);
+    }
+
+    @Override
+    public Direccion direccionHacia(Celda destino) {
         for (Direccion direccion : Direccion.values()) {
-            if (this.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino) != -1) {
+            if (this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino)) {
                 return direccion;
             }
         }
@@ -34,19 +45,11 @@ public class Casilla implements Celda {
     }
 
     @Override
-    public int distanciaEnDireccionHacia(Direccion direccion, Celda destino) {
+    public boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino) {
         if (this == destino) {
-            return 1;
+            return true;
         }
-        int distanciaRestante = this.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino);
-        if (distanciaRestante == -1) {
-            return -1;
-        }
-        return 1 + distanciaRestante;
-    }
-    @Override
-    public Celda vecinaAl(Direccion direccion) {
-        return this.vecinas.get(direccion);
+        return this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino);
     }
 
     @Override
@@ -66,14 +69,14 @@ public class Casilla implements Celda {
     }
 
     @Override
-    public void recibirProyectilEnArco(Direccion direccion, int pasosRestantes, int danio) {
-        if (pasosRestantes > 0) {
-            this.vecinaAl(direccion).recibirProyectilEnArco(direccion, pasosRestantes - 1, danio);
-        } else {
+    public void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio) {
+        if (this == destino) {
             this.recibirDanio(danio);
             for (Direccion direccionEmpuje : Direccion.values()) {
                 this.vecinaAl(direccionEmpuje).empujarUnidadInterna(direccionEmpuje);
             }
+        } else {
+            this.vecinaAl(direccion).recibirProyectilEnArco(destino, direccion, danio);
         }
     }
 
@@ -98,7 +101,6 @@ public class Casilla implements Celda {
         this.colocarUnidad(unidadEmpujada);
         return true;
     }
-
 
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
