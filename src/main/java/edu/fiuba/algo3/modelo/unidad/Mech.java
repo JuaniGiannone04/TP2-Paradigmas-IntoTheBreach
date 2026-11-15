@@ -52,6 +52,11 @@ public class Mech implements Unidad {
     }
 
     public void atacar(Celda origen, Direccion direccion, int distancia) {
+        if(estado == EstadoAccion.ATACO) {
+            throw new IllegalStateException("El Mech ya atacó en este turno");
+        }
+
         this.arma.atacar(origen, direccion, distancia);
+        estado = EstadoAccion.ATACO;
     }
 }

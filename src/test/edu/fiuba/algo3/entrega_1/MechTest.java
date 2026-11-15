@@ -1,5 +1,7 @@
-/*package edu.fiuba.algo3.entrega_1;
+package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
 import edu.fiuba.algo3.modelo.arma.*;
@@ -7,9 +9,10 @@ import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class MechTest {
-
+    /*
     @Test
     public void test01MechCombateGolpeaCasillaAdyacente() {
         Arma punio = new Punio();
@@ -240,24 +243,21 @@ public class MechTest {
 //
 //    @test
 //    public void test15MechPuedeDeshacerSuMovimientoUnaUnicaVezPorTurno
-
+    */
     @Test
     public void test16MechNoPuedeAtacarDosVecesEnElMismoTurno(){
-        Tablero tablero = new Tablero();
         Arma arma = mock(Arma.class);
+        Celda origen = mock(Celda.class);
         Mech mech = new Mech(arma, 3);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion destino = new Posicion(1, 2);
-
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, Direccion.ESTE, 1);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.atacar(origen, destino, tablero));
+                () -> mech.atacar(origen, Direccion.ESTE, 1));
 
-        verify(arma, times(1)).atacar(origen, destino, tablero);
+        verify(arma, times(1)).atacar(origen, Direccion.ESTE, 1);
     }
-
+    /*
     @Test
     public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
         Tablero tablero = mock(Tablero.class);
@@ -313,6 +313,6 @@ public class MechTest {
         verify(tablero, never()).moverUnidad(objetivo, destino);
     }
 
+    */
 
-
-}*/
+}
