@@ -6,12 +6,18 @@ public class Turno {
 
     private final Tablero tablero;
     private boolean yaSeDeshizoUnMovimiento = false;
+    private Fase faseActual;
+    private int numeroDeTurno = 1;
 
     public Turno(Tablero tablero) {
         this.tablero = tablero;
+        this.faseActual = new FaseVek();
     }
 
-    public void moverUnidad(Mech mech, Posicion destino) {
+    public void moverMech(Mech mech, Posicion destino) {
+        if (!(faseActual instanceof FaseJugador)) {
+            throw new IllegalStateException("Solo se mueven los Mechs en la Fase del Jugador");
+        }
         Posicion origen = posicionDe(mech);
         mech.mover(origen, destino, tablero);
     }
@@ -39,5 +45,25 @@ public class Turno {
             }
         }
         throw new IllegalStateException("El Mech no está en el tablero");
+    }
+
+    public Fase obtenerFaseActual() {
+        return faseActual;
+    }
+
+    public void avanzarFase() {
+        faseActual.ejecutar(this, tablero);
+    }
+
+    public void cambiarFase(Fase nuevaFase) {
+        this.faseActual = nuevaFase;
+    }
+
+    public int obtenerNumero() {return numeroDeTurno;}
+
+    public void terminarTurno() {
+        numeroDeTurno++;
+        yaSeDeshizoUnMovimiento = false;
+        cambiarFase(new FaseVek());
     }
 }
