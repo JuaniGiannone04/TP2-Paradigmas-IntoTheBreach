@@ -9,4 +9,6 @@ public interface Celda {
     void recibirProyectilEnArco(Direccion direccion, int pasosRestantes, int danio);
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
+    Direccion direccionEnLineaRectaHacia(Celda destino);
+    int distanciaEnDireccionHacia(Direccion direccion, Celda destino);
 }

@@ -1,7 +1,7 @@
 package edu.fiuba.algo3.modelo.ubicacion;
 
 public class Tablero {
-    private final Celda casillaInicial;
+    private  Celda casillaInicial;
 
     public Tablero(Celda casillaInicial) {
         this.casillaInicial = casillaInicial;

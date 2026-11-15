@@ -31,4 +31,13 @@ public class BordeDelMapa implements Celda {
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         return false;
     }
+    @Override
+    public Direccion direccionEnLineaRectaHacia(Celda destino) {
+        throw new IllegalArgumentException("El borde no puede ser origen de búsqueda");
+    }
+
+    @Override
+    public int distanciaEnDireccionHacia(Direccion direccion, Celda destino) {
+        return -1;
+    }
 }

@@ -23,7 +23,27 @@ public class Casilla implements Celda {
     public void conectarVecina(Direccion direccion, Celda vecina) {
         this.vecinas.put(direccion, vecina);
     }
+    @Override
+    public Direccion direccionEnLineaRectaHacia(Celda destino) {
+        for (Direccion direccion : Direccion.values()) {
+            if (this.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino) != -1) {
+                return direccion;
+            }
+        }
+        throw new IllegalArgumentException("El objetivo no se encuentra en línea recta");
+    }
 
+    @Override
+    public int distanciaEnDireccionHacia(Direccion direccion, Celda destino) {
+        if (this == destino) {
+            return 1;
+        }
+        int distanciaRestante = this.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino);
+        if (distanciaRestante == -1) {
+            return -1;
+        }
+        return 1 + distanciaRestante;
+    }
     @Override
     public Celda vecinaAl(Direccion direccion) {
         return this.vecinas.get(direccion);
@@ -78,6 +98,7 @@ public class Casilla implements Celda {
         this.colocarUnidad(unidadEmpujada);
         return true;
     }
+
 
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
