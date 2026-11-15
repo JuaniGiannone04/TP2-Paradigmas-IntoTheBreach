@@ -5,13 +5,13 @@ import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Punio implements Arma {
     private static final int DANIO = 2;
-    private static final int DISTANCIA_VALIDA = 1;
 
     @Override
-    public void atacar(Celda origen, Direccion direccion, int distancia) {
-        if (distancia != DISTANCIA_VALIDA) {
+    public void atacar(Celda origen, Celda destino) {
+        if (!origen.esAdyacenteA(destino)) {
             throw new IllegalArgumentException("El Puño solo puede atacar casillas adyacentes");
         }
-        origen.vecinaAl(direccion).recibirGolpeCuerpoACuerpo(direccion, DANIO);
+        Direccion direccion = origen.direccionHacia(destino);
+        destino.recibirGolpeCuerpoACuerpo(direccion, DANIO);
     }
 }

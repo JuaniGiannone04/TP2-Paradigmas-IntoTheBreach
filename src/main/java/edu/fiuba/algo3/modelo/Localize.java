@@ -11,8 +11,6 @@ public class Localize {
         this.usContent = usContent;
     }
 
-
-
     public String greet(String lang) {
         if (lang.equals("us")) {
             return usContent;

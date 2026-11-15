@@ -4,11 +4,12 @@ import edu.fiuba.algo3.modelo.unidad.Unidad;
 
 public interface Celda {
     Celda vecinaAl(Direccion direccion);
+    boolean esAdyacenteA(Celda otraCelda);
+    Direccion direccionHacia(Celda destino);
+    boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino);
     void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio);
     void recibirProyectilRecto(Direccion direccion, int danio);
-    void recibirProyectilEnArco(Direccion direccion, int pasosRestantes, int danio);
+    void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio);
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
-    Direccion direccionEnLineaRectaHacia(Celda destino);
-    int distanciaEnDireccionHacia(Direccion direccion, Celda destino);
 }

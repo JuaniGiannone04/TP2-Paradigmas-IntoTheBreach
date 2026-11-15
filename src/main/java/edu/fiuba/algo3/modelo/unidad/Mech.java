@@ -3,19 +3,16 @@ package edu.fiuba.algo3.modelo.unidad;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
-import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
     private boolean contaminado;
-    private EstadoAccion estado;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.contaminado = false;
-        this.estado = EstadoAccion.DISPONIBLE;
     }
 
     @Override
@@ -42,16 +39,8 @@ public class Mech implements Unidad {
     public int getVidaActual() {
         return this.vidaActual;
     }
-    public void atacar(Celda origen, Celda destino) {
-        Direccion direccion = origen.direccionEnLineaRectaHacia(destino);
-        int distancia = origen.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino);
-        this.arma.atacar(origen, direccion, distancia);
-    }
-    public void atacar(Celda origen, Direccion direccion) {
-        this.arma.atacar(origen, direccion, 1);
-    }
 
-    public void atacar(Celda origen, Direccion direccion, int distancia) {
-        this.arma.atacar(origen, direccion, distancia);
+    public void atacar(Celda origen, Celda destino) {
+        this.arma.atacar(origen, destino);
     }
 }

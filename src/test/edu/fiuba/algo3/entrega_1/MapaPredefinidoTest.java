@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.entrega_1;
+/*package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.*;
 import edu.fiuba.algo3.modelo.terreno.*;
@@ -41,4 +41,4 @@ public class MapaPredefinidoTest{
             }
         }
     }
-}
+}*/

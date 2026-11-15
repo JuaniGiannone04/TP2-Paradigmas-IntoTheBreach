@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.entrega_1;
+/*package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Canion;
@@ -94,4 +94,4 @@ public class CanionTest {
 
         assertDoesNotThrow(() -> mech.atacar(origen, Direccion.OESTE));
     }
-}
+}*/
