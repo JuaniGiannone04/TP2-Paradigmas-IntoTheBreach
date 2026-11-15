@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
@@ -257,26 +258,26 @@ public class MechTest {
 
         verify(arma, times(1)).atacar(origen, Direccion.ESTE, 1);
     }
-    /*
+
     @Test
     public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
-        Tablero tablero = mock(Tablero.class);
         Arma arma = mock(Arma.class);
+        Casilla origen = mock(Casilla.class);
+        Casilla intermedia = mock(Casilla.class);
+        Casilla destino = mock(Casilla.class);
+
         Mech mech = new Mech(arma, 3);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion intermedia = new Posicion(1, 2);
-        Posicion destino = new Posicion(1, 3);
 
-        mech.mover(origen, intermedia, tablero);
+        mech.mover(origen, intermedia);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.mover(intermedia, destino, tablero));
+                () -> mech.mover(intermedia, destino));
 
-        verify(tablero, times(1)).moverUnidad(origen, intermedia);
-        verify(tablero, never()).moverUnidad(intermedia, destino);
+        verify(origen, times(1)).moverUnidadHacia(intermedia);
+        verify(intermedia, never()).moverUnidadHacia(destino);
     }
-
+    /*
     @Test
     public void test18MechPuedeMoverseYAtacarEnElMismoTurno(){
         Tablero tablero = mock(Tablero.class);
