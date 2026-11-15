@@ -241,5 +241,78 @@ public class MechTest {
 //    @test
 //    public void test15MechPuedeDeshacerSuMovimientoUnaUnicaVezPorTurno
 
+    @Test
+    public void test16MechNoPuedeAtacarDosVecesEnElMismoTurno(){
+        Tablero tablero = new Tablero();
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion destino = new Posicion(1, 2);
+
+        mech.atacar(origen, destino, tablero);
+
+        assertThrows(IllegalStateException.class,
+                () -> mech.atacar(origen, destino, tablero));
+
+        verify(arma, times(1)).atacar(origen, destino, tablero);
+    }
+
+    @Test
+    public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
+        Tablero tablero = mock(Tablero.class);
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion intermedia = new Posicion(1, 2);
+        Posicion destino = new Posicion(1, 3);
+
+        mech.mover(origen, intermedia, tablero);
+
+        assertThrows(IllegalStateException.class,
+                () -> mech.mover(intermedia, destino, tablero));
+
+        verify(tablero, times(1)).moverUnidad(origen, intermedia);
+        verify(tablero, never()).moverUnidad(intermedia, destino);
+    }
+
+    @Test
+    public void test18MechPuedeMoverseYAtacarEnElMismoTurno(){
+        Tablero tablero = mock(Tablero.class);
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion nuevaPosicion = new Posicion(1, 2);
+        Posicion objetivo = new Posicion(1, 3);
+
+        mech.mover(origen, nuevaPosicion, tablero);
+        mech.atacar(nuevaPosicion, objetivo, tablero);
+
+        verify(tablero, times(1)).moverUnidad(origen, nuevaPosicion);
+        verify(arma, times(1)).atacar(nuevaPosicion, objetivo, tablero);
+    }
+
+    @Test
+    public void test19UnMechNoPuedeMoverseDespuesDeAtacarEnUnMismoTurno(){
+        Tablero tablero = mock(Tablero.class);
+        Arma arma = mock(Arma.class);
+        Mech mech = new Mech(arma, 3);
+
+        Posicion origen = new Posicion(1, 1);
+        Posicion objetivo = new Posicion(1, 2);
+        Posicion destino = new Posicion(1, 3);
+
+        mech.atacar(origen, objetivo, tablero);
+
+        assertThrows(IllegalStateException.class,
+                () -> mech.mover(objetivo, destino, tablero));
+
+        verify(arma, times(1)).atacar(origen, objetivo, tablero);
+        verify(tablero, never()).moverUnidad(objetivo, destino);
+    }
+
+
 
 }*/

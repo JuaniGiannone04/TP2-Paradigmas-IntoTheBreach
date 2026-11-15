@@ -9,11 +9,13 @@ public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
     private boolean contaminado;
+    private EstadoAccion estado;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.contaminado = false;
+        this.estado = EstadoAccion.DISPONIBLE;
     }
 
     @Override
