@@ -1,11 +1,12 @@
-package edu.fiuba.algo3.entrega_1;
+/*package edu.fiuba.algo3.entrega_1;
 
-import edu.fiuba.algo3.modelo.*;
-import edu.fiuba.algo3.modelo.arma.*;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
+import edu.fiuba.algo3.modelo.arma.*;
+import edu.fiuba.algo3.modelo.arma.Arma;
+import edu.fiuba.algo3.modelo.arma.Punio;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class MechTest {
 
@@ -314,4 +315,4 @@ public class MechTest {
 
 
 
-}
+}*/

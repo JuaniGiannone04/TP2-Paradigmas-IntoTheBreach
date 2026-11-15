@@ -1,12 +1,11 @@
 package edu.fiuba.algo3.modelo.unidad;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Mech implements Unidad {
-
     private final Arma arma;
     private int vidaActual;
     private boolean contaminado;
@@ -19,21 +18,14 @@ public class Mech implements Unidad {
         this.estado = EstadoAccion.DISPONIBLE;
     }
 
-
     @Override
     public void recibirDanio(int danio) {
-        int danioFinal = danio;
-
-        if (contaminado) {
-            danioFinal *= 2;
-        }
-
-        vidaActual = Math.max(0, vidaActual - danioFinal);
+        int danioFinal = this.contaminado ? danio * 2 : danio;
+        this.vidaActual = Math.max(0, this.vidaActual - danioFinal);
     }
 
     @Override
     public void aplicarEfectoAgua() {
-
     }
 
     @Override
@@ -43,29 +35,23 @@ public class Mech implements Unidad {
 
     @Override
     public boolean puedeTransitar(Terreno terreno) {
-        return false;
+        return terreno.esTransitablePorTerrestre();
     }
 
     @Override
     public int getVidaActual() {
         return this.vidaActual;
     }
-
-    public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
-        if( estado == EstadoAccion.ATACO ) {
-            throw new IllegalStateException("El Mech ya atacó en este turno");
-        }
-
-        arma.atacar(origen, destino, tablero);
-        estado = EstadoAccion.ATACO;
+    public void atacar(Celda origen, Celda destino) {
+        Direccion direccion = origen.direccionEnLineaRectaHacia(destino);
+        int distancia = origen.vecinaAl(direccion).distanciaEnDireccionHacia(direccion, destino);
+        this.arma.atacar(origen, direccion, distancia);
+    }
+    public void atacar(Celda origen, Direccion direccion) {
+        this.arma.atacar(origen, direccion, 1);
     }
 
-    public void mover(Posicion origen, Posicion destino, Tablero tablero) {
-        if( estado != EstadoAccion.DISPONIBLE ) {
-            throw new IllegalStateException("El Mech ya se movió en este turno");
-        }
-
-        tablero.moverUnidad(origen, destino);
-        estado = EstadoAccion.MOVIDO;
+    public void atacar(Celda origen, Direccion direccion, int distancia) {
+        this.arma.atacar(origen, direccion, distancia);
     }
 }

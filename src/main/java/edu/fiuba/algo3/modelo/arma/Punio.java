@@ -1,20 +1,17 @@
 package edu.fiuba.algo3.modelo.arma;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Punio implements Arma {
+    private static final int DANIO = 2;
+    private static final int DISTANCIA_VALIDA = 1;
 
     @Override
-    public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
-        if (!origen.esAdyacenteA(destino)) {
-            throw new IllegalArgumentException("El destino no es adyacente");
+    public void atacar(Celda origen, Direccion direccion, int distancia) {
+        if (distancia != DISTANCIA_VALIDA) {
+            throw new IllegalArgumentException("El Puño solo puede atacar casillas adyacentes");
         }
-
-        tablero.obtenerCasilla(destino).recibirDanio(2);
-
-        tablero.empujarUnidad(origen, destino);
+        origen.vecinaAl(direccion).recibirGolpeCuerpoACuerpo(direccion, DANIO);
     }
-
-
 }

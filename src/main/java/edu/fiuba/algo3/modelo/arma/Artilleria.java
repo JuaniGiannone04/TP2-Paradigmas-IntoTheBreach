@@ -1,47 +1,17 @@
 package edu.fiuba.algo3.modelo.arma;
 
-import edu.fiuba.algo3.modelo.Posicion;
-import edu.fiuba.algo3.modelo.Tablero;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Artilleria implements Arma {
-
+    private static final int DANIO = 1;
+    private static final int DISTANCIA_MINIMA = 2;
 
     @Override
-    public void atacar(Posicion origen, Posicion destino, Tablero tablero) {
-
-        if (!origen.estaEnLineaRectaCon(destino)) {
-            throw new IllegalArgumentException(
-                    "El objetivo no se encuentra en línea recta"
-            );
+    public void atacar(Celda origen, Direccion direccion, int distancia) {
+        if (distancia < DISTANCIA_MINIMA) {
+            throw new IllegalArgumentException("La artillería debe atacar a 2 o más casillas");
         }
-
-        if (origen.distanciaOrtogonalA(destino) < 2) {
-            throw new IllegalArgumentException(
-                    "La artillería debe atacar a 2 o más casillas"
-            );
-        }
-
-        tablero.obtenerCasilla(destino).recibirDanio(1);
-
-        Posicion[] desplazamientos = {
-                new Posicion(-1, 0),
-                new Posicion(1, 0),
-                new Posicion(0, -1),
-                new Posicion(0, 1)
-        };
-
-        for (Posicion desplazamiento : desplazamientos) {
-
-            Posicion adyacente = new Posicion(
-                    destino.getFila() + desplazamiento.getFila(),
-                    destino.getColumna() + desplazamiento.getColumna()
-            );
-
-            if (tablero.contienePosicion(adyacente)
-                    && tablero.obtenerCasilla(adyacente).estaOcupada()) {
-
-                tablero.empujarUnidad(destino, adyacente);
-            }
-        }
+        origen.vecinaAl(direccion).recibirProyectilEnArco(direccion, distancia - 1, DANIO);
     }
 }
