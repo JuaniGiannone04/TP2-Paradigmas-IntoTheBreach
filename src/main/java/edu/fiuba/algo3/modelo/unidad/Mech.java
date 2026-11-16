@@ -27,6 +27,7 @@ public class Mech implements Unidad {
 
     @Override
     public void aplicarEfectoAgua() {
+        this.estado= EstadoAccion.PACIFICO;
     }
 
     @Override
@@ -43,14 +44,16 @@ public class Mech implements Unidad {
     public int getVidaActual() {
         return this.vidaActual;
     }
-
     public void atacar(Celda origen, Celda destino) {
+
         if (estado == EstadoAccion.ATACO) {
             throw new IllegalStateException("El Mech ya atacó en este turno");
         }
+        if (estado != estado.PACIFICO) {
+            arma.atacar(origen, destino);
+            estado = EstadoAccion.ATACO;
+        }
 
-        arma.atacar(origen, destino);
-        estado = EstadoAccion.ATACO;
     }
 
     public void mover(Casilla origen, Casilla destino) {
@@ -61,4 +64,5 @@ public class Mech implements Unidad {
         origen.moverUnidadHacia(destino);
         estado = EstadoAccion.MOVIDO;
     }
+
 }

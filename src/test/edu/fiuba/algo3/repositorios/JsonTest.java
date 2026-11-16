@@ -1,4 +1,4 @@
-/*package edu.fiuba.algo3.repositorios;
+package edu.fiuba.algo3.repositorios;
 
 import edu.fiuba.algo3.modelo.Message;
 import org.junit.jupiter.api.Test;
@@ -26,4 +26,3 @@ public class JsonTest {
         assertEquals(actual, expected);
     }
 }
-*/

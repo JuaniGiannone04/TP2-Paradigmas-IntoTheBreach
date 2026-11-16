@@ -5,4 +5,9 @@ public class Luciernaga extends Vek {
     public Luciernaga() {
         super(3);
     }
+    @Override
+    public void aplicarEfectoAgua() {
+        this.recibirDanio(this.getVidaActual());
+    }
+
 }
