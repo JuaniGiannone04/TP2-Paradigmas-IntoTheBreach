@@ -2,6 +2,7 @@ package edu.fiuba.algo3.modelo.unidad;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 
 public class Mech implements Unidad {
@@ -23,6 +24,7 @@ public class Mech implements Unidad {
 
     @Override
     public void aplicarEfectoAgua() {
+        this.estado= EstadoAccion.PACIFICO;
     }
 
     @Override
@@ -43,4 +45,5 @@ public class Mech implements Unidad {
     public void atacar(Celda origen, Celda destino) {
         this.arma.atacar(origen, destino);
     }
+
 }

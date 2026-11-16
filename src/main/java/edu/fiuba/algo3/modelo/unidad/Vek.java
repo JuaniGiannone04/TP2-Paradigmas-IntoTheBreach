@@ -1,6 +1,7 @@
 package edu.fiuba.algo3.modelo.unidad;
 
 import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
 
 public class Vek implements Unidad {
     private int vidaActual;
@@ -28,6 +29,11 @@ public class Vek implements Unidad {
     @Override
     public boolean puedeTransitar(Terreno terreno) {
         return true;
+    }
+
+    @Override
+    public void atacar(Celda origen, Celda destino) {
+
     }
 
     @Override

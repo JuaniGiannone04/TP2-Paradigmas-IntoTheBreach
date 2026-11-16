@@ -31,6 +31,19 @@ public class PunioTest {
 
         verify(destinoMock, times(1)).recibirGolpeCuerpoACuerpo(Direccion.ESTE, 2);
     }
+    @Test
+    public void test02PunioLanzaExcepcionSiElDestinoNoEsAdyacente() {
+        Celda origenMock = mock(Celda.class);
+        Celda destinoMock = mock(Celda.class);
+
+        when(origenMock.esAdyacenteA(destinoMock)).thenReturn(false);
+
+        Arma punio = new Punio();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            punio.atacar(origenMock, destinoMock);
+        });
+    }
 
     // Test con Casillas en ArtilleriaTest: perdon que lo puse aca despues lo cambio pero queria probarlo sin borrar los otros
     @Test

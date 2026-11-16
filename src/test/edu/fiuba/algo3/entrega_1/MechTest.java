@@ -1,5 +1,8 @@
-/*package edu.fiuba.algo3.entrega_1;
+package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
 import edu.fiuba.algo3.modelo.arma.*;
@@ -7,9 +10,10 @@ import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class MechTest {
-
+    /*
     @Test
     public void test01MechCombateGolpeaCasillaAdyacente() {
         Arma punio = new Punio();
@@ -240,79 +244,73 @@ public class MechTest {
 //
 //    @test
 //    public void test15MechPuedeDeshacerSuMovimientoUnaUnicaVezPorTurno
-
+    */
     @Test
     public void test16MechNoPuedeAtacarDosVecesEnElMismoTurno(){
-        Tablero tablero = new Tablero();
         Arma arma = mock(Arma.class);
+        Celda origen = mock(Celda.class);
+        Celda destino = mock(Celda.class);
         Mech mech = new Mech(arma, 3);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion destino = new Posicion(1, 2);
-
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.atacar(origen, destino, tablero));
+                () -> mech.atacar(origen, destino));
 
-        verify(arma, times(1)).atacar(origen, destino, tablero);
+        verify(arma, times(1)).atacar(origen, destino);
     }
 
     @Test
     public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
-        Tablero tablero = mock(Tablero.class);
         Arma arma = mock(Arma.class);
+        Casilla origen = mock(Casilla.class);
+        Casilla intermedia = mock(Casilla.class);
+        Casilla destino = mock(Casilla.class);
+
         Mech mech = new Mech(arma, 3);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion intermedia = new Posicion(1, 2);
-        Posicion destino = new Posicion(1, 3);
 
-        mech.mover(origen, intermedia, tablero);
+        mech.mover(origen, intermedia);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.mover(intermedia, destino, tablero));
+                () -> mech.mover(intermedia, destino));
 
-        verify(tablero, times(1)).moverUnidad(origen, intermedia);
-        verify(tablero, never()).moverUnidad(intermedia, destino);
+        verify(origen, times(1)).moverUnidadHacia(intermedia);
+        verify(intermedia, never()).moverUnidadHacia(destino);
     }
 
     @Test
-    public void test18MechPuedeMoverseYAtacarEnElMismoTurno(){
-        Tablero tablero = mock(Tablero.class);
+    public void test18MechPuedeAtacarDespuesDeMoverseEnElMismoTurno(){
         Arma arma = mock(Arma.class);
         Mech mech = new Mech(arma, 3);
+        Casilla origen = mock(Casilla.class);
+        Casilla destino = mock(Casilla.class);
+        Casilla objetivo = mock(Casilla.class);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion nuevaPosicion = new Posicion(1, 2);
-        Posicion objetivo = new Posicion(1, 3);
+        mech.mover(origen, destino);
+        mech.atacar(destino, objetivo);
 
-        mech.mover(origen, nuevaPosicion, tablero);
-        mech.atacar(nuevaPosicion, objetivo, tablero);
-
-        verify(tablero, times(1)).moverUnidad(origen, nuevaPosicion);
-        verify(arma, times(1)).atacar(nuevaPosicion, objetivo, tablero);
+        verify(origen, times(1)).moverUnidadHacia(destino);
+        verify(arma, times(1)).atacar(destino, objetivo);
     }
 
     @Test
-    public void test19UnMechNoPuedeMoverseDespuesDeAtacarEnUnMismoTurno(){
-        Tablero tablero = mock(Tablero.class);
+    public void test19UnMechNoPuedeMoverseDespuesDeAtacarEnElMismoTurno(){
         Arma arma = mock(Arma.class);
         Mech mech = new Mech(arma, 3);
+        Casilla origen = mock(Casilla.class);
+        Casilla objetivo = mock(Casilla.class);
+        Casilla destino = mock(Casilla.class);
 
-        Posicion origen = new Posicion(1, 1);
-        Posicion objetivo = new Posicion(1, 2);
-        Posicion destino = new Posicion(1, 3);
-
-        mech.atacar(origen, objetivo, tablero);
+        mech.atacar(origen, objetivo);
 
         assertThrows(IllegalStateException.class,
-                () -> mech.mover(objetivo, destino, tablero));
+                () -> mech.mover(origen, destino));
 
-        verify(arma, times(1)).atacar(origen, objetivo, tablero);
-        verify(tablero, never()).moverUnidad(objetivo, destino);
+        verify(arma, times(1)).atacar(origen, objetivo);
+        verify(origen, never()).moverUnidadHacia(destino);
     }
 
 
 
-}*/
+}

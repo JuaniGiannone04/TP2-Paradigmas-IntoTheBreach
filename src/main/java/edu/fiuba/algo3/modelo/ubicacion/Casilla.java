@@ -91,6 +91,12 @@ public class Casilla implements Celda {
         }
     }
 
+    private void limpiarSiEstaMuerta() {
+        if (this.estaOcupada() && this.unidad.getVidaActual() == 0) {
+            this.unidad = null;
+        }
+    }
+
     @Override
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         if (this.detieneProyectil()) {
@@ -105,6 +111,7 @@ public class Casilla implements Celda {
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
             this.unidad.recibirDanio(danio);
+            this.limpiarSiEstaMuerta();
         }
         this.terreno = this.terreno.recibirDanio(danio);
     }
@@ -115,6 +122,7 @@ public class Casilla implements Celda {
         }
         this.unidad = nuevaUnidad;
         this.terreno.aplicarEfecto(nuevaUnidad);
+        this.limpiarSiEstaMuerta();
     }
 
     public Unidad quitarUnidad() {
