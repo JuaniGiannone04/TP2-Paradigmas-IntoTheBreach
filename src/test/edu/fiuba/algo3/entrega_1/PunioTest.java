@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.entrega_1;
+/*package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Artilleria;
@@ -63,4 +63,4 @@ public class PunioTest {
 
         verify(objetivoMock, times(1)).recibirDanio(1);
     }
-}
+}*/

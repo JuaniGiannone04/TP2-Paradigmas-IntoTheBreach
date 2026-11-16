@@ -4,5 +4,5 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public interface Arma {
-     void atacar(Celda origen, Celda destino);
+    void atacar(Celda origen, Celda destino);
 }
