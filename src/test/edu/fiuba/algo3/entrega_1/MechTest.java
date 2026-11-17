@@ -1,18 +1,15 @@
 package edu.fiuba.algo3.entrega_1;
 
-import edu.fiuba.algo3.modelo.GeneradorDeTablero;
-import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.terreno.Agua;
 import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
-import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
 import edu.fiuba.algo3.modelo.arma.*;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
+import edu.fiuba.algo3.modelo.unidad.estadosalud.Contaminado;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -276,6 +273,45 @@ public class MechTest {
 
         verify(arma, never()).atacar(origen, destino);
     }
+
+
+    @Test
+    public void test13MechSanoRecibeDanioNormal() {
+        Mech mech = new Mech(mock(Arma.class), 3);
+
+        mech.recibirDanio(1);
+
+        assertEquals(2, mech.getVidaActual());
+    }
+
+    @Test
+    public void test14MechSanoRecibeDanioNormal() {
+        Mech mech = new Mech(mock(Arma.class), 3);
+
+        mech.recibirDanio(1);
+
+        assertEquals(2, mech.getVidaActual());
+    }
+
+    @Test
+    public void test15MechContaminadoTieneEstadoContaminado() {
+        Mech mech = new Mech(mock(Arma.class), 3);
+
+        mech.aplicarEfectoAcido();
+
+        assertTrue(mech.estaContaminado());
+    }
+
+    @Test
+    public void test16MechContaminadoTieneEstadoDeSaludContaminado() {
+        Mech mech = new Mech(mock(Arma.class), 3);
+
+        mech.aplicarEfectoAcido();
+
+        assertTrue(mech.obtenerEstadoSalud() instanceof Contaminado);
+    }
+
+
 
 
 }

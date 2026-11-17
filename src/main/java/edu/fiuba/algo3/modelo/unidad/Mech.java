@@ -3,23 +3,25 @@ package edu.fiuba.algo3.modelo.unidad;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.unidad.estadosalud.Contaminado;
+import edu.fiuba.algo3.modelo.unidad.estadosalud.EstadoSalud;
+import edu.fiuba.algo3.modelo.unidad.estadosalud.Sano;
 
 public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
-    private boolean contaminado;
+    private EstadoSalud estadoSalud = new Sano();
     private EstadoAccion estado;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
-        this.contaminado = false;
         this.estado = EstadoAccion.DISPONIBLE;
     }
 
     @Override
     public void recibirDanio(int danio) {
-        int danioFinal = this.contaminado ? danio * 2 : danio;
+        int danioFinal = this.estadoSalud.calcularDanio(danio);
         this.vidaActual = Math.max(0, this.vidaActual - danioFinal);
     }
 
@@ -29,9 +31,7 @@ public class Mech implements Unidad {
     }
 
     @Override
-    public void aplicarEfectoAcido() {
-        this.contaminado = true;
-    }
+    public void aplicarEfectoAcido() {this.estadoSalud = new Contaminado();}
 
     @Override
     public boolean puedeTransitar(Terreno terreno) {
@@ -56,4 +56,15 @@ public class Mech implements Unidad {
         this.estado = EstadoAccion.ATACO;
     }
 
+    public boolean estaContaminado() {
+        return this.estadoSalud instanceof Contaminado;
+    }
+
+    public EstadoSalud obtenerEstadoSalud() {
+        return this.estadoSalud;
+    }
+
+    public void restaurarEstadoSalud(EstadoSalud estado) {
+        this.estadoSalud = estado;
+    }
 }

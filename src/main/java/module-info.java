@@ -20,4 +20,6 @@ module edu.fiuba.algo3 {
     opens edu.fiuba.algo3.modelo.arma to org.mockito;
     exports edu.fiuba.algo3.modelo.turno;
     opens edu.fiuba.algo3.modelo.turno to org.mockito;
+    exports edu.fiuba.algo3.modelo.unidad.estadosalud;
+    opens edu.fiuba.algo3.modelo.unidad.estadosalud to org.mockito;
 }

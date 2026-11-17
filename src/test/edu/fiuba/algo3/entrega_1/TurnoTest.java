@@ -1,9 +1,12 @@
 package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
+import edu.fiuba.algo3.modelo.arma.Punio;
+import edu.fiuba.algo3.modelo.terreno.Acido;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -176,4 +179,69 @@ public class TurnoTest {
 
         assertThrows(IllegalStateException.class, () -> turno.moverMech(mech, origen, destino));
     }
+
+    @Test
+    public void test14DeshacerMovimientoSobreAcidoQuitaLaContaminacion() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla acido = new Casilla(new Acido());
+        origen.conectarVecina(Direccion.ESTE, acido);
+        acido.conectarVecina(Direccion.OESTE, origen);
+
+        Mech mech = new Mech(new Punio(), 3);
+        origen.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.avanzarFase();
+        turno.moverMech(mech, origen, acido);
+        assertTrue(mech.estaContaminado());
+
+        turno.deshacerMovimiento(mech);
+
+        assertFalse(mech.estaContaminado());
+    }
+
+    @Test
+    public void test15DeshacerNoQuitaUnaContaminacionAnterior() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
+        Mech mech = new Mech(new Punio(), 3);
+        mech.aplicarEfectoAcido();
+        origen.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.avanzarFase();
+        turno.moverMech(mech, origen, destino);
+        turno.deshacerMovimiento(mech);
+
+        assertTrue(mech.estaContaminado());
+    }
+
+    @Test
+    public void test16DeshacerMovimientoEsRechazadoPorAtaqueYNoPierdeElMovimientoPendiente() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla objetivo = new Casilla(new Suelo());
+        Casilla otroOrigen = new Casilla(new Suelo());
+        Casilla otroDestino = new Casilla(new Suelo());
+        Mech primero = new Mech(mock(Arma.class), 3);
+        Mech segundo = new Mech(mock(Arma.class), 3);
+        origen.colocarUnidad(primero);
+        otroOrigen.colocarUnidad(segundo);
+        Turno turno = new Turno();
+        turno.avanzarFase();
+        turno.moverMech(primero, origen, destino);
+        turno.atacarConMech(primero, destino, objetivo);
+        turno.moverMech(segundo, otroOrigen, otroDestino);
+
+        assertThrows(IllegalStateException.class, () -> turno.deshacerMovimiento(primero));
+
+        turno.deshacerMovimiento(segundo);
+
+        assertSame(segundo, otroOrigen.getUnidad());
+        assertFalse(otroDestino.estaOcupada());
+    }
+
 }
