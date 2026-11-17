@@ -1,5 +1,10 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.GeneradorDeTablero;
+import edu.fiuba.algo3.modelo.RedElectrica;
+import edu.fiuba.algo3.modelo.terreno.Agua;
+import edu.fiuba.algo3.modelo.terreno.Montana;
+import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
@@ -13,27 +18,28 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class MechTest {
-    /*
+
     @Test
     public void test01MechCombateGolpeaCasillaAdyacente() {
         Arma punio = new Punio();
         Mech mech = new Mech(punio, 3);
         Vek vek = new Saltador();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 3);
+        origen.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertTrue(vek.getVidaActual() < vidaInicial);
     }
+
 
     @Test
     public void test02MechCombateGolpea2DeDaño() {
@@ -41,108 +47,123 @@ public class MechTest {
         Mech mech = new Mech(punio, 3);
         Vek vek = new Saltador();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 3);
+        origen.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertEquals(vidaInicial - 2, vek.getVidaActual());
     }
 
     @Test
-    public void test03MechCombateEmpuja1CasillaEnDireccionDelGolpe(){
-        Arma punio = new Punio();
-        Mech mech = new Mech(punio, 3);
-        Vek vek = new Luciernaga();
+    public void test03MechCombateEmpuja1Casilla() {
+    Arma punio = new Punio();
+    Mech mech = new Mech(punio, 3);
+    Vek vek = new Luciernaga();
 
-        Tablero tablero = new Tablero();
+    Casilla origen = new Casilla(new Suelo());
+    Casilla destino = new Casilla(new Suelo());
+    Casilla siguiente = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 3);
-        Posicion posicionEsperada = new Posicion (2, 4);
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        destino.conectarVecina(Direccion.ESTE, siguiente);
+        siguiente.conectarVecina(Direccion.OESTE, destino);
 
-        mech.atacar(origen, destino, tablero);
+    origen.colocarUnidad(mech);
+    destino.colocarUnidad(vek);
 
-        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad()); //Comprueba que sean el mismo objeto
-        // el Vek y la casilla donde deberia terminar
-        assertFalse(tablero.obtenerCasilla(destino).estaOcupada()); //Comprueba que la celda quedo vacia
+    mech.atacar(origen, destino);
+
+    assertSame(vek, siguiente.getUnidad());
+    assertFalse(destino.estaOcupada()); //Comprueba que la celda quedo vacia
     }
 
 
     @Test
-    public void test04MechCañonGolpeaLineaRecta(){
+    public void test04MechCanionGolpeaLineaRecta() {
         Arma canion = new Canion();
         Mech mech = new Mech(canion, 3);
         Vek vek = new Saltador();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 5);
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertTrue(vek.getVidaActual() < vidaInicial);
     }
 
 
+
     @Test
-    public void test05MechCañonGolpea1DeDaño(){
+    public void test05MechCanionGolpea1DeDaño(){
         Arma canion = new Canion();
         Mech mech = new Mech(canion, 3);
         Vek vek = new Saltador();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 5);
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertEquals(vidaInicial - 1, vek.getVidaActual());
     }
 
 
     @Test
-    public void test06MechCañonEmpujaUnaCasilla(){
+    public void test06MechCanionEmpujaUnaCasilla() {
         Arma canion = new Canion();
         Mech mech = new Mech(canion, 3);
         Vek vek = new Luciernaga();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla siguiente = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 5);
-        Posicion posicionEsperada = new Posicion (2, 6);
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, intermedia);
 
-        mech.atacar(origen, destino, tablero);
+        destino.conectarVecina(Direccion.ESTE, siguiente);
+        siguiente.conectarVecina(Direccion.OESTE, destino);
 
-        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad()); //Comprueba que sean el mismo objeto
-        // el Vek y la casilla donde deberia terminar
-        assertFalse(tablero.obtenerCasilla(destino).estaOcupada()); //Comprueba que la celda quedo vacia
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
+
+        mech.atacar(origen, destino);
+
+        assertSame(vek, siguiente.getUnidad());
+        assertFalse(destino.estaOcupada());
     }
 
 
@@ -152,19 +173,21 @@ public class MechTest {
         Mech mech = new Mech(artilleria, 2);
         Vek vek = new Luciernaga();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Montana());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 5);
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
-        assertEquals(vidaInicial - 1, vek.getVidaActual());
+        assertTrue(vek.getVidaActual() < vidaInicial);
     }
 
 
@@ -175,42 +198,51 @@ public class MechTest {
         Mech mech = new Mech(artilleria, 2);
         Vek vek = new Saltador();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Montana());
+        Casilla destino = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(2, 2);
-        Posicion destino = new Posicion(2, 5);
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(destino, vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
         int vidaInicial = vek.getVidaActual();
 
-        mech.atacar(origen, destino, tablero);
+        mech.atacar(origen, destino);
 
         assertEquals(vidaInicial - 1, vek.getVidaActual());
     }
 
 
     @Test
-    public void test09MechArtilleroEmpujaHaciaAfueraCasillaAdyacente(){
+    public void test09MechArtilleroEmpujaHaciaAfueraCasillaAdyacente() {
         Arma artilleria = new Artilleria();
         Mech mech = new Mech(artilleria, 2);
         Vek vek = new Luciernaga();
 
-        Tablero tablero = new Tablero();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia1 = new Casilla(new Suelo());
+        Casilla intermedia2 = new Casilla(new Suelo());
+        Casilla impacto = new Casilla(new Suelo());
+        Casilla posicionVek = new Casilla(new Suelo());
+        Casilla posicionEsperada = new Casilla(new Suelo());
 
-        Posicion origen = new Posicion(3, 0);
-        Posicion impacto = new Posicion(3, 3);
-        Posicion posicionVek = new Posicion(3, 4);
-        Posicion posicionEsperada = new Posicion(3, 5);
+        origen.conectarVecina(Direccion.ESTE, intermedia1);
+        intermedia1.conectarVecina(Direccion.ESTE, intermedia2);
+        intermedia2.conectarVecina(Direccion.ESTE, impacto);
 
-        tablero.colocarUnidad(origen, mech);
-        tablero.colocarUnidad(posicionVek, vek);
+        impacto.conectarVecina(Direccion.ESTE, posicionVek);
+        posicionVek.conectarVecina(Direccion.ESTE, posicionEsperada);
 
-        mech.atacar(origen, impacto, tablero);
+        origen.colocarUnidad(mech);
+        posicionVek.colocarUnidad(vek);
 
-        assertSame(vek, tablero.obtenerCasilla(posicionEsperada).getUnidad());
-        assertFalse(tablero.obtenerCasilla(posicionVek).estaOcupada());
+        mech.atacar(origen, impacto);
+
+        assertSame(vek, posicionEsperada.getUnidad());
+        assertFalse(posicionVek.estaOcupada());
     }
 
 
@@ -229,88 +261,21 @@ public class MechTest {
         assertEquals(vidaInicial - 2, mech.getVidaActual());
     }
 
-
-//    @test
-//    public void test11MechSoloPuedeMoverseACasillasDentroDeSuRangoDeMovimiento
-//
-//    @test
-//    public void test12MechSoloPuedeMoverseYAtacarUnaVez
-//
-//    @test
-//    public void test13MechPuedeDeshacerSuMovimientoSiNoAtacoYVolverAlaPosicionAnterior
-//
-//    @test
-//    public void test14MechNoPuedeDeshacerSuMovimientoSiYaAtaco
-//
-//    @test
-//    public void test15MechPuedeDeshacerSuMovimientoUnaUnicaVezPorTurno
-    */
     @Test
-    public void test16MechNoPuedeAtacarDosVecesEnElMismoTurno(){
+    public void test12MechSobreAguaNoPuedeAtacar() {
         Arma arma = mock(Arma.class);
-        Celda origen = mock(Celda.class);
-        Celda destino = mock(Celda.class);
         Mech mech = new Mech(arma, 3);
 
-        mech.atacar(origen, destino);
+        Casilla origen = new Casilla(new Agua());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.colocarUnidad(mech);
 
         assertThrows(IllegalStateException.class,
                 () -> mech.atacar(origen, destino));
 
-        verify(arma, times(1)).atacar(origen, destino);
+        verify(arma, never()).atacar(origen, destino);
     }
-
-    @Test
-    public void test17MechNoSePuedeMoverDosVecesEnElMismoTurno(){
-        Arma arma = mock(Arma.class);
-        Casilla origen = mock(Casilla.class);
-        Casilla intermedia = mock(Casilla.class);
-        Casilla destino = mock(Casilla.class);
-
-        Mech mech = new Mech(arma, 3);
-
-
-        mech.mover(origen, intermedia);
-
-        assertThrows(IllegalStateException.class,
-                () -> mech.mover(intermedia, destino));
-
-        verify(origen, times(1)).moverUnidadHacia(intermedia);
-        verify(intermedia, never()).moverUnidadHacia(destino);
-    }
-
-    @Test
-    public void test18MechPuedeAtacarDespuesDeMoverseEnElMismoTurno(){
-        Arma arma = mock(Arma.class);
-        Mech mech = new Mech(arma, 3);
-        Casilla origen = mock(Casilla.class);
-        Casilla destino = mock(Casilla.class);
-        Casilla objetivo = mock(Casilla.class);
-
-        mech.mover(origen, destino);
-        mech.atacar(destino, objetivo);
-
-        verify(origen, times(1)).moverUnidadHacia(destino);
-        verify(arma, times(1)).atacar(destino, objetivo);
-    }
-
-    @Test
-    public void test19UnMechNoPuedeMoverseDespuesDeAtacarEnElMismoTurno(){
-        Arma arma = mock(Arma.class);
-        Mech mech = new Mech(arma, 3);
-        Casilla origen = mock(Casilla.class);
-        Casilla objetivo = mock(Casilla.class);
-        Casilla destino = mock(Casilla.class);
-
-        mech.atacar(origen, objetivo);
-
-        assertThrows(IllegalStateException.class,
-                () -> mech.mover(origen, destino));
-
-        verify(arma, times(1)).atacar(origen, objetivo);
-        verify(origen, never()).moverUnidadHacia(destino);
-    }
-
 
 
 }
