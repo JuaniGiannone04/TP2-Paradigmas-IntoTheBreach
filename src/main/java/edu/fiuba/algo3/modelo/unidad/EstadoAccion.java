@@ -4,5 +4,6 @@ public enum EstadoAccion {
     DISPONIBLE,
     MOVIDO,
     ATACO,
-    PACIFICO
+    PACIFICO,
+    CONTAMINADO
 }

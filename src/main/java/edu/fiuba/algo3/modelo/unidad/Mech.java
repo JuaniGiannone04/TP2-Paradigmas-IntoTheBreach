@@ -8,17 +8,18 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
-    private boolean contaminado;
+    private EstadoAccion estado;
+    private EstadoSalud estadoSalud;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
-        this.contaminado = false;
-    }
+        this.estadoSalud = new Sano();
+        this.estado = EstadoAccion.DISPONIBLE;    }
 
     @Override
     public void recibirDanio(int danio) {
-        int danioFinal = this.contaminado ? danio * 2 : danio;
+        int danioFinal = this.estadoSalud.calcularDanioFinal(danio);
         this.vidaActual = Math.max(0, this.vidaActual - danioFinal);
     }
 
@@ -29,7 +30,7 @@ public class Mech implements Unidad {
 
     @Override
     public void aplicarEfectoAcido() {
-        this.contaminado = true;
+        this.estadoSalud = this.estadoSalud.recibirAcido();
     }
 
     @Override
