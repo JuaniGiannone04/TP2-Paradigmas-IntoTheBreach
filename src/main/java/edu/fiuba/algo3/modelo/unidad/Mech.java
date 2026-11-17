@@ -44,7 +44,16 @@ public class Mech implements Unidad {
     }
 
     public void atacar(Celda origen, Celda destino) {
+        if (this.estado == EstadoAccion.ATACO) {
+            throw new IllegalStateException("El Mech ya ataco");
+        }
+
+        if (this.estado == EstadoAccion.PACIFICO) {
+            throw new IllegalStateException("El Mech no puede atacar mientras esta en el agua");
+        }
+
         this.arma.atacar(origen, destino);
+        this.estado = EstadoAccion.ATACO;
     }
 
 }
