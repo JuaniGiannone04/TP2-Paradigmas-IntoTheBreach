@@ -5,15 +5,20 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 
 public class Vek implements Unidad {
     private int vidaActual;
+    private EstadoSalud estadoSalud ;
+    private EstadoAccion estado ;
 
 
     protected Vek(int vidaInicial) {
         this.vidaActual = vidaInicial;
+        this.estadoSalud = new Sano();
+        this.estado = EstadoAccion.DISPONIBLE;
     }
 
     @Override
     public void recibirDanio(int danio) {
-        this.vidaActual = Math.max(0, vidaActual - danio);
+        int danioFinal = this.estadoSalud.calcularDanioFinal(danio);
+        this.vidaActual = Math.max(0, this.vidaActual - danioFinal);
     }
 
     @Override
@@ -23,6 +28,7 @@ public class Vek implements Unidad {
 
     @Override
     public void aplicarEfectoAcido() {
+        this.estadoSalud = this.estadoSalud.recibirAcido();
 
     }
 

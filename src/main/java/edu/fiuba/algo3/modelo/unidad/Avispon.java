@@ -5,4 +5,9 @@ public class Avispon extends Vek {
     public Avispon() {
         super(2);
     }
+
+    @Override
+    public void aplicarEfectoAcido() {
+
+    }
 }
