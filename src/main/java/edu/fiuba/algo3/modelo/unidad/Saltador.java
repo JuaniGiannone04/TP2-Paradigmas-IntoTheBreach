@@ -31,7 +31,5 @@ public class Saltador extends Vek {
         return terreno.esTransitablePorTerrestre();
     }
 
-    public void moverse(Casilla origen, Casilla destino) {
-        origen.moverUnidadHacia(destino);
-    }
+
 }

@@ -17,6 +17,7 @@ public class Luciernaga extends Vek {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
+        origen.direccionHacia(destino);
         if (destino instanceof Casilla) {
             Casilla casillaDestino = (Casilla) destino;
             if (casillaDestino.estaOcupada()) {
@@ -26,14 +27,12 @@ public class Luciernaga extends Vek {
             }
         }
     }
+
     @Override
     public boolean puedeTransitar(Terreno terreno) {
         return terreno.esTransitablePorTerrestre();
     }
 
-    public void moverse(Casilla origen, Casilla destino) {
-        origen.moverUnidadHacia(destino);
-    }
 
 
 

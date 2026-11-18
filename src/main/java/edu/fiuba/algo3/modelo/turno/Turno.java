@@ -61,25 +61,33 @@ public class Turno {
     }
 
 
-    public void registrarAtaque(Vek atacante, Direccion direccion) {
-        if (!(faseActual instanceof FaseVek)) {
-            throw new IllegalStateException("Solo se anuncian ataques en la Fase Vek");
-        }
-        ataquesAnunciados.add(new AtaqueAnunciado(atacante, direccion));
-    }
-
     public int cantidadDeAtaquesAnunciados() {
         return ataquesAnunciados.size();
     }
 
+    public void registrarAtaque(AtaqueAnunciado ataque) {
+        if (!(faseActual instanceof FaseVek)) {
+            throw new IllegalStateException("No se puede anunciar ataques fuera de la Fase Vek");
+        }
+        ataquesAnunciados.add(ataque);
+    }
 
     public List<Vek> ejecutarResolucion() {
+        if (!(faseActual instanceof FaseResolucion)) {
+            throw new IllegalStateException("Solo se ejecutan ataques en la Fase Resolución");
+        }
         List<Vek> ejecutados = new ArrayList<>();
         for (AtaqueAnunciado ataque : ataquesAnunciados) {
-            ejecutados.add(ataque.getAtacante());
+            Vek vek = ataque.getAtacante();
+            if (vek.getVidaActual() > 0) {
+                ataque.ejecutar();
+                ejecutados.add(vek);
+            }
         }
         return ejecutados;
     }
+
+
 
 
 }

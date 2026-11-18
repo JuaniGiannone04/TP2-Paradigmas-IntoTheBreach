@@ -253,9 +253,15 @@ public class TurnoTest {
     @Test
     public void test17VekAnunciaSuAtaqueEnLaFaseVek() {
         Turno turno = new Turno();
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
         Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
 
-        turno.registrarAtaque(vek, Direccion.ESTE);
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
 
         assertEquals(1, turno.cantidadDeAtaquesAnunciados());
     }
@@ -264,9 +270,16 @@ public class TurnoTest {
     public void test18NoSePuedeAnunciarAtaqueFueraDeLaFaseVek() {
         Turno turno = new Turno();
         turno.avanzarFase();
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
         Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+        AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
 
-        assertThrows(IllegalStateException.class, () -> turno.registrarAtaque(vek, Direccion.ESTE));
+        assertThrows(IllegalStateException.class, () -> turno.registrarAtaque(ataque));
     }
 
     @Test
@@ -306,16 +319,53 @@ public class TurnoTest {
     @Test
     public void test21FaseResolucionEjecutaLosAtaquesEnElOrdenAnunciado() {
         Turno turno = new Turno();
+        Casilla casillaA = new Casilla(new Suelo());
+        Casilla mechA = new Casilla(new Suelo());
+        casillaA.conectarVecina(Direccion.ESTE, mechA);
+        mechA.conectarVecina(Direccion.OESTE, casillaA);
         Vek primero = new Saltador();
+        casillaA.colocarUnidad(primero);
+        mechA.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        Casilla casillaB = new Casilla(new Suelo());
+        Casilla mechB = new Casilla(new Suelo());
+        casillaB.conectarVecina(Direccion.OESTE, mechB);
+        mechB.conectarVecina(Direccion.ESTE, casillaB);
         Vek segundo = new Luciernaga();
-        turno.registrarAtaque(primero, Direccion.ESTE);
-        turno.registrarAtaque(segundo, Direccion.OESTE);
+        casillaB.colocarUnidad(segundo);
+        mechB.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        turno.registrarAtaque(primero.anunciaAtaque(casillaA));
+        turno.registrarAtaque(segundo.anunciaAtaque(casillaB));
         turno.avanzarFase();
         turno.avanzarFase();
 
         List<Vek> ejecutados = turno.ejecutarResolucion();
 
         assertEquals(List.of(primero, segundo), ejecutados);
+    }
+
+    @Test
+    public void test22FaseResolucionEjecutaElAtaqueAnunciadoYHaceDanio() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        Mech mech = new Mech(new Punio(), 3);
+        mechCasilla.colocarUnidad(mech);
+        int vidaInicialMech = mech.getVidaActual();
+
+        Turno turno = new Turno();
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        turno.ejecutarResolucion();
+
+        assertEquals(vidaInicialMech - 2, mech.getVidaActual());
     }
 
 

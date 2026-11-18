@@ -21,7 +21,5 @@ public class Avispon extends Vek {
         }
     }
 
-    public void moverse(Casilla origen, Casilla destino) {
-        origen.moverUnidadHacia(destino);
-    }
+
 }

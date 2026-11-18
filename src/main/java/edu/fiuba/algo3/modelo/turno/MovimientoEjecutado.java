@@ -26,4 +26,5 @@ public class MovimientoEjecutado {
         destino.moverUnidadHacia(origen);
         mech.restaurarEstadoSalud(estadoAnterior);
     }
+
 }

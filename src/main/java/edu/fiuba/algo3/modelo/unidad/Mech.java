@@ -14,7 +14,8 @@ public class Mech implements Unidad {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.estadoSalud = new Sano();
-        this.estado = EstadoAccion.DISPONIBLE;    }
+        this.estado = EstadoAccion.DISPONIBLE;
+    }
 
     @Override
     public void recibirDanio(int danio) {
@@ -44,7 +45,7 @@ public class Mech implements Unidad {
 
     @Override
     public boolean estaContaminado() {
-        return false;
+        return this.estadoSalud instanceof Contaminado;
     }
 
     public void atacar(Celda origen, Celda destino) {
