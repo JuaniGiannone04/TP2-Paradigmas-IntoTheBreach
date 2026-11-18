@@ -139,5 +139,19 @@ public void test01EmpujarUnidadContraOtraUnidadNoLaMueveYAplicaDanioDeColisionAA
 
         assertEquals(1, vekTerrestre.getVidaActual());
     }
+    @Test
+    public void test09UnidadAereaQueTerminaSobreAcidoNoQuedaContaminada() {
+        Casilla casillaOrigen = new Casilla(new Suelo());
+        Casilla casillaAcido = new Casilla(new Acido());
+        casillaOrigen.conectarVecina(Direccion.ESTE, casillaAcido);
+        casillaAcido.conectarVecina(Direccion.OESTE,casillaOrigen );
+
+        Unidad vekTerrestre = new Avispon();
+        casillaAcido.colocarUnidad(vekTerrestre);
+        vekTerrestre.recibirDanio(1);
+
+        assertEquals(1, vekTerrestre.getVidaActual());
+    }
+
 
 }

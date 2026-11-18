@@ -8,7 +8,7 @@ import java.util.Map;
 public class Casilla implements Celda {
     private Terreno terreno;
     private Unidad unidad;
-    private final Map<Direccion, Celda> vecinas;
+    private final  Map<Direccion, Celda> vecinas;
 
     public Casilla(Terreno terrenoInicial) {
         this.terreno = terrenoInicial;
