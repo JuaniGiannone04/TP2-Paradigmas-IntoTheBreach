@@ -1,7 +1,8 @@
-/*package edu.fiuba.algo3.entrega_1;
+package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Artilleria;
+import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
@@ -19,23 +20,35 @@ public class ArtilleriaTest {
     public void test01ArtilleriaLanzaProyectilEnArcoConPasosRestantes() {
         Celda origenMock = mock(Celda.class);
         Celda vecinaMock = mock(Celda.class);
-        when(origenMock.vecinaAl(Direccion.NORTE)).thenReturn(vecinaMock);
+
+        when(origenMock.direccionHacia(vecinaMock))
+                .thenReturn(Direccion.NORTE);
+
+        when(origenMock.vecinaAl(Direccion.NORTE))
+                .thenReturn(vecinaMock);
 
         Arma artilleria = new Artilleria();
-        artilleria.atacar(origenMock, Direccion.NORTE, 3);
 
-        verify(vecinaMock, times(1)).recibirProyectilEnArco(Direccion.NORTE, 2, 1);
+        artilleria.atacar(origenMock, vecinaMock);
+
+        verify(vecinaMock, times(1))
+                .recibirProyectilEnArco(vecinaMock, Direccion.NORTE, 1);
     }
 
     @Test
     public void test02ArtilleriaNoPuedeAtacarCasillasAdyacentes() {
         Celda origenMock = mock(Celda.class);
+        Celda destinoMock = mock(Celda.class);
+
         Arma artilleria = new Artilleria();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            artilleria.atacar(origenMock, Direccion.ESTE, 1);
-        });
+        when(origenMock.esAdyacenteA(destinoMock))
+                .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> artilleria.atacar(origenMock, destinoMock));
     }
+
 
     @Test
     public void test03ArtilleriaAtacaPorEncimaDeObstaculosSinAfectarlos() {
@@ -53,14 +66,16 @@ public class ArtilleriaTest {
         casillaObstaculo.conectarVecina(Direccion.ESTE, objetivo);
 
         Unidad unidadObjetivoMock = mock(Unidad.class);
+        when(unidadObjetivoMock.getVidaActual()).thenReturn(3);
         objetivo.colocarUnidad(unidadObjetivoMock);
 
         Mech mech = new Mech(new Artilleria(), 2);
-        mech.atacar(origen, Direccion.ESTE, 2);
+        mech.atacar(origen, objetivo);
 
         verify(obstaculoMock, never()).recibirDanio(anyInt());
         verify(unidadObjetivoMock, times(1)).recibirDanio(1);
     }
+
 
     @Test
     public void test04ArtilleriaDaniaCentroYEmpujaHaciaAfueraLasCuatroAdyacentes() {
@@ -96,10 +111,15 @@ public class ArtilleriaTest {
         oeste.conectarVecina(Direccion.OESTE, oesteEmpuje);
 
         Unidad unidadCentroMock = mock(Unidad.class);
+        when(unidadCentroMock.getVidaActual()).thenReturn(3);
         Unidad unidadNorteMock = mock(Unidad.class);
+        when(unidadNorteMock.getVidaActual()).thenReturn(3);
         Unidad unidadSurMock = mock(Unidad.class);
+        when(unidadSurMock.getVidaActual()).thenReturn(3);
         Unidad unidadEsteMock = mock(Unidad.class);
+        when(unidadEsteMock.getVidaActual()).thenReturn(3);
         Unidad unidadOesteMock = mock(Unidad.class);
+        when(unidadOesteMock.getVidaActual()).thenReturn(3);
 
         centro.colocarUnidad(unidadCentroMock);
         norte.colocarUnidad(unidadNorteMock);
@@ -108,7 +128,7 @@ public class ArtilleriaTest {
         oeste.colocarUnidad(unidadOesteMock);
 
         Mech mech = new Mech(new Artilleria(), 2);
-        mech.atacar(origen, Direccion.ESTE, 2);
+        mech.atacar(origen, centro);
 
         verify(unidadCentroMock, times(1)).recibirDanio(1);
         assertSame(unidadCentroMock, centro.getUnidad());
@@ -125,4 +145,24 @@ public class ArtilleriaTest {
         verify(unidadOesteMock, never()).recibirDanio(anyInt());
         assertSame(unidadOesteMock, oesteEmpuje.getUnidad());
     }
-}*/
+
+
+    @Test
+    public void test05ArtilleriaAtacaCasillaDestinoSeleccionada() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
+
+        Unidad objetivoMock = mock(Unidad.class);
+        when(objetivoMock.getVidaActual()).thenReturn(3);
+        destino.colocarUnidad(objetivoMock);
+
+        Mech mech = new Mech(new Artilleria(), 2);
+        mech.atacar(origen, destino);
+
+        verify(objetivoMock, times(1)).recibirDanio(1);
+    }
+}

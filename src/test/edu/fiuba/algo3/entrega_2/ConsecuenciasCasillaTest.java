@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConcecuenciasCasillaTest{
+public class ConsecuenciasCasillaTest {
 @Test
 public void test01EmpujarUnidadContraOtraUnidadNoLaMueveYAplicaDanioDeColisionAAmbas() {
     Casilla casillaOrigen = new Casilla(new Suelo());
