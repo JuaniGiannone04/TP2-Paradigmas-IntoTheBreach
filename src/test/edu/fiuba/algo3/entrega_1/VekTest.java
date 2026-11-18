@@ -1,15 +1,20 @@
 package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.RedElectrica;
+import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
+import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
+import edu.fiuba.algo3.modelo.turno.FaseVek;
+import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 
 public class VekTest {
@@ -188,7 +193,7 @@ public class VekTest {
         Vek vek = new Saltador();
         vekCasilla.colocarUnidad(vek);
 
-        vek.moverHaciaEdificio(vekCasilla);
+        new FaseVek().moverHaciaEdificio(vekCasilla);
 
         assertSame(vek, intermedia.getUnidad());
     }
@@ -206,8 +211,116 @@ public class VekTest {
         Vek vek = new Saltador();
         vekCasilla.colocarUnidad(vek);
 
-        vek.moverHaciaEdificio(vekCasilla);
+        new FaseVek().moverHaciaEdificio(vekCasilla);
 
         assertSame(vek, intermedia.getUnidad());
+    }
+
+    @Test
+    public void test15VekAnunciaAtaqueHaciaElMechAlNorte() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
+
+        assertEquals(Direccion.NORTE, ataque.getDireccion());
+    }
+
+    @Test
+    public void test16VekAnunciaAtaqueHaciaElMechAlSur() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.SUR, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.NORTE, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
+
+        assertEquals(Direccion.SUR, ataque.getDireccion());
+    }
+
+    @Test
+    public void test17FaseResolucionHaceDanioAtacandoAlNorte() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        Mech mech = new Mech(new Punio(), 3);
+        mechCasilla.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.ejecutarResolucion();
+
+        assertEquals(1, mech.getVidaActual());
+    }
+
+    @Test
+    public void test18LuciernagaAtacaAlNorteYContaminaAlObjetivo() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Luciernaga();
+        vekCasilla.colocarUnidad(vek);
+        Mech mech = new Mech(new Punio(), 3);
+        mechCasilla.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.ejecutarResolucion();
+
+        assertEquals(2, mech.getVidaActual());
+        assertTrue(mech.estaContaminado());
+    }
+
+    @Test
+    public void test19MoverHaciaEdificioRechazaUnaCasillaSinVek() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new FaseVek().moverHaciaEdificio(origen));
+    }
+
+    @Test
+    public void test20VekNoSeMueveASiLaCasillaDestinoEstaOcupada() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        Vek vek = new Saltador();
+        origen.colocarUnidad(vek);
+        intermedia.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        assertThrows(IllegalStateException.class,
+                () -> new FaseVek().moverHaciaEdificio(origen));
+        assertSame(vek, origen.getUnidad());
     }
 }

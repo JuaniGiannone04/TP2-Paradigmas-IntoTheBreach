@@ -69,17 +69,5 @@ public class Vek implements Unidad {
         origen.moverUnidadHacia(destino);
     }
 
-    public void moverHaciaEdificio(Casilla origen) {
-        for (Direccion direccion : Direccion.values()) {
-            Celda actual = origen.vecinaAl(direccion);
-            while (actual instanceof Casilla) {
-                Casilla casilla = (Casilla) actual;
-                if (casilla.getTerreno() instanceof Edificio) {
-                    origen.moverUnidadHacia((Casilla) origen.vecinaAl(direccion));
-                    return;
-                }
-                actual = casilla.vecinaAl(direccion);
-            }
-        }
-    }
+
 }
