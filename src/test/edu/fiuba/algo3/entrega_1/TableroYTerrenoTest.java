@@ -29,7 +29,9 @@ public class TableroYTerrenoTest {
     @Test
     public void test04NoSePuedeColocarUnaUnidadEnUnaCasillaYaOcupada() {
         Unidad unidad1 = mock(Unidad.class);
+        when(unidad1.getVidaActual()).thenReturn(3);
         Unidad unidad2 = mock(Unidad.class);
+        when(unidad2.getVidaActual()).thenReturn(3);
         Casilla casilla = new Casilla(new Suelo());
 
         casilla.colocarUnidad(unidad1);
@@ -42,6 +44,7 @@ public class TableroYTerrenoTest {
     @Test
     public void test05MoverUnidadEntreCasillasActualizaOrigenYDestino() {
         Unidad unidadMock = mock(Unidad.class);
+        when(unidadMock.getVidaActual()).thenReturn(3);
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
 
@@ -60,6 +63,7 @@ public class TableroYTerrenoTest {
 
         Casilla esquinaNoroeste = (Casilla) tablero.getCasillaInicial();
         Unidad unidadMock = mock(Unidad.class);
+        when(unidadMock.getVidaActual()).thenReturn(3);
         esquinaNoroeste.colocarUnidad(unidadMock);
 
         esquinaNoroeste.empujarUnidadInterna(Direccion.NORTE);
