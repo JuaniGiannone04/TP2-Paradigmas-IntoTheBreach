@@ -42,6 +42,11 @@ public class Mech implements Unidad {
         return this.vidaActual;
     }
 
+    @Override
+    public boolean estaContaminado() {
+        return false;
+    }
+
     public void atacar(Celda origen, Celda destino) {
         if (this.estado == EstadoAccion.PACIFICO) {
             throw new IllegalStateException("El Mech no puede atacar mientras esta en el agua");
@@ -59,8 +64,6 @@ public class Mech implements Unidad {
         this.estadoSalud = estado;
     }
 
-    public boolean estaContaminado() {
-        return this.estadoSalud instanceof Contaminado;
-    }
+
 
 }

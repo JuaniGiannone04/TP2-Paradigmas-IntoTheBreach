@@ -8,6 +8,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Vek implements Unidad {
     private int vidaActual;
+    boolean estaContaminado = false;
 
 
     protected Vek(int vidaInicial) {
@@ -21,12 +22,9 @@ public class Vek implements Unidad {
 
     @Override
     public void aplicarEfectoAgua() {
-
     }
-
     @Override
     public void aplicarEfectoAcido() {
-
     }
 
     @Override
@@ -36,12 +34,17 @@ public class Vek implements Unidad {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
-
     }
+
 
     @Override
     public int getVidaActual() {
         return this.vidaActual;
+    }
+
+    @Override
+    public boolean estaContaminado() {
+        return false;
     }
 
 
