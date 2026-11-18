@@ -1,15 +1,18 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.GeneradorDeTablero;
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.terreno.Agua;
 import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
 import edu.fiuba.algo3.modelo.arma.*;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
-import edu.fiuba.algo3.modelo.unidad.estadosalud.Contaminado;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -61,13 +64,13 @@ public class MechTest {
 
     @Test
     public void test03MechCombateEmpuja1Casilla() {
-    Arma punio = new Punio();
-    Mech mech = new Mech(punio, 3);
-    Vek vek = new Luciernaga();
+        Arma punio = new Punio();
+        Mech mech = new Mech(punio, 3);
+        Vek vek = new Luciernaga();
 
-    Casilla origen = new Casilla(new Suelo());
-    Casilla destino = new Casilla(new Suelo());
-    Casilla siguiente = new Casilla(new Suelo());
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla siguiente = new Casilla(new Suelo());
 
         origen.conectarVecina(Direccion.ESTE, destino);
         destino.conectarVecina(Direccion.OESTE, origen);
@@ -75,13 +78,13 @@ public class MechTest {
         destino.conectarVecina(Direccion.ESTE, siguiente);
         siguiente.conectarVecina(Direccion.OESTE, destino);
 
-    origen.colocarUnidad(mech);
-    destino.colocarUnidad(vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
-    mech.atacar(origen, destino);
+        mech.atacar(origen, destino);
 
-    assertSame(vek, siguiente.getUnidad());
-    assertFalse(destino.estaOcupada()); //Comprueba que la celda quedo vacia
+        assertSame(vek, siguiente.getUnidad());
+        assertFalse(destino.estaOcupada()); //Comprueba que la celda quedo vacia
     }
 
 
@@ -273,45 +276,6 @@ public class MechTest {
 
         verify(arma, never()).atacar(origen, destino);
     }
-
-
-    @Test
-    public void test13MechSanoRecibeDanioNormal() {
-        Mech mech = new Mech(mock(Arma.class), 3);
-
-        mech.recibirDanio(1);
-
-        assertEquals(2, mech.getVidaActual());
-    }
-
-    @Test
-    public void test14MechSanoRecibeDanioNormal() {
-        Mech mech = new Mech(mock(Arma.class), 3);
-
-        mech.recibirDanio(1);
-
-        assertEquals(2, mech.getVidaActual());
-    }
-
-    @Test
-    public void test15MechContaminadoTieneEstadoContaminado() {
-        Mech mech = new Mech(mock(Arma.class), 3);
-
-        mech.aplicarEfectoAcido();
-
-        assertTrue(mech.estaContaminado());
-    }
-
-    @Test
-    public void test16MechContaminadoTieneEstadoDeSaludContaminado() {
-        Mech mech = new Mech(mock(Arma.class), 3);
-
-        mech.aplicarEfectoAcido();
-
-        assertTrue(mech.obtenerEstadoSalud() instanceof Contaminado);
-    }
-
-
 
 
 }

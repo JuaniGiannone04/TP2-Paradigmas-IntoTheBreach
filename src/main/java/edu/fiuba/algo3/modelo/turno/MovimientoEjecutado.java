@@ -1,8 +1,8 @@
 package edu.fiuba.algo3.modelo.turno;
 
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.unidad.EstadoSalud;
 import edu.fiuba.algo3.modelo.unidad.Mech;
-import edu.fiuba.algo3.modelo.unidad.estadosalud.EstadoSalud;
 
 public class MovimientoEjecutado {
 

@@ -2,12 +2,19 @@ package edu.fiuba.algo3.modelo.turno;
 
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.Mech;
+import edu.fiuba.algo3.modelo.unidad.Vek;
+
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class Turno {
 
     private int numero = 1;
     private Fase faseActual;
+    private final List<AtaqueAnunciado> ataquesAnunciados = new ArrayList<>();
 
     public Turno() {
         this.faseActual = new FaseVek();
@@ -52,4 +59,27 @@ public class Turno {
         }
         return (FaseJugador) faseActual;
     }
+
+
+    public void registrarAtaque(Vek atacante, Direccion direccion) {
+        if (!(faseActual instanceof FaseVek)) {
+            throw new IllegalStateException("Solo se anuncian ataques en la Fase Vek");
+        }
+        ataquesAnunciados.add(new AtaqueAnunciado(atacante, direccion));
+    }
+
+    public int cantidadDeAtaquesAnunciados() {
+        return ataquesAnunciados.size();
+    }
+
+
+    public List<Vek> ejecutarResolucion() {
+        List<Vek> ejecutados = new ArrayList<>();
+        for (AtaqueAnunciado ataque : ataquesAnunciados) {
+            ejecutados.add(ataque.getAtacante());
+        }
+        return ejecutados;
+    }
+
+
 }
