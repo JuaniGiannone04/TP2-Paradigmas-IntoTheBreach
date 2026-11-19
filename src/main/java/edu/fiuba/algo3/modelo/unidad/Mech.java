@@ -15,7 +15,8 @@ public class Mech implements Unidad {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.estadoSalud = new Sano();
-        this.estado = EstadoAccion.DISPONIBLE;    }
+        this.estado = EstadoAccion.DISPONIBLE;
+    }
 
     @Override
     public void recibirDanio(int danio) {
@@ -43,11 +44,12 @@ public class Mech implements Unidad {
         return this.vidaActual;
     }
 
-    public void atacar(Celda origen, Celda destino) {
-        if (this.estado == EstadoAccion.ATACO) {
-            throw new IllegalStateException("El Mech ya ataco");
-        }
+    @Override
+    public boolean estaContaminado() {
+        return this.estadoSalud instanceof Contaminado;
+    }
 
+    public void atacar(Celda origen, Celda destino) {
         if (this.estado == EstadoAccion.PACIFICO) {
             throw new IllegalStateException("El Mech no puede atacar mientras esta en el agua");
         }
@@ -55,5 +57,15 @@ public class Mech implements Unidad {
         this.arma.atacar(origen, destino);
         this.estado = EstadoAccion.ATACO;
     }
+
+    public EstadoSalud obtenerEstadoSalud() {
+        return this.estadoSalud;
+    }
+
+    public void restaurarEstadoSalud(EstadoSalud estado) {
+        this.estadoSalud = estado;
+    }
+
+
 
 }

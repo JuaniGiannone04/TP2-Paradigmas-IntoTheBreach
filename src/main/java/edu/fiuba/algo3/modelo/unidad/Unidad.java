@@ -10,5 +10,5 @@ public interface Unidad {
     boolean puedeTransitar(Terreno terreno);
     void atacar(Celda origen, Celda destino);
     int getVidaActual();
-
+    boolean estaContaminado();
 }

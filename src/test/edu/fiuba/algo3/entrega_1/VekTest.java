@@ -1,58 +1,341 @@
-import edu.fiuba.algo3.modelo.*;
+package edu.fiuba.algo3.entrega_1;
+
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
-import edu.fiuba.algo3.modelo.terreno.Acido;
-import edu.fiuba.algo3.modelo.terreno.Agua;
+import edu.fiuba.algo3.modelo.arma.Punio;
+import edu.fiuba.algo3.modelo.terreno.Edificio;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
+import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
+import edu.fiuba.algo3.modelo.turno.FaseVek;
+import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.unidad.Mech;
-import edu.fiuba.algo3.modelo.unidad.Saltador;
-import edu.fiuba.algo3.modelo.unidad.Unidad;
-import edu.fiuba.algo3.modelo.unidad.Vek;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.unidad.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import edu.fiuba.algo3.modelo.*;
+import static org.mockito.Mockito.mock;
+
 
 public class VekTest {
 
-  /*  @Test
-    public void test01VekSaltadorGolpeaCasillaAdyacente(){
-        Mech mech = new Mech(mock(Arma.class), 3);
-        Vek vek = new Saltador();
-        Casilla casillaOrigen = new Casilla(new Suelo());
-        Casilla casillaDestino =  new Casilla(new Suelo());
+    @Test
+    public void test01SaltadorAtacaCasillaAdyacenteYHaceDosDeDanio() {
+        Saltador saltador = new Saltador();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        casillaOrigen.colocarUnidad(vek);
-        casillaDestino.colocarUnidad(mech);
+        origen.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(saltador);
+
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        int vidaInicialObjetivo = objetivo.getVidaActual();
+
+        saltador.atacar(origen, destino);
+
+        assertEquals(vidaInicialObjetivo - 2, objetivo.getVidaActual());
     }
 
-    */
+    @Test
+    public void test02LuciernagaHaceUnDanioALaUnidadDeDestino() {
+        Luciernaga luciernaga = new Luciernaga();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
+        origen.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(luciernaga);
 
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
 
-//    @test
-//    public void test02VekLuciernagaHace1DeDañoALaPrimeraUnidadUObstaculo
-//
-//    @test
-//    public void test03VekLuciernagaDejaContaminadoASuObjetivo
-//
-//    @test
-//    public void test04VekAvisponHace1DeDaño
-//
-//    @test
-//    public void test05VekAvisponPuedeVolarSobreObstaculosYUnidades
-//
-//    @test
-//    public void test06VekAvisponNoLeAfectaAgua
-//
-//    @test
-//    public void test07VekAvisponNoLeAfectaAcido
-//
-//    @test
-//    public void test08VekSaltadorEsTerrestre
-//
-//    @test
-//    public void test09VekLuciernagaEsTerrestre
+        int vidaInicialObjetivo = objetivo.getVidaActual();
 
+        luciernaga.atacar(origen, destino);
 
+        assertEquals(vidaInicialObjetivo - 1, objetivo.getVidaActual());
+    }
+
+    @Test
+    public void test03LuciernagaContaminaAlObjetivoQueImpacta() {
+        Luciernaga luciernaga = new Luciernaga();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(luciernaga);
+
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        luciernaga.atacar(origen, destino);
+
+        assertTrue(objetivo.estaContaminado());
+    }
+
+    @Test
+    public void test04AvisponHaceUnDanioAlObjetivoAdyacente() {
+        Avispon avispon = new Avispon();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(avispon);
+
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        int vidaInicialObjetivo = objetivo.getVidaActual();
+
+        avispon.atacar(origen, destino);
+
+        assertEquals(vidaInicialObjetivo - 1, objetivo.getVidaActual());
+    }
+
+    @Test
+    public void test05AvisponPuedeVolarSobreObstaculosYUnidades() {
+        Avispon avispon = new Avispon();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Montana());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
+
+        origen.colocarUnidad(avispon);
+
+        avispon.moverse(origen, destino);
+
+        assertSame(avispon, destino.getUnidad());
+        assertFalse(origen.estaOcupada());
+    }
+
+    @Test
+    public void test06AvisponNoLeAfectaAgua() {
+        Avispon avispon = new Avispon();
+        int vidaInicial = avispon.getVidaActual();
+        avispon.aplicarEfectoAgua();
+        assertEquals(vidaInicial, avispon.getVidaActual());
+    }
+
+    @Test
+    public void test07AvisponNoLeAfectaAcido() {
+        Avispon avispon = new Avispon();
+        avispon.aplicarEfectoAcido();
+        assertFalse(avispon.estaContaminado());
+    }
+
+    @Test
+    public void test08SaltadorEsTerrestre() {
+        Saltador saltador = new Saltador();
+
+        assertTrue(saltador.puedeTransitar(new Suelo()));
+        assertFalse(saltador.puedeTransitar(new Montana()));
+    }
+
+    @Test
+    public void test09LuciernagaEsTerrestre() {
+        Luciernaga luciernaga = new Luciernaga();
+
+        assertTrue(luciernaga.puedeTransitar(new Suelo()));
+        assertFalse(luciernaga.puedeTransitar(new Montana()));
+    }
+
+    @Test
+    public void test10LuciernagaNoAtacaFueraDeLinea() {
+        Luciernaga luciernaga = new Luciernaga();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla otra = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, otra);
+        origen.colocarUnidad(luciernaga);
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        assertThrows(IllegalArgumentException.class, () -> luciernaga.atacar(origen, destino));
+    }
+
+    @Test
+    public void test11AvisponNoPuedeTerminarSobreUnaCasillaOcupada() {
+        Avispon avispon = new Avispon();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        origen.colocarUnidad(avispon);
+        destino.colocarUnidad(new Mech(new Punio(), 3));
+
+        assertThrows(IllegalStateException.class, () -> avispon.moverse(origen, destino));
+    }
+
+    @Test
+    public void test12VekSinObjetivoAdyacenteNoAnunciaAtaque() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla vacia = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.ESTE, vacia);
+        vacia.conectarVecina(Direccion.OESTE, vekCasilla);
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+
+        assertThrows(IllegalStateException.class, () -> vek.anunciaAtaque(vekCasilla));
+    }
+
+    @Test
+    public void test13VekSinObjetivoSeMueveHaciaElEdificioMasCercano() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        vekCasilla.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, vekCasilla);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+
+        new FaseVek().moverHaciaEdificio(vekCasilla);
+
+        assertSame(vek, intermedia.getUnidad());
+    }
+
+    @Test
+    public void test14VekSinObjetivoSeMueveHaciaEdificioAlOeste() {
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla vekCasilla = new Casilla(new Suelo());
+        edificio.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, edificio);
+        intermedia.conectarVecina(Direccion.ESTE, vekCasilla);
+        vekCasilla.conectarVecina(Direccion.OESTE, intermedia);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+
+        new FaseVek().moverHaciaEdificio(vekCasilla);
+
+        assertSame(vek, intermedia.getUnidad());
+    }
+
+    @Test
+    public void test15VekAnunciaAtaqueHaciaElMechAlNorte() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
+
+        assertEquals(Direccion.NORTE, ataque.getDireccion());
+    }
+
+    @Test
+    public void test16VekAnunciaAtaqueHaciaElMechAlSur() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.SUR, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.NORTE, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
+
+        assertEquals(Direccion.SUR, ataque.getDireccion());
+    }
+
+    @Test
+    public void test17FaseResolucionHaceDanioAtacandoAlNorte() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Saltador();
+        vekCasilla.colocarUnidad(vek);
+        Mech mech = new Mech(new Punio(), 3);
+        mechCasilla.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.ejecutarResolucion();
+
+        assertEquals(1, mech.getVidaActual());
+    }
+
+    @Test
+    public void test18LuciernagaAtacaAlNorteYContaminaAlObjetivo() {
+        Casilla vekCasilla = new Casilla(new Suelo());
+        Casilla mechCasilla = new Casilla(new Suelo());
+        vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
+        mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
+
+        Vek vek = new Luciernaga();
+        vekCasilla.colocarUnidad(vek);
+        Mech mech = new Mech(new Punio(), 3);
+        mechCasilla.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.ejecutarResolucion();
+
+        assertEquals(2, mech.getVidaActual());
+        assertTrue(mech.estaContaminado());
+    }
+
+    @Test
+    public void test19MoverHaciaEdificioRechazaUnaCasillaSinVek() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new FaseVek().moverHaciaEdificio(origen));
+    }
+
+    @Test
+    public void test20VekNoSeMueveASiLaCasillaDestinoEstaOcupada() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        Vek vek = new Saltador();
+        origen.colocarUnidad(vek);
+        intermedia.colocarUnidad(new Mech(mock(Arma.class), 3));
+
+        assertThrows(IllegalStateException.class,
+                () -> new FaseVek().moverHaciaEdificio(origen));
+        assertSame(vek, origen.getUnidad());
+    }
+
+    @Test
+    public void test21SaltadorNoAtacaUnaCasillaNoAdyacente() {
+        Saltador saltador = new Saltador();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(saltador);
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        assertThrows(IllegalArgumentException.class, () -> saltador.atacar(origen, destino));
+    }
 }

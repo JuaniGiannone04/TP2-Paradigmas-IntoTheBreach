@@ -1,10 +1,15 @@
 package edu.fiuba.algo3.modelo.unidad;
 
+import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
+import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
-public class Vek implements Unidad {
+public abstract class Vek implements Unidad {
     private int vidaActual;
+    private Casilla casillaActual;
     private EstadoSalud estadoSalud ;
     private EstadoAccion estado ;
 
@@ -15,6 +20,14 @@ public class Vek implements Unidad {
         this.estado = EstadoAccion.DISPONIBLE;
     }
 
+    public void asignarCasilla(Casilla casilla) {
+        this.casillaActual = casilla;
+    }
+
+    public Casilla getCasillaActual() {
+        return this.casillaActual;
+    }
+
     @Override
     public void recibirDanio(int danio) {
         int danioFinal = this.estadoSalud.calcularDanioFinal(danio);
@@ -23,7 +36,6 @@ public class Vek implements Unidad {
 
     @Override
     public void aplicarEfectoAgua() {
-
     }
 
     @Override
@@ -39,12 +51,30 @@ public class Vek implements Unidad {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
-
     }
 
     @Override
     public int getVidaActual() {
         return this.vidaActual;
+    }
+
+    @Override
+    public boolean estaContaminado() {
+        return false;
+    }
+
+    public AtaqueAnunciado anunciaAtaque(Casilla origen) {
+        for (Direccion direccion : Direccion.values()) {
+            Celda vecina = origen.vecinaAl(direccion);
+            if (vecina instanceof Casilla && ((Casilla) vecina).getUnidad() instanceof Mech) {
+                return new AtaqueAnunciado(this, direccion, origen);
+            }
+        }
+        throw new IllegalStateException("El Vek no tiene un objetivo adyacente");
+    }
+
+    public void moverse(Casilla origen, Casilla destino) {
+        origen.moverUnidadHacia(destino);
     }
 
 
