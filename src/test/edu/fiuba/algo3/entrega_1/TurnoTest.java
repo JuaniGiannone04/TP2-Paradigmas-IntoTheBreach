@@ -389,5 +389,33 @@ public class TurnoTest {
         assertSame(vek, intermedia.getUnidad());
     }
 
+    @Test
+    public void test24NoSePuedeMoverUnMechDesdeLaCasillaDeOtro(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
+        Mech mechSeleccionado = new  Mech(new Punio(), 3);
+        Mech mechEnOrigen = new Mech(new Punio(), 3);
+
+        origen.colocarUnidad(mechEnOrigen);
+
+        Turno turno = new Turno();
+        turno.avanzarFase();
+
+        assertThrows(IllegalStateException.class,
+                ()-> turno.moverMech(mechSeleccionado, origen,  destino));
+
+        assertSame(mechEnOrigen, origen.getUnidad());
+        assertFalse(destino.estaOcupada());
+
+        turno.moverMech(mechEnOrigen, origen, destino);
+
+        assertSame(mechEnOrigen, destino.getUnidad());
+        assertFalse(origen.estaOcupada());
+    }
+
 
 }

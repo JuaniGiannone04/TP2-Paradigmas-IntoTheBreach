@@ -19,6 +19,9 @@ public class MovimientoEjecutado {
     }
 
     public void ejecutar() {
+        if (origen.getUnidad() != mech){
+            throw new IllegalStateException("El Mech indicado no está en la casilla de origen");
+        }
         origen.moverUnidadHacia(destino);
     }
 
