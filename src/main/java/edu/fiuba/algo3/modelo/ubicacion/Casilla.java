@@ -135,6 +135,10 @@ public class Casilla implements Celda {
         if (!this.estaOcupada()) {
             throw new IllegalStateException("No hay unidad para mover en la casilla de origen.");
         }
+        if(destino.estaOcupada()) {
+            throw new IllegalStateException("La casilla de destino esta ocuapada");
+        }
+
         destino.colocarUnidad(this.quitarUnidad());
     }
     @Override
