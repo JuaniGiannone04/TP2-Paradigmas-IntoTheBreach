@@ -87,7 +87,18 @@ public class Turno {
         return ejecutados;
     }
 
-
+    public void moverVek(Casilla origen) {
+        if (!(faseActual instanceof FaseVek)) {
+            throw new IllegalStateException("Solo se mueven los Vek en la Fase Vek");
+        }
+        Casilla destino = ((FaseVek) faseActual).destinoHaciaEdificio(origen);
+        if (destino != null) {
+            if (destino.estaOcupada()) {
+                throw new IllegalStateException("La casilla destino está ocupada");
+            }
+            origen.moverUnidadHacia(destino);
+        }
+    }
 
 
 }

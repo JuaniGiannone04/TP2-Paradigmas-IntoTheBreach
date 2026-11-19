@@ -1,8 +1,10 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Acido;
+import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
@@ -366,6 +368,25 @@ public class TurnoTest {
         turno.ejecutarResolucion();
 
         assertEquals(vidaInicialMech - 2, mech.getVidaActual());
+    }
+
+    @Test
+    public void test23TurnoMueveAlVekHaciaElEdificioEnFaseVek() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.OESTE, origen);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
+        edificio.conectarVecina(Direccion.OESTE, intermedia);
+
+        Vek vek = new Saltador();
+        origen.colocarUnidad(vek);
+        Turno turno = new Turno();
+
+        turno.moverVek(origen);
+
+        assertSame(vek, intermedia.getUnidad());
     }
 
 

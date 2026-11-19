@@ -16,6 +16,20 @@ public class FaseVek implements Fase {
 
     }
 
+    public Casilla destinoHaciaEdificio(Casilla origen) {
+        for (Direccion direccion : Direccion.values()) {
+            Celda actual = origen.vecinaAl(direccion);
+            while (actual instanceof Casilla) {
+                Casilla casilla = (Casilla) actual;
+                if (casilla.getTerreno() instanceof Edificio) {
+                    return (Casilla) origen.vecinaAl(direccion);
+                }
+                actual = casilla.vecinaAl(direccion);
+            }
+        }
+        return null;
+    }
+
     public void moverHaciaEdificio(Casilla origen) {
         Unidad unidad = origen.getUnidad();
         if (!(unidad instanceof Vek)) {
@@ -37,5 +51,7 @@ public class FaseVek implements Fase {
             }
         }
     }
+
+
 
 }

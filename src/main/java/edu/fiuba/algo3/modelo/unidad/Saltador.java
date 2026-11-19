@@ -17,11 +17,13 @@ public class Saltador extends Vek {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
+        if (!origen.esAdyacenteA(destino)) {
+            throw new IllegalArgumentException("El Saltador solo ataca casillas adyacentes");
+        }
         if (destino instanceof Casilla) {
             Casilla casillaDestino = (Casilla) destino;
             if (casillaDestino.estaOcupada()) {
-                Unidad unidadAfectada = casillaDestino.getUnidad();
-                unidadAfectada.recibirDanio(2);
+                casillaDestino.getUnidad().recibirDanio(2);
             }
         }
     }

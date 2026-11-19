@@ -7,7 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
-public class Vek implements Unidad {
+public abstract class Vek implements Unidad {
     private int vidaActual;
     private Casilla casillaActual;
 

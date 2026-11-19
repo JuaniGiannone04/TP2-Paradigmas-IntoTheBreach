@@ -323,4 +323,19 @@ public class VekTest {
                 () -> new FaseVek().moverHaciaEdificio(origen));
         assertSame(vek, origen.getUnidad());
     }
+
+    @Test
+    public void test21SaltadorNoAtacaUnaCasillaNoAdyacente() {
+        Saltador saltador = new Saltador();
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, destino);
+        origen.colocarUnidad(saltador);
+        Mech objetivo = new Mech(new Punio(), 3);
+        destino.colocarUnidad(objetivo);
+
+        assertThrows(IllegalArgumentException.class, () -> saltador.atacar(origen, destino));
+    }
 }
