@@ -4,6 +4,7 @@ import edu.fiuba.algo3.modelo.GeneradorDeTablero;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Acido;
 import edu.fiuba.algo3.modelo.terreno.Agua;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.*;
 import edu.fiuba.algo3.modelo.unidad.Mech;
@@ -47,6 +48,7 @@ public class TableroYTerrenoTest {
     public void test05MoverUnidadEntreCasillasActualizaOrigenYDestino() {
         Unidad unidadMock = mock(Unidad.class);
         when(unidadMock.getVidaActual()).thenReturn(3);
+        when(unidadMock.puedeTransitar(any())).thenReturn(true);
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
 
@@ -90,5 +92,21 @@ public class TableroYTerrenoTest {
 
         assertSame(mechOrigen, origen.getUnidad());
         assertSame(mechDestino, destino.getUnidad());
+    }
+
+    @Test
+    public void test08NoSePuedeMoverUnMechHaciaUnaMontana() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Montana());
+
+        Mech mech = new Mech(new Punio(), 3);
+
+        origen.colocarUnidad(mech);
+
+        assertThrows(IllegalStateException.class,
+                () -> origen.moverUnidadHacia(destino));
+
+        assertSame(mech, origen.getUnidad());
+        assertFalse(destino.estaOcupada());
     }
 }
