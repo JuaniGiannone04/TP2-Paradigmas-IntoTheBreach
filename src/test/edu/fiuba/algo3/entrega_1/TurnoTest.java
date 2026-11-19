@@ -417,5 +417,34 @@ public class TurnoTest {
         assertFalse(origen.estaOcupada());
     }
 
+    @Test
+    public void test25RechazarDeshacerConservaElMovimientoRegistrado(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
+        Mech mech = new Mech(new Punio(), 3);
+
+        origen.colocarUnidad(mech);
+
+        Turno turno = new Turno();
+        turno.avanzarFase();
+
+        turno.moverMech(mech,  origen, destino);
+        turno.deshacerMovimiento(mech);
+        turno.moverMech(mech,  origen, destino);
+
+        assertThrows(IllegalStateException.class, ()-> turno.deshacerMovimiento(mech));
+        assertSame(mech, destino.getUnidad());
+        assertFalse(origen.estaOcupada());
+
+        assertThrows(IllegalStateException.class, ()-> turno.moverMech(mech, destino, origen));
+        assertSame(mech, destino.getUnidad());
+        assertFalse(origen.estaOcupada());
+
+    }
+
 
 }
