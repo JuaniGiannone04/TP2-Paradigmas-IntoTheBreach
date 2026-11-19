@@ -17,7 +17,13 @@ Trabajo Práctico N.º 2 de la materia **Paradigmas de Programación** de la Fac
 
 ## Descripción del proyecto
 
-...
+---
+
+## Link Informe
+
+[...](https://www.overleaf.com/project/6af7931375d38443bd2ed66a)
+
+---
 
 ### Objetivo del juego
 

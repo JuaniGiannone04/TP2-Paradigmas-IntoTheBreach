@@ -3,10 +3,7 @@ package edu.fiuba.algo3.entrega_2;
 import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Canion;
-import edu.fiuba.algo3.modelo.terreno.Agua;
-import edu.fiuba.algo3.modelo.terreno.Edificio;
-import edu.fiuba.algo3.modelo.terreno.Montana;
-import edu.fiuba.algo3.modelo.terreno.Suelo;
+import edu.fiuba.algo3.modelo.terreno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.*;
@@ -14,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConcecuenciasCasillaTest{
+public class ConsecuenciasCasillaTest {
 @Test
 public void test01EmpujarUnidadContraOtraUnidadNoLaMueveYAplicaDanioDeColisionAAmbas() {
     Casilla casillaOrigen = new Casilla(new Suelo());
@@ -126,10 +123,21 @@ public void test01EmpujarUnidadContraOtraUnidadNoLaMueveYAplicaDanioDeColisionAA
         Unidad vekTerrestre = new Avispon();
         casillaAgua.colocarUnidad(mech);
         casillaSuelo.colocarUnidad(vekTerrestre);
-        mech.atacar(casillaAgua,casillaSuelo);
-        assertEquals(2, vekTerrestre.getVidaActual());
+        assertThrows(IllegalStateException .class, () -> mech.atacar(casillaAgua, casillaSuelo));
     }
 
+    @Test
+    public void test08UnidadTerrestreQueTerminaSobreAcidoQuedaContaminadaYRecibeDobleDeDanio() {
+        Casilla casillaOrigen = new Casilla(new Suelo());
+        Casilla casillaAcido = new Casilla(new Acido());
+        casillaOrigen.conectarVecina(Direccion.ESTE, casillaAcido);
+        casillaAcido.conectarVecina(Direccion.OESTE,casillaOrigen );
 
+        Unidad vekTerrestre = new Luciernaga();
+        casillaAcido.colocarUnidad(vekTerrestre);
+        vekTerrestre.recibirDanio(1);
+
+        assertEquals(1, vekTerrestre.getVidaActual());
+    }
 
 }
