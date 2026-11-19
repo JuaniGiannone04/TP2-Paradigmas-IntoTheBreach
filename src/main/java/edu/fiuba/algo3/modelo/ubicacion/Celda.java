@@ -12,4 +12,5 @@ public interface Celda {
     void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio);
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
+    void recibirProyectilContaminante(Direccion direccion, int danio);
 }

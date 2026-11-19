@@ -137,6 +137,17 @@ public class Casilla implements Celda {
         }
         destino.colocarUnidad(this.quitarUnidad());
     }
+    @Override
+    public void recibirProyectilContaminante(Direccion direccion, int danio) {
+        if (this.detieneProyectil()) {
+            this.recibirDanio(danio);
+            if (this.estaOcupada()) {
+                this.unidad.aplicarEfectoAcido();
+            }
+        } else {
+            this.vecinaAl(direccion).recibirProyectilContaminante(direccion, danio);
+        }
+    }
 
     public boolean puedeSerOcupadaPor(Unidad nuevaUnidad) {
         return !this.estaOcupada() && nuevaUnidad.puedeTransitar(this.terreno);
@@ -161,4 +172,5 @@ public class Casilla implements Celda {
     public Unidad getUnidad() {
         return this.unidad;
     }
+
 }
