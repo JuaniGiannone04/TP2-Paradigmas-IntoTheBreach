@@ -7,7 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 public class Luciernaga extends Vek {
 
     public Luciernaga() {
-        super(3);
+        super(3, 2);
 
     }
 

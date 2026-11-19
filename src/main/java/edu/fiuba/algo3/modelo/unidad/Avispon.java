@@ -6,11 +6,8 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 public class Avispon extends Vek {
 
     public Avispon() {
-        super(2);
+        super(2, 4);
     }
-
-
-
     @Override
     public void atacar(Celda origen, Celda destino) {
         if (destino instanceof Casilla) {
@@ -21,8 +18,6 @@ public class Avispon extends Vek {
         }
     }
 
-
-}
     @Override
     public void aplicarEfectoAcido() {
 

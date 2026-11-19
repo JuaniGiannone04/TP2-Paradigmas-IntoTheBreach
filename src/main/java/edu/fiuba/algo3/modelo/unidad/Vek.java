@@ -12,12 +12,14 @@ public abstract class Vek implements Unidad {
     private Casilla casillaActual;
     private EstadoSalud estadoSalud ;
     private EstadoAccion estado ;
+    private int movimientoMaximo;
 
 
-    protected Vek(int vidaInicial) {
+    protected Vek(int vidaInicial, int movimientoMaximo) {
         this.vidaActual = vidaInicial;
         this.estadoSalud = new Sano();
         this.estado = EstadoAccion.DISPONIBLE;
+        this.movimientoMaximo = movimientoMaximo;
     }
 
     public void asignarCasilla(Casilla casilla) {
@@ -76,6 +78,8 @@ public abstract class Vek implements Unidad {
     public void moverse(Casilla origen, Casilla destino) {
         origen.moverUnidadHacia(destino);
     }
+
+    public int getMovimientoMaximo(){ return movimientoMaximo; }
 
 
 }

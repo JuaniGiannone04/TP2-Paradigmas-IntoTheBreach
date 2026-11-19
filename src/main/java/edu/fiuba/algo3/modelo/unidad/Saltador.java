@@ -7,7 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 public class Saltador extends Vek {
 
     public Saltador() {
-        super(2);
+        super(2, 3);
     }
 
     @Override
