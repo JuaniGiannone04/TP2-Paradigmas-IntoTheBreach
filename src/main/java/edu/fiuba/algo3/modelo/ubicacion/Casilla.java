@@ -118,9 +118,12 @@ public class Casilla implements Celda {
 
     public void colocarUnidad(Unidad nuevaUnidad) {
         if (this.estaOcupada()) {
-            throw new IllegalStateException("La casilla ya está ocupada por otra unidad.");
+            throw new IllegalStateException(
+                    "La casilla ya está ocupada por otra unidad."
+            );
         }
         this.unidad = nuevaUnidad;
+        nuevaUnidad.asignarCasilla(this);
         this.terreno.aplicarEfecto(nuevaUnidad);
         this.limpiarSiEstaMuerta();
     }

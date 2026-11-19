@@ -2,6 +2,7 @@ package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
+import edu.fiuba.algo3.modelo.arma.Canion;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Montana;
@@ -338,4 +339,42 @@ public class VekTest {
 
         assertThrows(IllegalArgumentException.class, () -> saltador.atacar(origen, destino));
     }
+
+    @Test
+    public void test22VekEsEmpujadoYSuAtaqueAnunciadoSeDesplazaConElYAtacaAotroVek() {
+        Saltador saltador = new Saltador();
+        Avispon avispon = new Avispon();
+        Mech mech = new Mech(new Canion(), 3);
+
+        Casilla inicialVek = new Casilla(new Suelo());
+        Casilla finalVek = new Casilla(new Suelo());
+        Casilla inicialMech = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla otroVek = new Casilla(new Suelo());
+
+        inicialVek.conectarVecina(Direccion.ESTE, finalVek);
+        inicialMech.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, inicialVek);
+        finalVek.conectarVecina(Direccion.ESTE, otroVek);
+
+        inicialVek.colocarUnidad(saltador);
+        inicialMech.colocarUnidad(mech);
+        otroVek.colocarUnidad(avispon);
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
 }
