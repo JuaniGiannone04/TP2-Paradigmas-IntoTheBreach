@@ -64,13 +64,13 @@ public class MechTest {
 
     @Test
     public void test03MechCombateEmpuja1Casilla() {
-    Arma punio = new Punio();
-    Mech mech = new Mech(punio, 3);
-    Vek vek = new Luciernaga();
+        Arma punio = new Punio();
+        Mech mech = new Mech(punio, 3);
+        Vek vek = new Luciernaga();
 
-    Casilla origen = new Casilla(new Suelo());
-    Casilla destino = new Casilla(new Suelo());
-    Casilla siguiente = new Casilla(new Suelo());
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla siguiente = new Casilla(new Suelo());
 
         origen.conectarVecina(Direccion.ESTE, destino);
         destino.conectarVecina(Direccion.OESTE, origen);
@@ -78,13 +78,13 @@ public class MechTest {
         destino.conectarVecina(Direccion.ESTE, siguiente);
         siguiente.conectarVecina(Direccion.OESTE, destino);
 
-    origen.colocarUnidad(mech);
-    destino.colocarUnidad(vek);
+        origen.colocarUnidad(mech);
+        destino.colocarUnidad(vek);
 
-    mech.atacar(origen, destino);
+        mech.atacar(origen, destino);
 
-    assertSame(vek, siguiente.getUnidad());
-    assertFalse(destino.estaOcupada()); //Comprueba que la celda quedo vacia
+        assertSame(vek, siguiente.getUnidad());
+        assertFalse(destino.estaOcupada()); //Comprueba que la celda quedo vacia
     }
 
 
