@@ -46,4 +46,8 @@ public class BordeDelMapa implements Celda {
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         return false;
     }
+    @Override
+    public void recibirProyectilContaminante(Direccion direccion, int danio) {
+
+    }
 }

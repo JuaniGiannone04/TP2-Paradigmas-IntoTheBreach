@@ -10,9 +10,6 @@ public class Tablero {
         this.casillas = casillas;
     }
 
-    public List<Casilla> getCasillas() {
-        return Collections.unmodifiableList(this.casillas);
-    }
 
     public Casilla getCasillaInicial() {
         return this.casillas.get(0);

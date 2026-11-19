@@ -3,6 +3,7 @@ package edu.fiuba.algo3.modelo.unidad;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Luciernaga extends Vek {
 
@@ -18,15 +19,8 @@ public class Luciernaga extends Vek {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
-        origen.direccionHacia(destino);
-        if (destino instanceof Casilla) {
-            Casilla casillaDestino = (Casilla) destino;
-            if (casillaDestino.estaOcupada()) {
-                Unidad unidadAfectada = casillaDestino.getUnidad();
-                unidadAfectada.recibirDanio(1);
-                unidadAfectada.aplicarEfectoAcido();
-            }
-        }
+        Direccion direccion = origen.direccionHacia(destino);
+        origen.vecinaAl(direccion).recibirProyectilContaminante(direccion, 1);
     }
 
     @Override
