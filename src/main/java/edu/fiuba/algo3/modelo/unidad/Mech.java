@@ -10,6 +10,7 @@ public class Mech implements Unidad {
     private int vidaActual;
     private EstadoAccion estado;
     private EstadoSalud estadoSalud;
+    private Casilla casillaActual;
 
     public Mech(Arma arma, int vidaInicial) {
         this.arma = arma;
@@ -66,6 +67,10 @@ public class Mech implements Unidad {
         this.estadoSalud = estado;
     }
 
+    @Override
+    public void asignarCasilla(Casilla casilla) {
+        this.casillaActual = casilla;
+    }
 
 
 }

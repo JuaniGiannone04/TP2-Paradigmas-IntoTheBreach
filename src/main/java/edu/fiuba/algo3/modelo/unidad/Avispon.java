@@ -7,7 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 public class Avispon extends Vek {
 
     public Avispon() {
-        super(2);
+        super(2, 4);
     }
 
 //Hay que refactorizar la logica esta que rompe tell dont ask, demeter y todo lo qu es sagrado
@@ -20,6 +20,7 @@ public class Avispon extends Vek {
         Direccion direccion = origen.direccionHacia(destino);
         destino.recibirGolpeCuerpoACuerpo(direccion, 1);
     }
+
     @Override
     public void aplicarEfectoAcido() {
 

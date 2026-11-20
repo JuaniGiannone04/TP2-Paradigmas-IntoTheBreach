@@ -26,9 +26,14 @@ public class AtaqueAnunciado {
     }
 
     public void ejecutar() {
-        Celda destino = origen.vecinaAl(direccion);
-        if (destino != null) {
-            atacante.atacar(origen, destino);
+        Casilla origenActual = atacante.getCasillaActual();
+
+        if (origenActual == null || atacante.getVidaActual() == 0) {
+            return;
         }
+
+        Celda destino = origenActual.vecinaAl(direccion);
+
+        atacante.atacar(origenActual, destino);
     }
 }

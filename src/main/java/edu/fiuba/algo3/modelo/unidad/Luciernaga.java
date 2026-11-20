@@ -8,7 +8,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 public class Luciernaga extends Vek {
 
     public Luciernaga() {
-        super(3);
+        super(3, 2);
 
     }
 
