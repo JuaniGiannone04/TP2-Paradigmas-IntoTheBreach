@@ -1,10 +1,13 @@
 package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.GeneradorDeTablero;
+import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Acido;
 import edu.fiuba.algo3.modelo.terreno.Agua;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.*;
+import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +48,7 @@ public class TableroYTerrenoTest {
     public void test05MoverUnidadEntreCasillasActualizaOrigenYDestino() {
         Unidad unidadMock = mock(Unidad.class);
         when(unidadMock.getVidaActual()).thenReturn(3);
+        when(unidadMock.puedeTransitar(any())).thenReturn(true);
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
 
@@ -70,5 +74,39 @@ public class TableroYTerrenoTest {
 
         assertSame(unidadMock, esquinaNoroeste.getUnidad());
         verify(unidadMock, never()).recibirDanio(anyInt());
+    }
+
+    @Test
+    public void test07MoverHaciaCasillaOcupadaConservaAmbasUnidades() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        Mech mechOrigen = new Mech(new Punio(), 3);
+        Mech mechDestino = new Mech(new Punio(), 3);
+
+        origen.colocarUnidad(mechOrigen);
+        destino.colocarUnidad(mechDestino);
+
+        assertThrows(IllegalStateException.class,
+                () -> origen.moverUnidadHacia(destino));
+
+        assertSame(mechOrigen, origen.getUnidad());
+        assertSame(mechDestino, destino.getUnidad());
+    }
+
+    @Test
+    public void test08NoSePuedeMoverUnMechHaciaUnaMontana() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Montana());
+
+        Mech mech = new Mech(new Punio(), 3);
+
+        origen.colocarUnidad(mech);
+
+        assertThrows(IllegalStateException.class,
+                () -> origen.moverUnidadHacia(destino));
+
+        assertSame(mech, origen.getUnidad());
+        assertFalse(destino.estaOcupada());
     }
 }

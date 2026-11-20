@@ -38,17 +38,18 @@ public class FaseJugador implements Fase {
             throw new IllegalStateException("No se puede deshacer un movimiento después de atacar");
         }
 
-        MovimientoEjecutado movimiento = movimientos.remove(mech);
+        if (!deshacerDisponible) {
+            throw new IllegalStateException("Solo se puede deshacer un movimiento por turno");
+        }
+
+        MovimientoEjecutado movimiento = movimientos.get(mech);
 
         if (movimiento == null) {
             throw new IllegalStateException("El Mech no tiene un movimiento para deshacer");
         }
 
-        if (!deshacerDisponible) {
-            throw new IllegalStateException("Solo se puede deshacer un movimiento por turno");
-        }
-
         movimiento.deshacer();
+        movimientos.remove(mech);
         deshacerDisponible = false;
     }
 
