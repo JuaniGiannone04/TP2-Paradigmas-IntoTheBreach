@@ -1,12 +1,9 @@
 package edu.fiuba.algo3.modelo.IA;
 
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.ubicacion.Celda;
-import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Vek;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IAVek {
@@ -26,41 +23,9 @@ public class IAVek {
     }
 
     public List<Casilla> calcularCasillasAlcanzables() {
-        List<Casilla> alcanzables = new ArrayList<>();
-
-        Casilla casillaActual = vek.getCasillaActual();
-        int movimientoMaximo = vek.getMovimientoMaximo();
-
-        explorarCasillas(casillaActual, movimientoMaximo, alcanzables);
-
-        return alcanzables;
+        return tablero.casillasAlcanzablesDesde(vek.getCasillaActual(), vek, vek.getMovimientoMaximo());
     }
 
-    private void explorarCasillas(Casilla actual, int movimientosRestantes, List<Casilla> alcanzables) {
 
-        if (movimientosRestantes == 0) {
-            return;
-        }
-
-        for (Direccion direccion : Direccion.values()) {
-            Celda vecina = actual.vecinaAl(direccion);
-
-            if (!(vecina instanceof Casilla)) {
-                continue;
-            }
-
-            Casilla casillaVecina = (Casilla) vecina;
-
-            if (!casillaVecina.puedeSerOcupadaPor(vek)) {
-                continue;
-            }
-
-            if (!alcanzables.contains(casillaVecina)) {
-                alcanzables.add(casillaVecina);
-            }
-
-            explorarCasillas(casillaVecina, movimientosRestantes - 1, alcanzables);
-        }
-    }
 
 }

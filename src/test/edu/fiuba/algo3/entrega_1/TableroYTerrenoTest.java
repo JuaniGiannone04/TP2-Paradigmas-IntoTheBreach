@@ -8,8 +8,11 @@ import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.ubicacion.*;
 import edu.fiuba.algo3.modelo.unidad.Mech;
+import edu.fiuba.algo3.modelo.unidad.Saltador;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -108,5 +111,22 @@ public class TableroYTerrenoTest {
 
         assertSame(mech, origen.getUnidad());
         assertFalse(destino.estaOcupada());
+    }
+
+    @Test
+    public void test09TableroCalculaCasillasAlcanzablesSegunMovimiento(){
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Casilla origen = tablero.getCasillaInicial();
+
+        Celda tresPasos = origen.vecinaAl(Direccion.ESTE).vecinaAl(Direccion.ESTE).vecinaAl(Direccion.ESTE);
+        Celda cuatroPasos = tresPasos.vecinaAl(Direccion.ESTE);
+
+        Saltador saltador = new Saltador();
+        origen.colocarUnidad(saltador);
+
+        List<Casilla> alcanzables = tablero.casillasAlcanzablesDesde(origen, saltador, saltador.getMovimientoMaximo());
+
+        assertTrue(alcanzables.contains(tresPasos));
+        assertFalse(alcanzables.contains(cuatroPasos));
     }
 }
