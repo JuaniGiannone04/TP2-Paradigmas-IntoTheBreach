@@ -20,7 +20,7 @@ public class IAVekTest {
     public void test01SaltadorPuedeAlcanzarCasillaATresMovimientos() {
 
         GeneradorDeTablero generador = new GeneradorDeTablero();
-        Tablero tablero = generador.crearTableroVacio();
+        Tablero tablero = generador.crearTablero();
 
         Casilla origen = tablero.getCasillaInicial();
 
@@ -45,7 +45,7 @@ public class IAVekTest {
     public void test02SaltadorNoPuedeAlcanzarCasillaACuatroMovimientos() {
 
         GeneradorDeTablero generador = new GeneradorDeTablero();
-        Tablero tablero = generador.crearTableroVacio();
+        Tablero tablero = generador.crearTablero();
 
         Casilla origen = tablero.getCasillaInicial();
 
@@ -71,7 +71,7 @@ public class IAVekTest {
     public void test03SaltadorNoPuedeAtravesarUnidades() {
 
         GeneradorDeTablero generador = new GeneradorDeTablero();
-        Tablero tablero = generador.crearTableroVacio();
+        Tablero tablero = generador.crearTablero();
 
         Casilla origen = tablero.getCasillaInicial();
 

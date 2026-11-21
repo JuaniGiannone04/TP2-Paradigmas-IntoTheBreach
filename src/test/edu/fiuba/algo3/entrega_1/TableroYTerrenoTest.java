@@ -63,7 +63,7 @@ public class TableroYTerrenoTest {
     @Test
     public void test06EmpujarUnidadHaciaElBordeDelMapaNoLaMueveNiLaDania() {
         GeneradorDeTablero fabrica = new GeneradorDeTablero();
-        Tablero tablero = fabrica.crearTableroVacio();
+        Tablero tablero = fabrica.crearTablero();
 
         Casilla esquinaNoroeste = (Casilla) tablero.getCasillaInicial();
         Unidad unidadMock = mock(Unidad.class);

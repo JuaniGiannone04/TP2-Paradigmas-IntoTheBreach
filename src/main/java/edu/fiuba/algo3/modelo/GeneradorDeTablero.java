@@ -1,6 +1,5 @@
 package edu.fiuba.algo3.modelo;
 
-import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.terreno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
@@ -12,12 +11,12 @@ import java.util.List;
 public class GeneradorDeTablero {
     private static final int DIMENSION = 8;
 
-    public Tablero crearTableroVacio() {
+    public Tablero crearTablero() {
         Casilla[][] grillaTemporal = this.construirGrafoBase();
         return new Tablero(this.convertirALista(grillaTemporal));
     }
 
-    public Tablero crearTableroPredefinido(RedElectrica redElectrica) {
+    public Tablero crearTablero(RedElectrica redElectrica) {
         Casilla[][] grillaTemporal = this.construirGrafoBase();
 
         grillaTemporal[0][0].cambiarTerreno(new Montana());
