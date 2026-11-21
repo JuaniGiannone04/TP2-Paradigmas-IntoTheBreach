@@ -2,8 +2,7 @@ package edu.fiuba.algo3.modelo.ubicacion;
 
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Tablero {
     private final List<Casilla> casillas;
@@ -13,38 +12,41 @@ public class Tablero {
     }
 
     public List<Casilla> casillasAlcanzablesDesde(Casilla origen, Unidad unidad, int alcance){
-        List<Casilla> alcanzables = new ArrayList<>();
 
-        explorarCasillas(origen, unidad, alcance, alcanzables);
+        List<Casilla> alcanzables = new ArrayList<>();
+        Queue<Casilla> pendientes = new ArrayDeque<>();
+        Map<Casilla, Integer> distancias = new HashMap<>();
+
+        pendientes.add(origen);
+        distancias.put(origen, 0);
+
+        while(!pendientes.isEmpty()){
+            Casilla actual =  pendientes.remove();
+            int pasos =  distancias.get(actual);
+
+            if(pasos >= alcance){
+                continue;
+            }
+
+            for(Direccion direccion : Direccion.values()) {
+                Celda vecina = actual.vecinaAl(direccion);
+                if(!(vecina instanceof Casilla)){
+                    continue;
+                }
+                Casilla siguiente = (Casilla) vecina;
+
+                if(!(siguiente.puedeSerOcupadaPor(unidad)) || distancias.containsKey(siguiente)){
+                    continue;
+                }
+                distancias.put(siguiente, pasos + 1);
+                pendientes.add(siguiente);
+                alcanzables.add(siguiente);
+            }
+        }
 
         return alcanzables;
     }
 
-    public void explorarCasillas(Casilla actual, Unidad unidad, int movimientosRestantes, List<Casilla> alcanzables){
-        if(movimientosRestantes == 0){
-            return;
-        }
-
-        for(Direccion direccion : Direccion.values()){
-            Celda vecina = actual.vecinaAl(direccion);
-
-            if(!(vecina instanceof Casilla) ){
-                continue;
-            }
-
-            Casilla siguiente = (Casilla) vecina;
-
-            if(!siguiente.puedeSerOcupadaPor(unidad)){
-                continue;
-            }
-
-            if(!alcanzables.contains(siguiente)){
-                alcanzables.add(siguiente);
-            }
-
-            explorarCasillas(siguiente, unidad, movimientosRestantes - 1, alcanzables);
-        }
-    }
 
 
     public Casilla getCasillaInicial() {

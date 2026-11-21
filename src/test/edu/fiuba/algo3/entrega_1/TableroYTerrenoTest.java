@@ -129,4 +129,23 @@ public class TableroYTerrenoTest {
         assertTrue(alcanzables.contains(tresPasos));
         assertFalse(alcanzables.contains(cuatroPasos));
     }
+
+    @Test
+    public void test10TableroPermiteaUnidadAlcanzarDestinoATravesDeObstaculos(){
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Casilla origen = tablero.getCasillaInicial();
+
+        Casilla bloqueada = (Casilla) origen.vecinaAl(Direccion.ESTE);
+        Celda destino = origen.vecinaAl(Direccion.SUR).vecinaAl(Direccion.ESTE);
+
+        Saltador saltador = new Saltador();
+        origen.colocarUnidad(saltador);
+        bloqueada.colocarUnidad(new Saltador());
+
+        List<Casilla> alcanzables = tablero.casillasAlcanzablesDesde(origen, saltador, saltador.getMovimientoMaximo());
+
+        assertTrue(alcanzables.contains(destino));
+        assertFalse(alcanzables.contains(bloqueada));
+
+    }
 }
