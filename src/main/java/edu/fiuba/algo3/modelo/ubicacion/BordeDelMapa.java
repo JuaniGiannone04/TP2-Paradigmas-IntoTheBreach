@@ -25,8 +25,8 @@ public class BordeDelMapa implements Celda {
     }
 
     @Override
-    public void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio) {
-        throw new IllegalArgumentException("No se puede golpear fuera del tablero");
+    public void recibirDanio(int danio) {
+        throw new IllegalArgumentException("No se puede aplicar daño fuera del tablero");
     }
 
     @Override

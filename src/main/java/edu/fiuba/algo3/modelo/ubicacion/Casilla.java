@@ -52,11 +52,6 @@ public class Casilla implements Celda {
         return this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino);
     }
 
-    @Override
-    public void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio) {
-        this.recibirDanio(danio);
-        this.empujarUnidadInterna(direccion);
-    }
 
     @Override
     public void recibirProyectilRecto(Direccion direccion, int danio) {
@@ -108,6 +103,7 @@ public class Casilla implements Celda {
         return true;
     }
 
+    @Override
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
             this.unidad.recibirDanio(danio);

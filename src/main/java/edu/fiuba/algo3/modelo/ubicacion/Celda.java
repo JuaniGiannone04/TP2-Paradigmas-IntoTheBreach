@@ -7,7 +7,7 @@ public interface Celda {
     boolean esAdyacenteA(Celda otraCelda);
     Direccion direccionHacia(Celda destino);
     boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino);
-    void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio);
+    void recibirDanio(int danio);
     void recibirProyectilRecto(Direccion direccion, int danio);
     void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio);
     void empujarUnidadInterna(Direccion direccion);
