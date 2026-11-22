@@ -54,7 +54,7 @@ public class AtaqueAnunciadoTest {
         destino.colocarUnidad(objetivo);
 
         AtaqueAnunciado ataque = new AtaqueAnunciado(
-                atacante, Direccion.ESTE, origen
+                atacante, Direccion.ESTE
         );
 
         origen.empujarUnidadInterna(Direccion.ESTE);
@@ -79,7 +79,7 @@ public class AtaqueAnunciadoTest {
         origen.colocarUnidad(saltador);
         destino.colocarUnidad(mech);
 
-        AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE, origen);
+        AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
 
         origen.quitarUnidad();
         ataque.ejecutar();

@@ -74,7 +74,7 @@ public abstract class Vek implements Unidad {
         for (Direccion direccion : Direccion.values()) {
             Celda vecina = origen.vecinaAl(direccion);
             if (vecina instanceof Casilla && ((Casilla) vecina).getUnidad() instanceof Mech) {
-                return new AtaqueAnunciado(this, direccion, origen);
+                return new AtaqueAnunciado(this, direccion);
             }
         }
         throw new IllegalStateException("El Vek no tiene un objetivo adyacente");
