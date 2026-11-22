@@ -72,5 +72,9 @@ public class Mech implements Unidad {
         this.casillaActual = casilla;
     }
 
+    @Override
+    public void abandonarCasilla() {
+        this.casillaActual = null;
+    }
 
 }

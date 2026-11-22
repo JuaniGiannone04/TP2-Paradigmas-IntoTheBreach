@@ -69,7 +69,7 @@ public class Casilla implements Celda {
 
     private void limpiarSiEstaMuerta() {
         if (this.estaOcupada() && this.unidad.getVidaActual() == 0) {
-            this.unidad = null;
+            this.quitarUnidad();
         }
     }
 
@@ -108,6 +108,7 @@ public class Casilla implements Celda {
     public Unidad quitarUnidad() {
         Unidad unidadRetirada = this.unidad;
         this.unidad = null;
+        unidadRetirada.abandonarCasilla();
         return unidadRetirada;
     }
 

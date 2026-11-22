@@ -26,6 +26,11 @@ public abstract class Vek implements Unidad {
         this.casillaActual = casilla;
     }
 
+    @Override
+    public void abandonarCasilla() {
+        this.casillaActual = null;
+    }
+
     public Casilla getCasillaActual() {
         return this.casillaActual;
     }
