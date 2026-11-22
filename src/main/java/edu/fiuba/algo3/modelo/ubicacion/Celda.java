@@ -10,7 +10,6 @@ public interface Celda {
     Direccion direccionHacia(Celda destino);
     boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino);
     void recibirDanio(int danio);
-    void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio);
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
     Optional <Casilla> primerBloqueoEn(Direccion direccion);

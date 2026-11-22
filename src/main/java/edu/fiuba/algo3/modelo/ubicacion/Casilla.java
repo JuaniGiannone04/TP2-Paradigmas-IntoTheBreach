@@ -54,18 +54,6 @@ public class Casilla implements Celda {
     }
 
     @Override
-    public void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio) {
-        if (this == destino) {
-            this.recibirDanio(danio);
-            for (Direccion direccionEmpuje : Direccion.values()) {
-                this.vecinaAl(direccionEmpuje).empujarUnidadInterna(direccionEmpuje);
-            }
-        } else {
-            this.vecinaAl(direccion).recibirProyectilEnArco(destino, direccion, danio);
-        }
-    }
-
-    @Override
     public void empujarUnidadInterna(Direccion direccion) {
         if (!this.estaOcupada()) {
             return;

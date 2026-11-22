@@ -32,11 +32,6 @@ public class BordeDelMapa implements Celda {
     }
 
     @Override
-    public void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio) {
-        throw new IllegalArgumentException("No se puede disparar fuera del tablero");
-    }
-
-    @Override
     public void empujarUnidadInterna(Direccion direccion) {
     }
 
