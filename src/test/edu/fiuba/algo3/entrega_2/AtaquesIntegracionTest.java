@@ -108,7 +108,7 @@ public class AtaquesIntegracionTest {
     }
 
     @Test
-    public void test04ColisionContraMontanaDaniaAmbasPartesYNadieSeMueve() {
+    public void test04ColisionContraMontanaDestruyeAlVek() {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
         Casilla montana = new Casilla(new Montana());
@@ -118,12 +118,15 @@ public class AtaquesIntegracionTest {
 
         Mech mech = new Mech(new Punio(), 3);
         Luciernaga vek = new Luciernaga();
+
         origen.colocarUnidad(mech);
         destino.colocarUnidad(vek);
 
         mech.atacar(origen, destino);
 
         assertEquals(0, vek.getVidaActual());
-        assertSame(vek, destino.getUnidad());
+        assertFalse(destino.estaOcupada());
+        assertFalse(montana.estaOcupada());
     }
+
 }

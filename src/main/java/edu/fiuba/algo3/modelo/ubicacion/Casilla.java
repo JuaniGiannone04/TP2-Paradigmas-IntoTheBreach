@@ -62,6 +62,9 @@ public class Casilla implements Celda {
         if (celdaDestino.recibirUnidadEmpujada(this.unidad)) {
             this.unidad = null;
         }
+        else {
+            limpiarSiEstaMuerta();
+        }
     }
 
     private void limpiarSiEstaMuerta() {
