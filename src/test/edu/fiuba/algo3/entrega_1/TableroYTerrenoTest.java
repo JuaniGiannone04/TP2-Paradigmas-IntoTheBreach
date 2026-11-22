@@ -13,6 +13,7 @@ import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -146,6 +147,22 @@ public class TableroYTerrenoTest {
 
         assertTrue(alcanzables.contains(destino));
         assertFalse(alcanzables.contains(bloqueada));
+    }
 
+    @Test
+    public void test11TableroEncuentraUnidadDespuesQueSeMueva(){
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+
+        Casilla origen = tablero.getCasillaInicial();
+        Casilla destino = (Casilla) origen.vecinaAl(Direccion.ESTE);
+
+        Saltador saltador = new  Saltador();
+        origen.colocarUnidad(saltador);
+
+        assertEquals(Optional.of(origen), tablero.buscarCasillaDe(saltador));
+
+        origen.moverUnidadHacia(destino);
+
+        assertEquals(Optional.of(destino), tablero.buscarCasillaDe(saltador));
     }
 }

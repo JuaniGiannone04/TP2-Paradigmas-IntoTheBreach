@@ -23,7 +23,9 @@ public class IAVek {
     }
 
     public List<Casilla> calcularCasillasAlcanzables() {
-        return tablero.casillasAlcanzablesDesde(vek.getCasillaActual(), vek, vek.getMovimientoMaximo());
+        return tablero.buscarCasillaDe(vek).map(origen ->
+                tablero.casillasAlcanzablesDesde(origen, vek, vek.getMovimientoMaximo()
+                )).orElse(List.of());
     }
 
 

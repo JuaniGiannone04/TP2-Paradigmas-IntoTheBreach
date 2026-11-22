@@ -136,4 +136,19 @@ public class IAVekTest {
         assertNull(decision);
     }
 
+    @Test
+    public void test07IAVekSinUnidadEnTableroNoTieneCasillasAlcanzables(){
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Casilla origen = tablero.getCasillaInicial();
+
+        Saltador saltador = new Saltador();
+        origen.colocarUnidad(saltador);
+
+        IAVek ia = new IAVek(tablero, saltador);
+
+        origen.quitarUnidad();
+
+        assertTrue(ia.calcularCasillasAlcanzables().isEmpty());
+    }
+
 }

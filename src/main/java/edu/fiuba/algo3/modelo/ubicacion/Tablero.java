@@ -47,9 +47,17 @@ public class Tablero {
         return alcanzables;
     }
 
-
-
     public Casilla getCasillaInicial() {
         return this.casillas.get(0);
+    }
+
+    public Optional<Casilla> buscarCasillaDe(Unidad unidad){
+        for(Casilla casilla : this.casillas){
+            if(casilla.contieneUnidad(unidad)){
+                return Optional.of(casilla);
+            }
+        }
+
+        return Optional.empty();
     }
 }

@@ -163,4 +163,11 @@ public class Casilla implements Celda {
         return this.unidad;
     }
 
+    public boolean contieneUnidad(Unidad unidad) {
+        if (this.unidad == unidad) {
+            return true;
+        }
+        return false;
+    }
+
 }
