@@ -4,6 +4,7 @@ import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Casilla implements Celda {
     private Terreno terreno;
@@ -50,17 +51,6 @@ public class Casilla implements Celda {
             return true;
         }
         return this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino);
-    }
-
-
-    @Override
-    public void recibirProyectilRecto(Direccion direccion, int danio) {
-        if (this.detieneProyectil()) {
-            this.recibirDanio(danio);
-            this.empujarUnidadInterna(direccion);
-        } else {
-            this.vecinaAl(direccion).recibirProyectilRecto(direccion, danio);
-        }
     }
 
     @Override
@@ -140,17 +130,16 @@ public class Casilla implements Celda {
 
         destino.colocarUnidad(this.quitarUnidad());
     }
+
     @Override
-    public void recibirProyectilContaminante(Direccion direccion, int danio) {
-        if (this.detieneProyectil()) {
-            this.recibirDanio(danio);
-            if (this.estaOcupada()) {
-                this.unidad.aplicarEfectoAcido();
-            }
-        } else {
-            this.vecinaAl(direccion).recibirProyectilContaminante(direccion, danio);
+    public Optional<Casilla> primerBloqueoEn(Direccion direccion){
+        if(this.detieneProyectil()){
+            return Optional.of(this);
         }
+
+        return this.vecinaAl(direccion).primerBloqueoEn(direccion);
     }
+
 
     public boolean puedeSerOcupadaPor(Unidad nuevaUnidad) {
         return !this.estaOcupada() && nuevaUnidad.puedeTransitar(this.terreno);
@@ -162,6 +151,12 @@ public class Casilla implements Celda {
 
     private boolean detieneProyectil() {
         return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
+    }
+
+    public void contaminarOcupante(){
+        if(this.estaOcupada()){
+            this.unidad.aplicarEfectoAcido();
+        }
     }
 
     public void cambiarTerreno(Terreno nuevoTerreno) {
