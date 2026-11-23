@@ -1,7 +1,7 @@
 package edu.fiuba.algo3.modelo.IA;
 
-import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
+import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Vek;
 
@@ -22,13 +22,24 @@ public class PrioridadEdificio extends PrioridadEncadenada {
         return evaluarSiguiente(vek, tablero, alcanzables);
     }
 
-    private DecisionVek buscarAtaqueEdificio(Vek vek, Tablero tablero, List<Casilla> alcanzables) {
-        // PENDIENTE LA FORMA PARA QUE PUEDA BUSCARSE UN EDIFICIO PARA ATACAR
+    private DecisionVek buscarAtaqueEdificio(
+            Vek vek,
+            Tablero tablero,
+            List<Casilla> alcanzables) {
+
+        List<Casilla> edificios = tablero.obtenerCasillasConEdificios();
+
+        for (Casilla origen : alcanzables) {
+            for (Casilla edificio : edificios) {
+
+                if (vek.puedeAtacarDesde(origen, edificio)) {
+                    Direccion direccion = origen.direccionHacia(edificio);
+
+                    return new DecisionVek(origen, direccion);
+                }
+            }
+        }
 
         return null;
-    }
-
-    private boolean esEdificio(Casilla casilla) {
-        return casilla.getTerreno() instanceof Edificio;
     }
 }

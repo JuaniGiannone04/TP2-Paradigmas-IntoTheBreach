@@ -23,7 +23,11 @@ public class Avispon extends Vek {
 
     @Override
     public void aplicarEfectoAcido() {
+    }
 
+    @Override
+    public boolean puedeAtacarDesde(Casilla origen, Casilla objetivo) {
+        return origen.esAdyacenteA(objetivo);
     }
 }
 

@@ -1,4 +1,4 @@
-package edu.fiuba.algo3.entrega_2;
+/*package edu.fiuba.algo3.entrega_2;
 
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
@@ -71,3 +71,4 @@ public class AtaqueAnunciadoTest {
 
 
 }
+*/

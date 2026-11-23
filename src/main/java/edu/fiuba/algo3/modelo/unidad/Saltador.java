@@ -26,9 +26,13 @@ public class Saltador extends Vek {
     }
 
     @Override
+    public boolean puedeAtacarDesde(Casilla origen, Casilla objetivo) {
+        return origen.esAdyacenteA(objetivo);
+    }
+
+    @Override
     public boolean puedeTransitar(Terreno terreno) {
         return terreno.esTransitablePorTerrestre();
     }
-
 
 }

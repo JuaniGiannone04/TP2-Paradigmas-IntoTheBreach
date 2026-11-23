@@ -28,6 +28,10 @@ public class Luciernaga extends Vek {
         return terreno.esTransitablePorTerrestre();
     }
 
+    @Override
+    public boolean puedeAtacarDesde(Casilla origen, Casilla objetivo) {
+        return origen.estaEnLineaRectaCon(objetivo);
+    }
 
 
 
