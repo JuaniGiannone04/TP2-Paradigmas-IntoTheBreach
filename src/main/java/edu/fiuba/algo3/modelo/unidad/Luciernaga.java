@@ -20,7 +20,12 @@ public class Luciernaga extends Vek {
     @Override
     public void atacar(Celda origen, Celda destino) {
         Direccion direccion = origen.direccionHacia(destino);
-        origen.vecinaAl(direccion).recibirProyectilContaminante(direccion, 1);
+
+        origen.vecinaAl(direccion).primerBloqueoEn(direccion).ifPresent(casilla -> {
+            casilla.recibirDanio(1);
+            casilla.contaminarOcupante();
+        });
+
     }
 
     @Override

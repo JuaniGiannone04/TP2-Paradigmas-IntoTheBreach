@@ -1,9 +1,11 @@
 /*package edu.fiuba.algo3.entrega_2;
 
+import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Saltador;
 import org.junit.Test;
 
@@ -52,7 +54,7 @@ public class AtaqueAnunciadoTest {
         destino.colocarUnidad(objetivo);
 
         AtaqueAnunciado ataque = new AtaqueAnunciado(
-                atacante, Direccion.ESTE, origen
+                atacante, Direccion.ESTE
         );
 
         origen.empujarUnidadInterna(Direccion.ESTE);
@@ -64,6 +66,28 @@ public class AtaqueAnunciadoTest {
         assertEquals(0, objetivo.getVidaActual());
     }
 
+    @Test
+    public void test03RetirarVekDeSuCasillaLeImpideEjecutarSuAtaqueAnunciado(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+
+        Mech mech = new Mech(new Punio(), 3);
+        Saltador saltador = new Saltador();
+
+        origen.colocarUnidad(saltador);
+        destino.colocarUnidad(mech);
+
+        AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
+
+        origen.quitarUnidad();
+        ataque.ejecutar();
+
+        assertEquals(3, mech.getVidaActual());
+        assertFalse(origen.estaOcupada());
+
+    }
 
 
 

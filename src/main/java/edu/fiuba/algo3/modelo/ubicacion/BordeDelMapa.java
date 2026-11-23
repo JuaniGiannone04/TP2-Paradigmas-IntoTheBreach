@@ -2,6 +2,8 @@ package edu.fiuba.algo3.modelo.ubicacion;
 
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
+import java.util.Optional;
+
 public class BordeDelMapa implements Celda {
 
     @Override
@@ -25,17 +27,8 @@ public class BordeDelMapa implements Celda {
     }
 
     @Override
-    public void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio) {
-        throw new IllegalArgumentException("No se puede golpear fuera del tablero");
-    }
-
-    @Override
-    public void recibirProyectilRecto(Direccion direccion, int danio) {
-    }
-
-    @Override
-    public void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio) {
-        throw new IllegalArgumentException("No se puede disparar fuera del tablero");
+    public void recibirDanio(int danio) {
+        throw new IllegalArgumentException("No se puede aplicar daño fuera del tablero");
     }
 
     @Override
@@ -46,8 +39,7 @@ public class BordeDelMapa implements Celda {
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         return false;
     }
-    @Override
-    public void recibirProyectilContaminante(Direccion direccion, int danio) {
 
-    }
+    @Override
+    public Optional<Casilla> primerBloqueoEn(Direccion direccion) {return Optional.empty();}
 }

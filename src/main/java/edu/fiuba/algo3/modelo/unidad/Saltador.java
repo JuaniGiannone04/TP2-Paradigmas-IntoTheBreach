@@ -22,7 +22,8 @@ public class Saltador extends Vek {
             throw new IllegalArgumentException("El Puño solo puede atacar casillas adyacentes");
         }
         Direccion direccion = origen.direccionHacia(destino);
-        destino.recibirGolpeCuerpoACuerpo(direccion, 2);
+        destino.recibirDanio( 2);
+        destino.empujarUnidadInterna(direccion);
     }
 
     @Override
