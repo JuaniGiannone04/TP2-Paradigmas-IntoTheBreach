@@ -1,116 +1,179 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Canion;
+import edu.fiuba.algo3.modelo.terreno.Edificio;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
-import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
-import edu.fiuba.algo3.modelo.unidad.Mech;
+import edu.fiuba.algo3.modelo.unidad.Luciernaga;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class CanionTest {
 
     @Test
-    public void test01CanionDisparaProyectilRectoALaCeldaVecina() {
-        Celda origenMock = mock(Celda.class);
-        Celda vecinaMock = mock(Celda.class);
+    public void test01CanionRestaUnPuntoDeVidaALaPrimeraUnidadEnLineaRecta() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla ocupada = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, ocupada);
 
-        when(origenMock.vecinaAl(Direccion.ESTE))
-                .thenReturn(vecinaMock);
+        Unidad vek = new Luciernaga();
+        ocupada.colocarUnidad(vek);
+        Arma canion = new Canion();
 
-        when(origenMock.direccionHacia(vecinaMock))
-                .thenReturn(Direccion.ESTE);
+        canion.atacar(origen, ocupada);
+
+        assertEquals(2, vek.getVidaActual());
+    }
+
+    @Test
+    public void test02CanionEmpujaUnaCasillaALaPrimeraUnidadImpactada() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla ocupada = new Casilla(new Suelo());
+        Casilla empuje = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, ocupada);
+        ocupada.conectarVecina(Direccion.ESTE, empuje);
+
+        Unidad vek = new Luciernaga();
+        ocupada.colocarUnidad(vek);
+        Arma canion = new Canion();
+
+        canion.atacar(origen, ocupada);
+
+        assertSame(vek, empuje.getUnidad());
+    }
+
+    @Test
+    public void test03CanionNoDaniaALaUnidadQueEstaDetrasDeLaPrimeraImpactada() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla primera = new Casilla(new Suelo());
+        Casilla empuje = new Casilla(new Suelo());
+        Casilla segunda = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, primera);
+        primera.conectarVecina(Direccion.ESTE, empuje);
+        empuje.conectarVecina(Direccion.ESTE, segunda);
+
+        Unidad segundaVek = new Luciernaga();
+        primera.colocarUnidad(new Luciernaga());
+        segunda.colocarUnidad(segundaVek);
+        Arma canion = new Canion();
+
+        canion.atacar(origen, segunda);
+
+        assertEquals(3, segundaVek.getVidaActual());
+    }
+
+    @Test
+    public void test04CanionSeDetieneEnUnaMontanaYNoDaniaALaUnidadDetras() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla montana = new Casilla(new Montana());
+        Casilla detras = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.SUR, montana);
+        montana.conectarVecina(Direccion.SUR, detras);
+
+        Unidad vekDetras = new Luciernaga();
+        detras.colocarUnidad(vekDetras);
+        Arma canion = new Canion();
+
+        canion.atacar(origen, detras);
+
+        assertEquals(3, vekDetras.getVidaActual());
+    }
+
+    @Test
+    public void test05CanionImpactaUnEdificioYReduceLaRedElectricaEnUnPunto() {
+        RedElectrica redElectrica = new RedElectrica(5);
+        Casilla origen = new Casilla(new Suelo());
+        Casilla intermedia = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(redElectrica));
+        origen.conectarVecina(Direccion.ESTE, intermedia);
+        intermedia.conectarVecina(Direccion.ESTE, edificio);
 
         Arma canion = new Canion();
 
-        canion.atacar(origenMock, vecinaMock);
+        canion.atacar(origen, edificio);
 
-        verify(vecinaMock, times(1))
-                .recibirProyectilRecto(Direccion.ESTE, 1);
+        assertEquals(4, redElectrica.getEnergia());
     }
 
     @Test
-    public void test02CanionImpactaALaPrimeraUnidadEnLineaRectaYNoALaQueEstaDetras() {
-        Terreno sueloMock = mock(Terreno.class);
-        when(sueloMock.recibirDanio(anyInt())).thenReturn(sueloMock);
-
-        Casilla origen = new Casilla(sueloMock);
-        Casilla intermedia = new Casilla(sueloMock);
-        Casilla primeraOcupada = new Casilla(sueloMock);
-        Casilla empuje = new Casilla(sueloMock);
-        Casilla segundaOcupada = new Casilla(sueloMock);
-
-        origen.conectarVecina(Direccion.ESTE, intermedia);
-        intermedia.conectarVecina(Direccion.ESTE, primeraOcupada);
-        primeraOcupada.conectarVecina(Direccion.ESTE, empuje);
-        empuje.conectarVecina(Direccion.ESTE, segundaOcupada);
-
-        Unidad primeraUnidadMock = mock(Unidad.class);
-        Unidad segundaUnidadMock = mock(Unidad.class);
-
-        when(primeraUnidadMock.getVidaActual()).thenReturn(3);
-        when(segundaUnidadMock.getVidaActual()).thenReturn(3);
-
-        primeraOcupada.colocarUnidad(primeraUnidadMock);
-        segundaOcupada.colocarUnidad(segundaUnidadMock);
-
-        Mech mech = new Mech(new Canion(), 3);
-        mech.atacar(origen, primeraOcupada);
-
-        verify(primeraUnidadMock, times(1)).recibirDanio(1);
-
-        assertSame(primeraUnidadMock, empuje.getUnidad());
-        assertFalse(primeraOcupada.estaOcupada());
-
-        verify(segundaUnidadMock, never()).recibirDanio(anyInt());
-        assertSame(segundaUnidadMock, segundaOcupada.getUnidad());
-    }
-
-    @Test
-    public void test03CanionImpactaAlPrimerObstaculoYNoDaniaUnidadDetras() {
-        Terreno sueloMock = mock(Terreno.class);
-        when(sueloMock.recibirDanio(anyInt())).thenReturn(sueloMock);
-
-        Terreno obstaculoMock = mock(Terreno.class);
-        when(obstaculoMock.bloqueaDisparoDirecto()).thenReturn(true);
-        when(obstaculoMock.recibirDanio(anyInt())).thenReturn(obstaculoMock);
-
-        Casilla origen = new Casilla(sueloMock);
-        Casilla casillaObstaculo = new Casilla(obstaculoMock);
-        Casilla casillaDetras = new Casilla(sueloMock);
-
-        origen.conectarVecina(Direccion.SUR, casillaObstaculo);
-        casillaObstaculo.conectarVecina(Direccion.SUR, casillaDetras);
-
-        Unidad unidadDetrasMock = mock(Unidad.class);
-        when(unidadDetrasMock.getVidaActual()).thenReturn(3);
-
-        casillaDetras.colocarUnidad(unidadDetrasMock);
-
-        Mech mech = new Mech(new Canion(), 3);
-        mech.atacar(origen, casillaDetras);
-
-        verify(obstaculoMock, times(1)).recibirDanio(1);
-        verify(unidadDetrasMock, never()).recibirDanio(anyInt());
-
-        assertSame(unidadDetrasMock, casillaDetras.getUnidad());
-    }
-    @Test
-    public void test04CanionDisparandoAlVacioSeAbsorbeEnElBordeDelMapa() {
+    public void test06CanionEmpujaUnidadContraMontanaYAplicaDanioDeColision() {
         Casilla origen = new Casilla(new Suelo());
-        Casilla destino = new Casilla(new Suelo());
+        Casilla ocupada = new Casilla(new Suelo());
+        Casilla montana = new Casilla(new Montana());
+        origen.conectarVecina(Direccion.NORTE, ocupada);
+        ocupada.conectarVecina(Direccion.NORTE, montana);
 
-        origen.conectarVecina(Direccion.OESTE, destino);
-        destino.conectarVecina(Direccion.ESTE, origen);
+        Unidad vek = new Luciernaga();
+        ocupada.colocarUnidad(vek);
+        Arma canion = new Canion();
 
-        Mech mech = new Mech(new Canion(), 3);
+        canion.atacar(origen, ocupada);
 
-        assertDoesNotThrow(() -> mech.atacar(origen, destino));
+        assertEquals(1, vek.getVidaActual());
+    }
+
+    @Test
+    public void test07CanionEmpujaUnidadContraBordeDelMapaSinAplicarDanioDeColision() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla borde = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.OESTE, borde);
+
+        Unidad vek = new Luciernaga();
+        borde.colocarUnidad(vek);
+        Arma canion = new Canion();
+
+        canion.atacar(origen, borde);
+
+        assertEquals(2, vek.getVidaActual());
+    }
+
+    @Test
+    public void test08CanionConDisparoLetalEliminaLaUnidadDeLaCasilla() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla ocupada = new Casilla(new Suelo());
+        Casilla detras = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, ocupada);
+        ocupada.conectarVecina(Direccion.ESTE, detras);
+
+        Unidad vekHerido = new Luciernaga();
+        vekHerido.recibirDanio(2);
+        ocupada.colocarUnidad(vekHerido);
+        Arma canion = new Canion();
+
+        canion.atacar(origen, ocupada);
+
+        assertFalse(ocupada.estaOcupada());
+    }
+
+    @Test
+    public void test09CanionLanzaExcepcionSiElObjetivoEstaEnDiagonal() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla este = new Casilla(new Suelo());
+        Casilla diagonal = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.ESTE, este);
+        este.conectarVecina(Direccion.NORTE, diagonal);
+
+        Arma canion = new Canion();
+
+        assertThrows(IllegalArgumentException.class, () -> canion.atacar(origen, diagonal));
+    }
+
+    @Test
+    public void test10CanionDisparandoAlVacioSeAbsorbeEnElBordeDelMapaSinError() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla vacia = new Casilla(new Suelo());
+        origen.conectarVecina(Direccion.OESTE, vacia);
+
+        Arma canion = new Canion();
+
+        assertDoesNotThrow(() -> canion.atacar(origen, vacia));
     }
 }

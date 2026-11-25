@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.modelo.ubicacion;
 
+import edu.fiuba.algo3.modelo.arma.Ataque;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
 public interface Celda {
@@ -7,10 +8,10 @@ public interface Celda {
     boolean esAdyacenteA(Celda otraCelda);
     Direccion direccionHacia(Celda destino);
     boolean estaEnLineaRectaHacia(Direccion direccion, Celda destino);
-    void recibirGolpeCuerpoACuerpo(Direccion direccion, int danio);
-    void recibirProyectilRecto(Direccion direccion, int danio);
-    void recibirProyectilEnArco(Celda destino, Direccion direccion, int danio);
+
+    void recibir(Ataque ataque);
+    void propagar(Direccion direccion, Ataque ataque);
+
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
-    void recibirProyectilContaminante(Direccion direccion, int danio);
 }

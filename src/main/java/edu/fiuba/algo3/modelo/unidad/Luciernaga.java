@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.modelo.unidad;
 
+import edu.fiuba.algo3.modelo.arma.ProyectilContaminante;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
@@ -20,9 +21,8 @@ public class Luciernaga extends Vek {
     @Override
     public void atacar(Celda origen, Celda destino) {
         Direccion direccion = origen.direccionHacia(destino);
-        origen.vecinaAl(direccion).recibirProyectilContaminante(direccion, 1);
+        origen.propagar(direccion, new ProyectilContaminante(direccion, 1));
     }
-
     @Override
     public boolean puedeTransitar(Terreno terreno) {
         return terreno.esTransitablePorTerrestre();

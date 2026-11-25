@@ -12,6 +12,6 @@ public class Punio implements Arma {
             throw new IllegalArgumentException("El Puño solo puede atacar casillas adyacentes");
         }
         Direccion direccion = origen.direccionHacia(destino);
-        destino.recibirGolpeCuerpoACuerpo(direccion, DANIO);
+        origen.propagar(direccion, new GolpeCuerpoACuerpo(direccion, DANIO));
     }
 }
