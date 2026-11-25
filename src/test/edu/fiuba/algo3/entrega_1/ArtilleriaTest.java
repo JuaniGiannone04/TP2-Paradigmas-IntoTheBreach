@@ -1,7 +1,11 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Artilleria;
+import edu.fiuba.algo3.modelo.arma.Canion;
+import edu.fiuba.algo3.modelo.terreno.Edificio;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
@@ -17,36 +21,30 @@ import static org.mockito.Mockito.*;
 public class ArtilleriaTest {
 
     @Test
-    public void test01ArtilleriaLanzaProyectilEnArcoConPasosRestantes() {
-        Celda origenMock = mock(Celda.class);
-        Celda vecinaMock = mock(Celda.class);
+    public void test01ArtilleriaDaniaEdificioDetrasDeMontania() {
+        RedElectrica redElectrica = new RedElectrica(5);
 
-        when(origenMock.direccionHacia(vecinaMock))
-                .thenReturn(Direccion.NORTE);
+        Casilla origen = new Casilla(new Suelo());
+        Casilla montania = new Casilla(new Montana());
+        Casilla edificio = new Casilla(new Edificio(redElectrica));
 
-        when(origenMock.vecinaAl(Direccion.NORTE))
-                .thenReturn(vecinaMock);
+        origen.conectarVecina(Direccion.ESTE, montania);
+        montania.conectarVecina(Direccion.ESTE, edificio);
 
-        Arma artilleria = new Artilleria();
+        new Artilleria().atacar(origen, edificio);
 
-        artilleria.atacar(origenMock, vecinaMock);
-
-        verify(vecinaMock, times(1))
-                .recibirProyectilEnArco(vecinaMock, Direccion.NORTE, 1);
+        assertEquals(4, redElectrica.getEnergia());
     }
 
     @Test
     public void test02ArtilleriaNoPuedeAtacarCasillasAdyacentes() {
-        Celda origenMock = mock(Celda.class);
-        Celda destinoMock = mock(Celda.class);
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
 
-        Arma artilleria = new Artilleria();
-
-        when(origenMock.esAdyacenteA(destinoMock))
-                .thenReturn(true);
+        origen.conectarVecina(Direccion.ESTE, destino);
 
         assertThrows(IllegalArgumentException.class,
-                () -> artilleria.atacar(origenMock, destinoMock));
+                () -> new Artilleria().atacar(origen, destino));
     }
 
 

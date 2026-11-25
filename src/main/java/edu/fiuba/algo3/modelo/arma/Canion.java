@@ -9,6 +9,10 @@ public class Canion implements Arma {
     @Override
     public void atacar(Celda origen, Celda destino) {
         Direccion direccion = origen.direccionHacia(destino);
-        origen.vecinaAl(direccion).recibirProyectilRecto(direccion, DANIO);
+
+        origen.vecinaAl(direccion).primerBloqueoEn(direccion).ifPresent(casilla -> {
+            casilla.recibirDanio(DANIO);
+            casilla.empujarUnidadInterna(direccion);
+        });
     }
 }

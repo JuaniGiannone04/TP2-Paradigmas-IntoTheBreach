@@ -1,11 +1,11 @@
 package edu.fiuba.algo3.entrega_1;
 
-import edu.fiuba.algo3.modelo.arma.Arma;
+import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Canion;
+import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
-import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
@@ -17,22 +17,17 @@ import static org.mockito.Mockito.*;
 public class CanionTest {
 
     @Test
-    public void test01CanionDisparaProyectilRectoALaCeldaVecina() {
-        Celda origenMock = mock(Celda.class);
-        Celda vecinaMock = mock(Celda.class);
+    public void test01CanionDaniaEdificioYReduceRedElectrica() {
+        RedElectrica redElectrica = new RedElectrica(5);
 
-        when(origenMock.vecinaAl(Direccion.ESTE))
-                .thenReturn(vecinaMock);
+        Casilla origen = new Casilla(new Suelo());
+        Casilla edificio = new Casilla(new Edificio(redElectrica));
 
-        when(origenMock.direccionHacia(vecinaMock))
-                .thenReturn(Direccion.ESTE);
+        origen.conectarVecina(Direccion.ESTE, edificio);
 
-        Arma canion = new Canion();
+        new Canion().atacar(origen, edificio);
 
-        canion.atacar(origenMock, vecinaMock);
-
-        verify(vecinaMock, times(1))
-                .recibirProyectilRecto(Direccion.ESTE, 1);
+        assertEquals(4, redElectrica.getEnergia());
     }
 
     @Test

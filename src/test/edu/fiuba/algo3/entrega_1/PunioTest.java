@@ -2,8 +2,11 @@ package edu.fiuba.algo3.entrega_1;
 
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
+import edu.fiuba.algo3.modelo.terreno.Suelo;
+import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.unidad.Luciernaga;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,17 +16,22 @@ public class PunioTest {
 
     // Test con Mocks en PunioTest:
     @Test
-    public void test01PunioEnviaGolpeCuerpoACuerpoALaCeldaDestinoAdyacente() {
-        Celda origenMock = mock(Celda.class);
-        Celda destinoMock = mock(Celda.class);
+    public void test01PunioDaniaYEmpujaUnaUnidadAdyacente() {
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new Casilla(new Suelo());
+        Casilla siguiente = new Casilla(new Suelo());
 
-        when(origenMock.esAdyacenteA(destinoMock)).thenReturn(true);
-        when(origenMock.direccionHacia(destinoMock)).thenReturn(Direccion.ESTE);
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.ESTE, siguiente);
 
-        Arma punio = new Punio();
-        punio.atacar(origenMock, destinoMock);
+        Luciernaga vek = new Luciernaga();
+        destino.colocarUnidad(vek);
 
-        verify(destinoMock, times(1)).recibirGolpeCuerpoACuerpo(Direccion.ESTE, 2);
+        new Punio().atacar(origen, destino);
+
+        assertEquals(1, vek.getVidaActual());
+        assertFalse(destino.estaOcupada());
+        assertSame(vek, siguiente.getUnidad());
     }
 
     @Test

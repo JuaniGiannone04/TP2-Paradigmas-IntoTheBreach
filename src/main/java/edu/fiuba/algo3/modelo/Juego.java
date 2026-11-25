@@ -1,6 +1,6 @@
 package edu.fiuba.algo3.modelo;
 
-import edu.fiuba.algo3.modelo.GeneradorDeTablero;
+import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
 public class Juego {
@@ -11,7 +11,7 @@ public class Juego {
     public Juego() {
         this.redElectrica = new RedElectrica(ENERGIA_INICIAL);
         GeneradorDeTablero fabrica = new GeneradorDeTablero();
-        this.tablero = fabrica.crearTableroPredefinido(this.redElectrica);
+        this.tablero = fabrica.crearTablero(this.redElectrica);
     }
 
     public Juego(Tablero tableroPersonalizado, RedElectrica redElectrica) {
