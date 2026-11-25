@@ -170,4 +170,13 @@ public class Casilla implements Celda {
         return false;
     }
 
+    public boolean estaEnLineaRectaCon(Celda destino) {
+        for (Direccion direccion : Direccion.values()) {
+            if (this.vecinaAl(direccion)
+                    .estaEnLineaRectaHacia(direccion, destino)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

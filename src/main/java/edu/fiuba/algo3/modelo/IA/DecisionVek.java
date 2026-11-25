@@ -21,14 +21,4 @@ public class DecisionVek {
         return direccionAtaque;
     }
 
-    public boolean anunciaAtaque() {
-        return direccionAtaque != null;
-    }
-
-
-
-
-
-
-
 }

@@ -38,6 +38,4 @@ public class Luciernaga extends Vek {
         return origen.estaEnLineaRectaCon(objetivo);
     }
 
-
-
 }

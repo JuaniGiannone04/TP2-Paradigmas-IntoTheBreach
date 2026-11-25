@@ -20,9 +20,11 @@ public class IAVek {
 
     public DecisionVek decidir() {
 
-        List<Casilla> alcanzables = new ArrayList<>(tablero.casillasAlcanzablesDesde(vek.getCasillaActual(), vek, vek.getMovimientoMaximo()));
+        List<Casilla> alcanzables = new ArrayList<>();
 
         alcanzables.add(vek.getCasillaActual());
+
+        alcanzables.addAll(tablero.casillasAlcanzablesDesde(vek.getCasillaActual(), vek, vek.getMovimientoMaximo()));
 
         return prioridades.evaluar(vek, tablero, alcanzables);
     }

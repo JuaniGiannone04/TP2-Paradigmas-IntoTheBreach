@@ -22,16 +22,10 @@ public class PrioridadEdificio extends PrioridadEncadenada {
         return evaluarSiguiente(vek, tablero, alcanzables);
     }
 
-    private DecisionVek buscarAtaqueEdificio(
-            Vek vek,
-            Tablero tablero,
-            List<Casilla> alcanzables) {
-
+    private DecisionVek buscarAtaqueEdificio(Vek vek, Tablero tablero, List<Casilla> alcanzables) {
         List<Casilla> edificios = tablero.obtenerCasillasConEdificios();
-
         for (Casilla origen : alcanzables) {
             for (Casilla edificio : edificios) {
-
                 if (vek.puedeAtacarDesde(origen, edificio)) {
                     Direccion direccion = origen.direccionHacia(edificio);
 

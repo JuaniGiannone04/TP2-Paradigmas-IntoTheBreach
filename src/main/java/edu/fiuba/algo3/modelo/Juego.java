@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.modelo;
 
+import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
 public class Juego {
