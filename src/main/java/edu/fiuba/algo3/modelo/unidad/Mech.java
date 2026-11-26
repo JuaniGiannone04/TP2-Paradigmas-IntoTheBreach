@@ -8,7 +8,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 public class Mech implements Unidad {
     private final Arma arma;
     private int vidaActual;
-    private EstadoAccion estado;
+    private EstadoAtaque estadoAtaque;
     private EstadoSalud estadoSalud;
     private Casilla casillaActual;
 
@@ -16,7 +16,7 @@ public class Mech implements Unidad {
         this.arma = arma;
         this.vidaActual = vidaInicial;
         this.estadoSalud = new Sano();
-        this.estado = EstadoAccion.DISPONIBLE;
+        this.estadoAtaque = new PuedeAtacar();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Mech implements Unidad {
 
     @Override
     public void aplicarEfectoAgua() {
-        this.estado= EstadoAccion.PACIFICO;
+        this.estadoAtaque = new InhabilitadoPorAgua();
     }
 
     @Override
@@ -47,16 +47,12 @@ public class Mech implements Unidad {
 
     @Override
     public boolean estaContaminado() {
-        return this.estadoSalud instanceof Contaminado;
+        return this.estadoSalud.estaContaminado();
     }
 
+    @Override
     public void atacar(Celda origen, Celda destino) {
-        if (this.estado == EstadoAccion.PACIFICO) {
-            throw new IllegalStateException("El Mech no puede atacar mientras esta en el agua");
-        }
-
-        this.arma.atacar(origen, destino);
-        this.estado = EstadoAccion.ATACO;
+        this.estadoAtaque.atacar(this.arma, origen, destino);
     }
 
     public EstadoSalud obtenerEstadoSalud() {
@@ -70,11 +66,12 @@ public class Mech implements Unidad {
     @Override
     public void asignarCasilla(Casilla casilla) {
         this.casillaActual = casilla;
+        this.estadoAtaque = new PuedeAtacar();
     }
 
     @Override
     public void abandonarCasilla() {
         this.casillaActual = null;
+        this.estadoAtaque = new PuedeAtacar();
     }
-
 }

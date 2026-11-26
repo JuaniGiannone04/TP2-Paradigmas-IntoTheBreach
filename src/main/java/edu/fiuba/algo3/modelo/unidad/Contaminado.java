@@ -15,4 +15,9 @@ public class Contaminado implements EstadoSalud {
     public EstadoSalud sanar() {
         return new Sano();
     }
+
+    @Override
+    public boolean estaContaminado() {
+        return true;
+    }
 }
