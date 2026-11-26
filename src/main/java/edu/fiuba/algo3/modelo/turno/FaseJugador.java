@@ -53,9 +53,13 @@ public class FaseJugador implements Fase {
         deshacerDisponible = false;
     }
 
-    public void atacarConMech(Mech mech, Celda origen, Celda destino) {
+    public void atacarConMech(Mech mech, Casilla origen, Celda destino) {
         if (mechsQueAtacaron.contains(mech)) {
             throw new IllegalStateException("El Mech ya atacó en este turno");
+        }
+
+        if(!origen.contieneUnidad(mech)){
+            throw new IllegalStateException("El Mech indicado no esta en la casilla origen");
         }
 
         mech.atacar(origen, destino);

@@ -50,7 +50,7 @@ public class Turno {
         faseJugador().deshacerMovimiento(mech);
     }
 
-    public void atacarConMech(Mech mech, Celda origen, Celda destino) {
+    public void atacarConMech(Mech mech, Casilla origen, Celda destino) {
         faseJugador().atacarConMech(mech, origen, destino);
     }
 

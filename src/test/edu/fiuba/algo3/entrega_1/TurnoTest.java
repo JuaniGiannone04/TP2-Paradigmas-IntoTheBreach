@@ -446,5 +446,35 @@ public class TurnoTest {
 
     }
 
+    @Test
+    public void test26NoSePuedeAtacarDesdeLaCasillaDeOtroMech(){
+        Casilla origenReal = new Casilla(new Suelo());
+        Casilla origenAjeno = new Casilla(new Suelo());
+        Casilla objetivo = new Casilla(new Suelo());
+
+        origenReal.conectarVecina(Direccion.ESTE, objetivo);
+        objetivo.conectarVecina(Direccion.OESTE, origenReal);
+
+        Mech mechSeleccionado = new Mech(new Punio(), 3);
+        Mech otroMech = new Mech(new Punio(), 3);
+        Saltador vek =  new Saltador();
+
+        origenReal.colocarUnidad(mechSeleccionado);
+        origenAjeno.colocarUnidad(otroMech);
+        objetivo.colocarUnidad(vek);
+
+        Turno turno = new Turno();
+        turno.avanzarFase();
+
+        assertThrows(IllegalStateException.class, () ->
+                turno.atacarConMech(mechSeleccionado, origenAjeno, objetivo));
+
+        assertEquals(2, vek.getVidaActual());
+
+        turno.atacarConMech(mechSeleccionado, origenReal, objetivo);
+
+        assertFalse(objetivo.estaOcupada());
+    }
+
 
 }
