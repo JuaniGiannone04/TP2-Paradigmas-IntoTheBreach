@@ -9,21 +9,16 @@ public class AtaqueAnunciado {
 
     private final Vek atacante;
     private final Direccion direccion;
-    private final Casilla origen;
 
-    public AtaqueAnunciado(Vek atacante, Direccion direccion, Casilla origen) {
+    public AtaqueAnunciado(Vek atacante, Direccion direccion) {
         this.atacante = atacante;
         this.direccion = direccion;
-        this.origen = origen;
     }
 
     public Direccion getDireccion() {
         return this.direccion;
     }
 
-    public Vek getAtacante() {
-        return this.atacante;
-    }
 
     public void ejecutar() {
         Casilla origenActual = atacante.getCasillaActual();

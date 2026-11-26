@@ -13,4 +13,5 @@ public interface Unidad {
     int getVidaActual();
     boolean estaContaminado();
     void asignarCasilla(Casilla casilla);
+    void abandonarCasilla();
 }
