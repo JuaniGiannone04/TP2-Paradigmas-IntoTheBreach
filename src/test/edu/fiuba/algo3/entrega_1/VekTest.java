@@ -7,9 +7,7 @@ import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
-import edu.fiuba.algo3.modelo.turno.AtaqueAnunciado;
-import edu.fiuba.algo3.modelo.turno.FaseVek;
-import edu.fiuba.algo3.modelo.turno.Turno;
+import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 import edu.fiuba.algo3.modelo.unidad.*;
@@ -262,10 +260,12 @@ public class VekTest {
         mechCasilla.colocarUnidad(mech);
 
         Turno turno = new Turno();
-        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
-        turno.avanzarFase();
-        turno.avanzarFase();
-        turno.ejecutarResolucion();
+        FaseVek faseVek = new FaseVek();
+        faseVek.registrarAtaque(new AtaqueAnunciado(vek, Direccion.NORTE));
+
+        FaseJugador faseJugador = faseVek.ejecutar(turno);
+        FaseResolucion faseResolucion = faseJugador.ejecutar(turno);
+        faseResolucion.ejecutar(turno);
 
         assertEquals(1, mech.getVidaActual());
     }
@@ -283,10 +283,12 @@ public class VekTest {
         mechCasilla.colocarUnidad(mech);
 
         Turno turno = new Turno();
-        turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
-        turno.avanzarFase();
-        turno.avanzarFase();
-        turno.ejecutarResolucion();
+        FaseVek faseVek = new FaseVek();
+        faseVek.registrarAtaque(new AtaqueAnunciado(vek, Direccion.NORTE));
+
+        FaseJugador faseJugador = faseVek.ejecutar(turno);
+        FaseResolucion faseResolucion = faseJugador.ejecutar(turno);
+        faseResolucion.ejecutar(turno);
 
         assertEquals(2, mech.getVidaActual());
         assertTrue(mech.estaContaminado());
@@ -362,7 +364,6 @@ public class VekTest {
         otroVek.colocarUnidad(avispon);
 
     }
-
 
     @Test
     public void test23LuciernagaContaminaSoloAlPrimerObjetivoEnLineaRecta(){
