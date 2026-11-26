@@ -363,6 +363,7 @@ public class VekTest {
 
     }
 
+
     @Test
     public void test23LuciernagaContaminaSoloAlPrimerObjetivoEnLineaRecta(){
         Casilla origen = new Casilla(new Suelo());

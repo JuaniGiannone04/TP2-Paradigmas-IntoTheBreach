@@ -8,16 +8,10 @@ public class Artilleria implements Arma {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
+        if (origen.esAdyacenteA(destino)) {
+            throw new IllegalArgumentException("La artillería debe atacar a 2 o más casillas");
+        }
         Direccion direccion = origen.direccionHacia(destino);
-
-        if(origen.vecinaAl(direccion) == destino) {
-            throw new IllegalArgumentException("La artilleria debe atacar a 2 o mas casillas de distancia");
-        }
-
-        destino.recibirDanio(DANIO);
-        for(Direccion direccionEmpuje : Direccion.values()){
-            destino.vecinaAl(direccionEmpuje).empujarUnidadInterna(direccionEmpuje);
-        }
-
+        origen.propagar(direccion, new ProyectilEnArco(destino, direccion, DANIO));
     }
 }

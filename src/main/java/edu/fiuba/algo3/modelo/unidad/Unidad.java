@@ -14,4 +14,5 @@ public interface Unidad {
     boolean estaContaminado();
     void asignarCasilla(Casilla casilla);
     void abandonarCasilla();
+
 }
