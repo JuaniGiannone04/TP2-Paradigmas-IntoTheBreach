@@ -17,11 +17,12 @@ import java.util.List;
 public class FaseVek implements Fase {
 
     private final List<AtaqueAnunciado> ataquesAnunciados = new ArrayList<>();
+    private final FaseEmergencia emergencia = new FaseEmergencia();
 
     @Override
     public FaseJugador ejecutar(Turno turno) {
         turno.tablero().ifPresent(this :: ejecutarIA);
-        return new FaseJugador(List.copyOf(ataquesAnunciados));
+        return new FaseJugador(List.copyOf(ataquesAnunciados), emergencia);
     }
 
     private void ejecutarIA(Tablero tablero) {
@@ -45,6 +46,10 @@ public class FaseVek implements Fase {
             AtaqueAnunciado ataqueAnunciado = new AtaqueAnunciado(vek, direccionAtaque);
             registrarAtaque(ataqueAnunciado);
         }
+    }
+
+    public void programarEmergencia(Casilla casilla, Vek vek){
+        emergencia.programar(casilla, vek);
     }
 
 

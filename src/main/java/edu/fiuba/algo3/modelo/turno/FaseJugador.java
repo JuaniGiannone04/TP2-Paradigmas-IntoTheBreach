@@ -15,14 +15,21 @@ public class FaseJugador implements Fase {
     private final Map<Mech, MovimientoEjecutado> movimientos = new HashMap<>();
     private final List<Mech> mechsQueAtacaron = new ArrayList<>();
     private boolean deshacerDisponible = true;
+    private final FaseEmergencia emergencia;
 
     public FaseJugador(List<AtaqueAnunciado> ataquesAnunciados) {
         this.ataquesAnunciados = ataquesAnunciados;
+        this.emergencia = new FaseEmergencia();
+    }
+
+    public FaseJugador(List<AtaqueAnunciado> ataquesAnunciados,FaseEmergencia emergencia) {
+        this.ataquesAnunciados = ataquesAnunciados;
+        this.emergencia = emergencia;
     }
 
     @Override
     public FaseResolucion ejecutar(Turno turno) {
-        return new FaseResolucion(this.ataquesAnunciados);
+        return new FaseResolucion(this.ataquesAnunciados, emergencia);
     }
 
     public void moverMech(Mech mech, Casilla origen, Casilla destino) {

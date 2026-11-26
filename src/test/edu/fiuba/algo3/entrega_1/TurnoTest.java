@@ -463,7 +463,57 @@ public class TurnoTest {
         turno.avanzarFase();
 
         assertEquals(4, red.getEnergia());
+    }
+
+    @Test
+    public void test26FaseEmergenciaColocaVekEnCasillaLibre(){
+        Casilla destino = new Casilla(new Suelo());
+        Saltador nuevoVek = new Saltador();
+
+        Turno turno = new  Turno();
+        FaseVek faseVek = (FaseVek) turno.faseActual();
+
+        faseVek.programarEmergencia(destino, nuevoVek);
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        assertFalse(destino.estaOcupada());
+
+        turno.avanzarFase();
+
+        assertSame(nuevoVek, destino.getUnidad());
+        assertEquals(2, turno.obtenerNumero());
 
 
     }
+
+    @Test
+    public void test27FaseEmergenciaColocaVekEnCasillaOcupadaAplicaUnoDeDanioAlOcupante(){
+        Casilla destino = new Casilla(new Suelo());
+
+        Saltador nuevoVek = new Saltador();
+        Mech mech = new Mech(new  Punio(), 3);
+        destino.colocarUnidad(mech);
+
+        Turno turno = new  Turno();
+        FaseVek faseVek = (FaseVek) turno.faseActual();
+
+        faseVek.programarEmergencia(destino, nuevoVek);
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        turno.avanzarFase();
+
+        assertSame(mech, destino.getUnidad());
+        assertEquals(2, mech.getVidaActual());
+        assertEquals(2, turno.obtenerNumero());
+
+
+    }
+
+
 }
