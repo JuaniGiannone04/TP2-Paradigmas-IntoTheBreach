@@ -598,5 +598,31 @@ public class TurnoTest {
         assertFalse(destino.estaOcupada());
     }
 
+    @Test
+    public void test29DeshacerNoMueveOtraUnidadSiElMechCambioDePosicion(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla destino = new  Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
+        Mech mech = new Mech(new Punio(), 3);
+        origen.colocarUnidad(mech);
+
+        Mech otroMech = new  Mech(new Punio(), 3);
+
+        Turno turno =  crearTurno(origen, destino);
+        turno.avanzarFase();
+        turno.moverMech(mech, origen, destino);
+
+        destino.quitarUnidad();
+        destino.colocarUnidad(otroMech);
+
+        assertThrows(IllegalStateException.class,
+                () -> turno.deshacerMovimiento(mech));
+
+        assertSame(otroMech, destino.getUnidad());
+        assertFalse(origen.estaOcupada());
+    }
 
 }
