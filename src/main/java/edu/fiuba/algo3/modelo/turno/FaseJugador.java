@@ -2,6 +2,7 @@ package edu.fiuba.algo3.modelo.turno;
 
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 
 import java.util.ArrayList;
@@ -13,7 +14,12 @@ public class FaseJugador implements Fase {
 
     private final Map<Mech, MovimientoEjecutado> movimientos = new HashMap<>();
     private final List<Mech> mechsQueAtacaron = new ArrayList<>();
+    private final Tablero tablero;
     private boolean deshacerDisponible = true;
+
+    public FaseJugador(Tablero tablero) {
+        this.tablero = tablero;
+    }
 
     @Override
     public void ejecutar(Turno turno) {
@@ -26,6 +32,10 @@ public class FaseJugador implements Fase {
         }
         if (movimientos.containsKey(mech)) {
             throw new IllegalStateException("El Mech ya se movió en este turno");
+        }
+
+        if(!tablero.casillasAlcanzablesDesde(origen, mech, 3).contains(destino)) {
+            throw new IllegalStateException("El destino está fuera de alcance");
         }
 
         MovimientoEjecutado movimiento = new MovimientoEjecutado(mech, origen, destino);

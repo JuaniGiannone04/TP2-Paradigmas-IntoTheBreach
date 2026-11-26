@@ -12,7 +12,7 @@ public class FaseVek implements Fase {
 
     @Override
     public void ejecutar(Turno turno) {
-        turno.cambiarFase(new FaseJugador());
+        turno.cambiarFase(new FaseJugador(turno.getTablero()));
     }
 
     public Casilla destinoHaciaEdificio(Casilla origen) {

@@ -16,9 +16,15 @@ public class Turno {
     private int numero = 1;
     private Fase faseActual;
     private final List<AtaqueAnunciado> ataquesAnunciados = new ArrayList<>();
+    private final Tablero tablero;
 
-    public Turno() {
+    public Turno(Tablero tablero) {
+        this.tablero = tablero;
         this.faseActual = new FaseVek();
+    }
+
+    Tablero getTablero() {
+        return tablero;
     }
 
     public void avanzarFase() {

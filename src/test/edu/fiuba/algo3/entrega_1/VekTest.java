@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.entrega_1;
 
+import edu.fiuba.algo3.modelo.GeneradorDeTablero;
 import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Canion;
@@ -12,13 +13,24 @@ import edu.fiuba.algo3.modelo.turno.FaseVek;
 import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 
 public class VekTest {
+
+    private Turno crearTurno(Casilla ... casillas){
+        if(casillas.length == 0){
+            return new Turno(new GeneradorDeTablero().crearTablero());
+        }
+        return new Turno(new Tablero(List.of(casillas)));
+    }
 
     @Test
     public void test01SaltadorAtacaCasillaAdyacenteYHaceDosDeDanio() {
@@ -261,7 +273,7 @@ public class VekTest {
         Mech mech = new Mech(new Punio(), 3);
         mechCasilla.colocarUnidad(mech);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(vekCasilla, mechCasilla);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
         turno.avanzarFase();
         turno.avanzarFase();
@@ -274,15 +286,17 @@ public class VekTest {
     public void test18LuciernagaAtacaAlNorteYContaminaAlObjetivo() {
         Casilla vekCasilla = new Casilla(new Suelo());
         Casilla mechCasilla = new Casilla(new Suelo());
+
         vekCasilla.conectarVecina(Direccion.NORTE, mechCasilla);
         mechCasilla.conectarVecina(Direccion.SUR, vekCasilla);
 
         Vek vek = new Luciernaga();
         vekCasilla.colocarUnidad(vek);
+
         Mech mech = new Mech(new Punio(), 3);
         mechCasilla.colocarUnidad(mech);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(vekCasilla, mechCasilla);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
         turno.avanzarFase();
         turno.avanzarFase();

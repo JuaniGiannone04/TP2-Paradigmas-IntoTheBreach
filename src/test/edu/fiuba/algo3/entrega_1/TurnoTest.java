@@ -1,14 +1,18 @@
 package edu.fiuba.algo3.entrega_1;
 
+import com.sun.javafx.scene.control.ControlAcceleratorSupport;
+import edu.fiuba.algo3.modelo.GeneradorDeTablero;
 import edu.fiuba.algo3.modelo.RedElectrica;
 import edu.fiuba.algo3.modelo.arma.Arma;
 import edu.fiuba.algo3.modelo.arma.Punio;
 import edu.fiuba.algo3.modelo.terreno.Acido;
 import edu.fiuba.algo3.modelo.terreno.Edificio;
+import edu.fiuba.algo3.modelo.terreno.Montana;
 import edu.fiuba.algo3.modelo.terreno.Suelo;
 import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Luciernaga;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Saltador;
@@ -22,13 +26,26 @@ import static org.mockito.Mockito.*;
 
 public class TurnoTest {
 
+    private Turno crearTurno(Casilla ... casillas){
+        if(casillas.length == 0){
+            return new Turno(new GeneradorDeTablero().crearTablero());
+        }
+        return new Turno(new Tablero(List.of(casillas)));
+    }
+
+
     @Test
     public void test01DeshacerMovimientoDeMechQueNoAtacoVuelveASuPosicionAnterior() {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino);
@@ -43,9 +60,14 @@ public class TurnoTest {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
         Casilla objetivo = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino, objetivo);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino);
@@ -60,9 +82,16 @@ public class TurnoTest {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino1 = new Casilla(new Suelo());
         Casilla destino2 = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino1);
+        destino1.conectarVecina(Direccion.OESTE, origen);
+        origen.conectarVecina(Direccion.OESTE, destino2);
+        destino2.conectarVecina(Direccion.ESTE, origen);
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino1, destino2);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino1);
@@ -74,14 +103,14 @@ public class TurnoTest {
 
     @Test
     public void test04ElTurnoEmpiezaEnFaseVek() {
-        Turno turno = new Turno();
+        Turno turno = crearTurno();
 
         assertTrue(turno.obtenerFaseActual() instanceof FaseVek);
     }
 
     @Test
     public void test05AvanzarFaseCambiaDeFaseVekAFaseJugador() {
-        Turno turno = new Turno();
+        Turno turno = crearTurno();
 
         turno.avanzarFase();
 
@@ -90,7 +119,7 @@ public class TurnoTest {
 
     @Test
     public void test06AvanzarFaseCambiaDeFaseJugadorAFaseResolucion() {
-        Turno turno = new Turno();
+        Turno turno = crearTurno();
         turno.avanzarFase();
         turno.avanzarFase();
 
@@ -99,7 +128,7 @@ public class TurnoTest {
 
     @Test
     public void test07AvanzarFaseCambiaDeFaseResolucionAFaseEmergencia() {
-        Turno turno = new Turno();
+        Turno turno = crearTurno();
         turno.avanzarFase();
         turno.avanzarFase();
 
@@ -112,9 +141,14 @@ public class TurnoTest {
     public void test08AlNuevoTurnoSePuedeDeshacerDeNuevo() {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino);
 
         turno.avanzarFase();
         turno.moverMech(mech, origen, destino);
@@ -131,7 +165,7 @@ public class TurnoTest {
 
     @Test
     public void test09AlTerminarUnCicloCompletoPasaAlSiguienteTurno() {
-        Turno turno = new Turno();
+        Turno turno = crearTurno();
         assertEquals(1, turno.obtenerNumero());
 
         for (int i = 0; i < 4; i++) {
@@ -144,9 +178,11 @@ public class TurnoTest {
     @Test
     public void test10NoSePuedeDeshacerFueraDeLaFaseDelJugador() {
         Casilla origen = new Casilla(new Suelo());
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen);
 
         assertThrows(IllegalStateException.class, () -> turno.deshacerMovimiento(mech));
     }
@@ -154,9 +190,11 @@ public class TurnoTest {
     @Test
     public void test11NoSePuedeDeshacerSiElMechNoSeMovio() {
         Casilla origen = new Casilla(new Suelo());
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () -> turno.deshacerMovimiento(mech));
@@ -167,9 +205,11 @@ public class TurnoTest {
         Casilla origen = new Casilla(new Suelo());
         Casilla objetivo = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, objetivo, destino);
         turno.avanzarFase();
 
         turno.atacarConMech(mech, origen, objetivo);
@@ -181,9 +221,11 @@ public class TurnoTest {
     public void test13NoSePuedeMoverUnMechEnFaseVek() {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
+
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino);
 
         assertThrows(IllegalStateException.class, () -> turno.moverMech(mech, origen, destino));
     }
@@ -192,13 +234,14 @@ public class TurnoTest {
     public void test14DeshacerMovimientoSobreAcidoQuitaLaContaminacion() {
         Casilla origen = new Casilla(new Suelo());
         Casilla acido = new Casilla(new Acido());
+
         origen.conectarVecina(Direccion.ESTE, acido);
         acido.conectarVecina(Direccion.OESTE, origen);
 
         Mech mech = new Mech(new Punio(), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(origen, acido);
         turno.avanzarFase();
         turno.moverMech(mech, origen, acido);
         assertTrue(mech.estaContaminado());
@@ -212,6 +255,7 @@ public class TurnoTest {
     public void test15DeshacerNoQuitaUnaContaminacionAnterior() {
         Casilla origen = new Casilla(new Suelo());
         Casilla destino = new Casilla(new Suelo());
+
         origen.conectarVecina(Direccion.ESTE, destino);
         destino.conectarVecina(Direccion.OESTE, origen);
 
@@ -219,7 +263,7 @@ public class TurnoTest {
         mech.aplicarEfectoAcido();
         origen.colocarUnidad(mech);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(origen, destino);
         turno.avanzarFase();
         turno.moverMech(mech, origen, destino);
         turno.deshacerMovimiento(mech);
@@ -234,11 +278,20 @@ public class TurnoTest {
         Casilla objetivo = new Casilla(new Suelo());
         Casilla otroOrigen = new Casilla(new Suelo());
         Casilla otroDestino = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, destino);
+        destino.conectarVecina(Direccion.OESTE, origen);
+        destino.conectarVecina(Direccion.ESTE, objetivo);
+
+        otroOrigen.conectarVecina(Direccion.NORTE, otroDestino);
+        otroDestino.conectarVecina(Direccion.SUR, otroOrigen);
+
         Mech primero = new Mech(mock(Arma.class), 3);
         Mech segundo = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(primero);
         otroOrigen.colocarUnidad(segundo);
-        Turno turno = new Turno();
+
+        Turno turno = crearTurno(origen, destino, objetivo, otroOrigen, otroDestino);
         turno.avanzarFase();
         turno.moverMech(primero, origen, destino);
         turno.atacarConMech(primero, destino, objetivo);
@@ -254,15 +307,18 @@ public class TurnoTest {
 
     @Test
     public void test17VekAnunciaSuAtaqueEnLaFaseVek() {
-        Turno turno = new Turno();
         Casilla vekCasilla = new Casilla(new Suelo());
         Casilla mechCasilla = new Casilla(new Suelo());
+
         vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
         mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
+
         Vek vek = new Saltador();
         vekCasilla.colocarUnidad(vek);
+
         mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
 
+        Turno turno = crearTurno(vekCasilla, mechCasilla);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
 
         assertEquals(1, turno.cantidadDeAtaquesAnunciados());
@@ -270,16 +326,21 @@ public class TurnoTest {
 
     @Test
     public void test18NoSePuedeAnunciarAtaqueFueraDeLaFaseVek() {
-        Turno turno = new Turno();
-        turno.avanzarFase();
         Casilla vekCasilla = new Casilla(new Suelo());
         Casilla mechCasilla = new Casilla(new Suelo());
+
         vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
         mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
+
         Vek vek = new Saltador();
         vekCasilla.colocarUnidad(vek);
+
         mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
+
         AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
+
+        Turno turno = crearTurno(vekCasilla, mechCasilla);
+        turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () -> turno.registrarAtaque(ataque));
     }
@@ -320,23 +381,29 @@ public class TurnoTest {
 
     @Test
     public void test21FaseResolucionEjecutaLosAtaquesEnElOrdenAnunciado() {
-        Turno turno = new Turno();
         Casilla casillaA = new Casilla(new Suelo());
         Casilla mechA = new Casilla(new Suelo());
+
         casillaA.conectarVecina(Direccion.ESTE, mechA);
         mechA.conectarVecina(Direccion.OESTE, casillaA);
+
         Vek primero = new Saltador();
         casillaA.colocarUnidad(primero);
+
         mechA.colocarUnidad(new Mech(mock(Arma.class), 3));
 
         Casilla casillaB = new Casilla(new Suelo());
         Casilla mechB = new Casilla(new Suelo());
+
         casillaB.conectarVecina(Direccion.OESTE, mechB);
         mechB.conectarVecina(Direccion.ESTE, casillaB);
+
         Vek segundo = new Luciernaga();
         casillaB.colocarUnidad(segundo);
+
         mechB.colocarUnidad(new Mech(mock(Arma.class), 3));
 
+        Turno turno = crearTurno(casillaA, mechA, casillaB, mechB);
         turno.registrarAtaque(primero.anunciaAtaque(casillaA));
         turno.registrarAtaque(segundo.anunciaAtaque(casillaB));
         turno.avanzarFase();
@@ -351,16 +418,18 @@ public class TurnoTest {
     public void test22FaseResolucionEjecutaElAtaqueAnunciadoYHaceDanio() {
         Casilla vekCasilla = new Casilla(new Suelo());
         Casilla mechCasilla = new Casilla(new Suelo());
+
         vekCasilla.conectarVecina(Direccion.ESTE, mechCasilla);
         mechCasilla.conectarVecina(Direccion.OESTE, vekCasilla);
 
         Vek vek = new Saltador();
         vekCasilla.colocarUnidad(vek);
+
         Mech mech = new Mech(new Punio(), 3);
         mechCasilla.colocarUnidad(mech);
         int vidaInicialMech = mech.getVidaActual();
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(vekCasilla, mechCasilla);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
         turno.avanzarFase();
         turno.avanzarFase();
@@ -375,6 +444,7 @@ public class TurnoTest {
         Casilla origen = new Casilla(new Suelo());
         Casilla intermedia = new Casilla(new Suelo());
         Casilla edificio = new Casilla(new Edificio(new RedElectrica(5)));
+
         origen.conectarVecina(Direccion.ESTE, intermedia);
         intermedia.conectarVecina(Direccion.OESTE, origen);
         intermedia.conectarVecina(Direccion.ESTE, edificio);
@@ -382,8 +452,8 @@ public class TurnoTest {
 
         Vek vek = new Saltador();
         origen.colocarUnidad(vek);
-        Turno turno = new Turno();
 
+        Turno turno = crearTurno(origen, intermedia, edificio);
         turno.moverVek(origen);
 
         assertSame(vek, intermedia.getUnidad());
@@ -402,7 +472,7 @@ public class TurnoTest {
 
         origen.colocarUnidad(mechEnOrigen);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(origen, destino);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class,
@@ -429,7 +499,7 @@ public class TurnoTest {
 
         origen.colocarUnidad(mech);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(origen, destino);
         turno.avanzarFase();
 
         turno.moverMech(mech,  origen, destino);
@@ -463,7 +533,7 @@ public class TurnoTest {
         origenAjeno.colocarUnidad(otroMech);
         objetivo.colocarUnidad(vek);
 
-        Turno turno = new Turno();
+        Turno turno = crearTurno(origenReal, origenAjeno, objetivo);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () ->
@@ -474,6 +544,58 @@ public class TurnoTest {
         turno.atacarConMech(mechSeleccionado, origenReal, objetivo);
 
         assertFalse(objetivo.estaOcupada());
+    }
+
+    @Test
+    public void test27MechNoPuedeMoverseMasDeTresCasillas(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla distancia1 = new Casilla(new Suelo());
+        Casilla distancia2 = new Casilla(new Suelo());
+        Casilla distancia3 = new Casilla(new Suelo());
+        Casilla distancia4 = new Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, distancia1);
+        distancia1.conectarVecina(Direccion.ESTE, distancia2);
+        distancia2.conectarVecina(Direccion.OESTE, distancia3);
+        distancia3.conectarVecina(Direccion.ESTE, distancia4);
+
+        Mech mech = new Mech(new Punio(), 3);
+        origen.colocarUnidad(mech);
+
+        Turno turno = crearTurno(origen, distancia1, distancia2, distancia3, distancia4);
+        turno.avanzarFase();
+
+        assertThrows(IllegalStateException.class,
+                () -> turno.moverMech(mech, origen, distancia4));
+
+        assertSame(mech, origen.getUnidad());
+
+        turno.moverMech(mech, origen, distancia3);
+
+        assertSame(mech, distancia3.getUnidad());
+        assertFalse(origen.estaOcupada());
+    }
+
+    @Test
+    public void test28MechNoPuedeAtravesarObstaculos(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla obstaculo = new Casilla(new Montana());
+        Casilla destino = new  Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, obstaculo);
+        obstaculo.conectarVecina(Direccion.OESTE, destino);
+
+        Mech mech = new Mech(new Punio(), 3);
+        origen.colocarUnidad(mech);
+
+        Turno turno = crearTurno(origen, obstaculo, destino);
+        turno.avanzarFase();
+
+        assertThrows(IllegalStateException.class,
+                () ->  turno.moverMech(mech, origen, destino));
+
+        assertSame(mech, origen.getUnidad());
+        assertFalse(destino.estaOcupada());
     }
 
 
