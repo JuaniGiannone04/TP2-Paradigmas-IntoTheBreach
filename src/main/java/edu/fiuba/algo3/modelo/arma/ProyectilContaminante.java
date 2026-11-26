@@ -17,7 +17,6 @@ public class ProyectilContaminante implements Ataque {
     public void impactarEn(Casilla casilla) {
         if (casilla.detieneProyectil()) {
             casilla.recibirDanio(this.danio);
-            casilla.empujarUnidadInterna(this.direccion);
             casilla.contaminarOcupante();
         } else {
             casilla.propagar(this.direccion, this);
