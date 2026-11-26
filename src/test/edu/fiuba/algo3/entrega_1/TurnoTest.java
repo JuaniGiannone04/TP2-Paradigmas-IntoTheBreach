@@ -26,14 +26,6 @@ import static org.mockito.Mockito.*;
 
 public class TurnoTest {
 
-    private Turno crearTurno(Casilla ... casillas){
-        if(casillas.length == 0){
-            return new Turno(new GeneradorDeTablero().crearTablero());
-        }
-        return new Turno(new Tablero(List.of(casillas)));
-    }
-
-
     @Test
     public void test01DeshacerMovimientoDeMechQueNoAtacoVuelveASuPosicionAnterior() {
         Casilla origen = new Casilla(new Suelo());
@@ -45,7 +37,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero tablero = new Tablero(List.of(origen, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino);
@@ -67,7 +60,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino, objetivo);
+        Tablero tablero = new Tablero(List.of(origen, destino, objetivo));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino);
@@ -91,7 +85,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino1, destino2);
+        Tablero tablero = new Tablero(List.of(origen, destino1, destino2));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         turno.moverMech(mech, origen, destino1);
@@ -103,14 +98,16 @@ public class TurnoTest {
 
     @Test
     public void test04ElTurnoEmpiezaEnFaseVek() {
-        Turno turno = crearTurno();
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Turno turno = new Turno(tablero);
 
         assertTrue(turno.obtenerFaseActual() instanceof FaseVek);
     }
 
     @Test
     public void test05AvanzarFaseCambiaDeFaseVekAFaseJugador() {
-        Turno turno = crearTurno();
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Turno turno = new Turno(tablero);
 
         turno.avanzarFase();
 
@@ -119,7 +116,8 @@ public class TurnoTest {
 
     @Test
     public void test06AvanzarFaseCambiaDeFaseJugadorAFaseResolucion() {
-        Turno turno = crearTurno();
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
         turno.avanzarFase();
 
@@ -128,7 +126,9 @@ public class TurnoTest {
 
     @Test
     public void test07AvanzarFaseCambiaDeFaseResolucionAFaseEmergencia() {
-        Turno turno = crearTurno();
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Turno turno = new Turno(tablero);
+
         turno.avanzarFase();
         turno.avanzarFase();
 
@@ -148,7 +148,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero  tablero = new Tablero(List.of(origen, destino));
+        Turno turno = new  Turno(tablero);
 
         turno.avanzarFase();
         turno.moverMech(mech, origen, destino);
@@ -165,7 +166,9 @@ public class TurnoTest {
 
     @Test
     public void test09AlTerminarUnCicloCompletoPasaAlSiguienteTurno() {
-        Turno turno = crearTurno();
+        Tablero tablero = new GeneradorDeTablero().crearTablero();
+        Turno turno = new Turno(tablero);
+
         assertEquals(1, turno.obtenerNumero());
 
         for (int i = 0; i < 4; i++) {
@@ -182,7 +185,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen);
+        Tablero tablero = new  Tablero(List.of(origen));
+        Turno turno = new Turno(tablero);
 
         assertThrows(IllegalStateException.class, () -> turno.deshacerMovimiento(mech));
     }
@@ -194,7 +198,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen);
+        Tablero tablero = new  Tablero(List.of(origen));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () -> turno.deshacerMovimiento(mech));
@@ -209,7 +214,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, objetivo, destino);
+        Tablero  tablero = new  Tablero(List.of(origen, objetivo, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         turno.atacarConMech(mech, origen, objetivo);
@@ -225,7 +231,8 @@ public class TurnoTest {
         Mech mech = new Mech(mock(Arma.class), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero tablero = new  Tablero(List.of(origen, destino));
+        Turno turno = new  Turno(tablero);
 
         assertThrows(IllegalStateException.class, () -> turno.moverMech(mech, origen, destino));
     }
@@ -241,7 +248,8 @@ public class TurnoTest {
         Mech mech = new Mech(new Punio(), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, acido);
+        Tablero tablero =  new  Tablero(List.of(origen, acido));
+        Turno turno = new  Turno(tablero);
         turno.avanzarFase();
         turno.moverMech(mech, origen, acido);
         assertTrue(mech.estaContaminado());
@@ -263,7 +271,8 @@ public class TurnoTest {
         mech.aplicarEfectoAcido();
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero tablero = new  Tablero(List.of(origen, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
         turno.moverMech(mech, origen, destino);
         turno.deshacerMovimiento(mech);
@@ -291,7 +300,8 @@ public class TurnoTest {
         origen.colocarUnidad(primero);
         otroOrigen.colocarUnidad(segundo);
 
-        Turno turno = crearTurno(origen, destino, objetivo, otroOrigen, otroDestino);
+        Tablero tablero = new Tablero(List.of(origen, destino, objetivo, otroOrigen, otroDestino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
         turno.moverMech(primero, origen, destino);
         turno.atacarConMech(primero, destino, objetivo);
@@ -318,7 +328,8 @@ public class TurnoTest {
 
         mechCasilla.colocarUnidad(new Mech(mock(Arma.class), 3));
 
-        Turno turno = crearTurno(vekCasilla, mechCasilla);
+        Tablero tablero = new Tablero(List.of(vekCasilla, mechCasilla));
+        Turno turno = new Turno(tablero);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
 
         assertEquals(1, turno.cantidadDeAtaquesAnunciados());
@@ -339,7 +350,8 @@ public class TurnoTest {
 
         AtaqueAnunciado ataque = vek.anunciaAtaque(vekCasilla);
 
-        Turno turno = crearTurno(vekCasilla, mechCasilla);
+        Tablero tablero = new Tablero(List.of(vekCasilla, mechCasilla));
+        Turno turno = new  Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () -> turno.registrarAtaque(ataque));
@@ -403,7 +415,8 @@ public class TurnoTest {
 
         mechB.colocarUnidad(new Mech(mock(Arma.class), 3));
 
-        Turno turno = crearTurno(casillaA, mechA, casillaB, mechB);
+        Tablero tablero = new Tablero(List.of(casillaA, mechA, casillaB, mechB));
+        Turno turno = new Turno(tablero);
         turno.registrarAtaque(primero.anunciaAtaque(casillaA));
         turno.registrarAtaque(segundo.anunciaAtaque(casillaB));
         turno.avanzarFase();
@@ -429,7 +442,8 @@ public class TurnoTest {
         mechCasilla.colocarUnidad(mech);
         int vidaInicialMech = mech.getVidaActual();
 
-        Turno turno = crearTurno(vekCasilla, mechCasilla);
+        Tablero tablero = new Tablero(List.of(mechCasilla, vekCasilla));
+        Turno turno = new Turno(tablero);
         turno.registrarAtaque(vek.anunciaAtaque(vekCasilla));
         turno.avanzarFase();
         turno.avanzarFase();
@@ -453,7 +467,8 @@ public class TurnoTest {
         Vek vek = new Saltador();
         origen.colocarUnidad(vek);
 
-        Turno turno = crearTurno(origen, intermedia, edificio);
+        Tablero tablero = new Tablero(List.of(origen, intermedia, edificio));
+        Turno turno = new Turno(tablero);
         turno.moverVek(origen);
 
         assertSame(vek, intermedia.getUnidad());
@@ -472,7 +487,8 @@ public class TurnoTest {
 
         origen.colocarUnidad(mechEnOrigen);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero tablero = new Tablero(List.of(origen, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class,
@@ -499,7 +515,8 @@ public class TurnoTest {
 
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, destino);
+        Tablero tablero = new Tablero(List.of(origen, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         turno.moverMech(mech,  origen, destino);
@@ -533,7 +550,8 @@ public class TurnoTest {
         origenAjeno.colocarUnidad(otroMech);
         objetivo.colocarUnidad(vek);
 
-        Turno turno = crearTurno(origenReal, origenAjeno, objetivo);
+        Tablero tablero = new Tablero(List.of(origenReal, origenAjeno, objetivo));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class, () ->
@@ -562,7 +580,8 @@ public class TurnoTest {
         Mech mech = new Mech(new Punio(), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, distancia1, distancia2, distancia3, distancia4);
+        Tablero tablero = new Tablero(List.of(origen, distancia1, distancia2, distancia3, distancia4));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class,
@@ -588,7 +607,8 @@ public class TurnoTest {
         Mech mech = new Mech(new Punio(), 3);
         origen.colocarUnidad(mech);
 
-        Turno turno = crearTurno(origen, obstaculo, destino);
+        Tablero tablero = new  Tablero(List.of(origen, obstaculo, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
 
         assertThrows(IllegalStateException.class,
@@ -611,7 +631,8 @@ public class TurnoTest {
 
         Mech otroMech = new  Mech(new Punio(), 3);
 
-        Turno turno =  crearTurno(origen, destino);
+        Tablero tablero = new Tablero(List.of(origen, destino));
+        Turno turno = new Turno(tablero);
         turno.avanzarFase();
         turno.moverMech(mech, origen, destino);
 
@@ -637,7 +658,8 @@ public class TurnoTest {
         origen.colocarUnidad(saltador);
         objetivo.colocarUnidad(mech);
 
-        Turno turno =  crearTurno(origen, objetivo);
+        Tablero tablero = new  Tablero(List.of(origen, objetivo));
+        Turno turno = new Turno(tablero);
         AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
 
         turno.registrarAtaque(ataque);
@@ -664,7 +686,8 @@ public class TurnoTest {
         origen.colocarUnidad(saltador);
         objetivo.colocarUnidad(mech);
 
-        Turno turno =  crearTurno(origen, objetivo);
+        Tablero  tablero = new  Tablero(List.of(origen, objetivo));
+        Turno turno = new Turno(tablero);
         AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
 
         turno.registrarAtaque(ataque);
