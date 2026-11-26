@@ -5,8 +5,11 @@ import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 import edu.fiuba.algo3.modelo.unidad.Vek;
+import edu.fiuba.algo3.modelo.IA.IAVek;
+import edu.fiuba.algo3.modelo.IA.DecisionVek;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,31 @@ public class FaseVek implements Fase {
 
     @Override
     public FaseJugador ejecutar(Turno turno) {
+        turno.tablero().ifPresent(this :: ejecutarIA);
         return new FaseJugador(List.copyOf(ataquesAnunciados));
+    }
+
+    private void ejecutarIA(Tablero tablero) {
+        for (Vek vek : tablero.obtenerVeks()) {
+            DecisionVek decision = new IAVek(tablero, vek).decidir();
+            ejecutarDecision(vek, decision);
+        }
+
+    }
+
+    private void ejecutarDecision(Vek vek, DecisionVek decision) {
+        Casilla origen = vek.getCasillaActual();
+        Casilla destino = decision.getDestino();
+
+        if(origen != destino){
+            origen.moverUnidadHacia(destino);
+        }
+
+        if(vek.getVidaActual() > 0){
+            Direccion direccionAtaque = decision.getDireccionAtaque();
+            AtaqueAnunciado ataqueAnunciado = new AtaqueAnunciado(vek, direccionAtaque);
+            registrarAtaque(ataqueAnunciado);
+        }
     }
 
 

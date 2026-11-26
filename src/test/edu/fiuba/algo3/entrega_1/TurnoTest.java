@@ -10,6 +10,7 @@ import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Luciernaga;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Saltador;
@@ -428,5 +429,41 @@ public class TurnoTest {
         assertThrows(IllegalStateException.class, () -> faseJugador.moverMech(mech, destino, origen));
         assertSame(mech, destino.getUnidad());
         assertFalse(origen.estaOcupada());
+    }
+
+    @Test
+    public void test25FaseVekEjecutaMovimientoYAnunciaAtaque(){
+        RedElectrica red =  new RedElectrica(5);
+        Casilla[] casillas = new Casilla[4];
+
+        for(int i = 0; i < 3; i++){
+            casillas[i] = new Casilla(new Suelo());
+        }
+
+        casillas[3] = new Casilla(new Edificio(red));
+
+        for(int i = 0; i < 3; i++){
+            casillas[i].conectarVecina(Direccion.ESTE, casillas[i + 1]);
+            casillas[i + 1].conectarVecina(Direccion.OESTE, casillas[i]);
+        }
+
+        Saltador vek = new Saltador();
+        casillas[0].colocarUnidad(vek);
+
+        Tablero tablero = new Tablero(List.of(casillas));
+        Turno turno = new Turno(tablero);
+
+        turno.avanzarFase();
+
+        assertSame(vek, casillas[2].getUnidad());
+        assertFalse(casillas[0].estaOcupada());
+        assertEquals(5, red.getEnergia());
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        assertEquals(4, red.getEnergia());
+
+
     }
 }
