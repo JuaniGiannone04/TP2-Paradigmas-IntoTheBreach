@@ -1,7 +1,9 @@
 package edu.fiuba.algo3.modelo.ubicacion;
 
+import edu.fiuba.algo3.modelo.arma.Ataque;
 import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
+
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +11,7 @@ import java.util.Optional;
 public class Casilla implements Celda {
     private Terreno terreno;
     private Unidad unidad;
-    private final  Map<Direccion, Celda> vecinas;
+    private final Map<Direccion, Celda> vecinas;
 
     public Casilla(Terreno terrenoInicial) {
         this.terreno = terrenoInicial;
@@ -37,6 +39,9 @@ public class Casilla implements Celda {
 
     @Override
     public Direccion direccionHacia(Celda destino) {
+        if (this == destino) {
+            throw new IllegalArgumentException("El origen y el destino no pueden ser la misma casilla.");
+        }
         for (Direccion direccion : Direccion.values()) {
             if (this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino)) {
                 return direccion;
@@ -53,6 +58,39 @@ public class Casilla implements Celda {
         return this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino);
     }
 
+    public boolean estaEnLineaRectaCon(Celda destino) {
+        for (Direccion direccion : Direccion.values()) {
+            if (this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void recibir(Ataque ataque) {
+        ataque.impactarEn(this);
+    }
+
+    @Override
+    public void propagar(Direccion direccion, Ataque ataque) {
+        this.vecinaAl(direccion).recibir(ataque);
+    }
+
+    @Override
+    public Optional<Casilla> primerBloqueoEn(Direccion direccion) {
+        if (this.detieneProyectil()) {
+            return Optional.of(this);
+        }
+        return this.vecinaAl(direccion).primerBloqueoEn(direccion);
+    }
+
+    public void empujarEnTodasLasDirecciones() {
+        for (Direccion direccionEmpuje : Direccion.values()) {
+            this.vecinaAl(direccionEmpuje).empujarUnidadInterna(direccionEmpuje);
+        }
+    }
+
     @Override
     public void empujarUnidadInterna(Direccion direccion) {
         if (!this.estaOcupada()) {
@@ -61,15 +99,8 @@ public class Casilla implements Celda {
         Celda celdaDestino = this.vecinaAl(direccion);
         if (celdaDestino.recibirUnidadEmpujada(this.unidad)) {
             this.unidad = null;
-        }
-        else {
-            limpiarSiEstaMuerta();
-        }
-    }
-
-    private void limpiarSiEstaMuerta() {
-        if (this.estaOcupada() && this.unidad.getVidaActual() == 0) {
-            this.quitarUnidad();
+        } else {
+            this.limpiarSiEstaMuerta();
         }
     }
 
@@ -84,7 +115,7 @@ public class Casilla implements Celda {
         return true;
     }
 
-    @Override
+
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
             this.unidad.recibirDanio(danio);
@@ -93,11 +124,15 @@ public class Casilla implements Celda {
         this.terreno = this.terreno.recibirDanio(danio);
     }
 
+    public void contaminarOcupante() {
+        if (this.estaOcupada()) {
+            this.unidad.aplicarEfectoAcido();
+        }
+    }
+
     public void colocarUnidad(Unidad nuevaUnidad) {
         if (this.estaOcupada()) {
-            throw new IllegalStateException(
-                    "La casilla ya está ocupada por otra unidad."
-            );
+            throw new IllegalStateException("La casilla ya está ocupada por otra unidad.");
         }
         this.unidad = nuevaUnidad;
         nuevaUnidad.asignarCasilla(this);
@@ -108,7 +143,9 @@ public class Casilla implements Celda {
     public Unidad quitarUnidad() {
         Unidad unidadRetirada = this.unidad;
         this.unidad = null;
-        unidadRetirada.abandonarCasilla();
+        if (unidadRetirada != null) {
+            unidadRetirada.abandonarCasilla();
+        }
         return unidadRetirada;
     }
 
@@ -116,22 +153,17 @@ public class Casilla implements Celda {
         if (!this.estaOcupada()) {
             throw new IllegalStateException("No hay unidad para mover en la casilla de origen.");
         }
-        if(!destino.puedeSerOcupadaPor(this.unidad)) {
+        if (!destino.puedeSerOcupadaPor(this.unidad)) {
             throw new IllegalStateException("La unidad no puede ocupar la casilla de destino.");
         }
-
         destino.colocarUnidad(this.quitarUnidad());
     }
 
-    @Override
-    public Optional<Casilla> primerBloqueoEn(Direccion direccion){
-        if(this.detieneProyectil()){
-            return Optional.of(this);
+    private void limpiarSiEstaMuerta() {
+        if (this.estaOcupada() && this.unidad.getVidaActual() == 0) {
+            this.quitarUnidad();
         }
-
-        return this.vecinaAl(direccion).primerBloqueoEn(direccion);
     }
-
 
     public boolean puedeSerOcupadaPor(Unidad nuevaUnidad) {
         return !this.estaOcupada() && nuevaUnidad.puedeTransitar(this.terreno);
@@ -141,14 +173,12 @@ public class Casilla implements Celda {
         return this.unidad != null;
     }
 
-    private boolean detieneProyectil() {
-        return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
+    public boolean contieneUnidad(Unidad unidad) {
+        return this.unidad == unidad;
     }
 
-    public void contaminarOcupante(){
-        if(this.estaOcupada()){
-            this.unidad.aplicarEfectoAcido();
-        }
+    public boolean detieneProyectil() {
+        return this.estaOcupada() || this.terreno.bloqueaDisparoDirecto();
     }
 
     public void cambiarTerreno(Terreno nuevoTerreno) {
@@ -161,22 +191,5 @@ public class Casilla implements Celda {
 
     public Unidad getUnidad() {
         return this.unidad;
-    }
-
-    public boolean contieneUnidad(Unidad unidad) {
-        if (this.unidad == unidad) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean estaEnLineaRectaCon(Celda destino) {
-        for (Direccion direccion : Direccion.values()) {
-            if (this.vecinaAl(direccion)
-                    .estaEnLineaRectaHacia(direccion, destino)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

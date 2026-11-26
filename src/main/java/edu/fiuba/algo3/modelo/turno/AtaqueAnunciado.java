@@ -20,15 +20,16 @@ public class AtaqueAnunciado {
     }
 
 
-    public void ejecutar() {
+    public boolean ejecutar() {
         Casilla origenActual = atacante.getCasillaActual();
 
         if (origenActual == null || atacante.getVidaActual() == 0) {
-            return;
+            return false;
         }
 
         Celda destino = origenActual.vecinaAl(direccion);
 
         atacante.atacar(origenActual, destino);
+        return true;
     }
 }

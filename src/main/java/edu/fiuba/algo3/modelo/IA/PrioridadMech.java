@@ -25,7 +25,7 @@ public class PrioridadMech extends PrioridadEncadenada {
         }
 
         return evaluarSiguiente(vek, tablero, alcanzables);
-    }
+        }
 
     private DecisionVek buscarAtaqueMech(Vek vek, Tablero tablero, List<Casilla> alcanzables) {
         List<Casilla> mechs = tablero.obtenerCasillasConMechs();
@@ -40,3 +40,4 @@ public class PrioridadMech extends PrioridadEncadenada {
         return null;
     }
 }
+

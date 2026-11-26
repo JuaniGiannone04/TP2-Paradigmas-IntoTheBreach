@@ -1,5 +1,6 @@
 package edu.fiuba.algo3.modelo.turno;
 
+
 public class Turno {
 
     private int numero = 1;
@@ -36,9 +37,11 @@ public class Turno {
         numero++;
     }
 
+
     public Fase faseActual() {
         return faseActual;
     }
+
 
 
 

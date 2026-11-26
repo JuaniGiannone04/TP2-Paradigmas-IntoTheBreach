@@ -1,5 +1,5 @@
-
 package edu.fiuba.algo3.modelo.turno;
+
 
 import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
@@ -38,7 +38,6 @@ public class FaseVek implements Fase {
     public void registrarAtaque(AtaqueAnunciado ataque) {
         ataquesAnunciados.add(ataque);
     }
-
 
 
     public Casilla destinoHaciaEdificio(Casilla origen) {
@@ -80,6 +79,6 @@ public class FaseVek implements Fase {
             }
         }
     }
-
-
 }
+
+

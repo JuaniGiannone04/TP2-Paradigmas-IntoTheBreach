@@ -29,3 +29,4 @@ public class IAVek {
         return prioridades.evaluar(vek, tablero, alcanzables);
     }
 }
+
