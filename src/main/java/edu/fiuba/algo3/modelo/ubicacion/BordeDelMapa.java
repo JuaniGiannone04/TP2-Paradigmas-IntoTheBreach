@@ -3,6 +3,8 @@ package edu.fiuba.algo3.modelo.ubicacion;
 import edu.fiuba.algo3.modelo.arma.Ataque;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
+import java.util.Optional;
+
 public class BordeDelMapa implements Celda {
 
     @Override
@@ -45,5 +47,10 @@ public class BordeDelMapa implements Celda {
     public boolean recibirUnidadEmpujada(Unidad unidadEmpujada) {
         return false;
     }
+
+
+    @Override
+    public Optional<Casilla> primerBloqueoEn(Direccion direccion) {return Optional.empty();}
+
 
 }

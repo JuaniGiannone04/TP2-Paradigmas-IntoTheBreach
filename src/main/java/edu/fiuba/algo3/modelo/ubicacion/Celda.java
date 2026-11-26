@@ -3,6 +3,8 @@ package edu.fiuba.algo3.modelo.ubicacion;
 import edu.fiuba.algo3.modelo.arma.Ataque;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
+import java.util.Optional;
+
 public interface Celda {
     Celda vecinaAl(Direccion direccion);
     boolean esAdyacenteA(Celda otraCelda);
@@ -14,4 +16,6 @@ public interface Celda {
 
     void empujarUnidadInterna(Direccion direccion);
     boolean recibirUnidadEmpujada(Unidad unidadEmpujada);
+    Optional <Casilla> primerBloqueoEn(Direccion direccion);
+
 }

@@ -12,6 +12,10 @@ public class Saltador extends Vek {
     public Saltador() {
         super(2, 3);
     }
+    @Override
+    public boolean puedeAtacarDesde(Casilla origen, Casilla objetivo) {
+        return origen.esAdyacenteA(objetivo);
+    }
 
     @Override
     public void aplicarEfectoAgua() {

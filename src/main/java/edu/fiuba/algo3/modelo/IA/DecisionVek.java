@@ -16,4 +16,9 @@ public class DecisionVek {
     public Casilla getDestino() {
         return destino;
     }
+
+    public Direccion getDireccionAtaque() {
+        return direccionAtaque;
+    }
+
 }

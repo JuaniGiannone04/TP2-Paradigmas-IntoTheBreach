@@ -6,6 +6,7 @@ import edu.fiuba.algo3.modelo.unidad.Unidad;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Casilla implements Celda {
     private Terreno terreno;
@@ -38,6 +39,9 @@ public class Casilla implements Celda {
 
     @Override
     public Direccion direccionHacia(Celda destino) {
+        if (this == destino) {
+            throw new IllegalArgumentException("El origen y el destino no pueden ser la misma casilla.");
+        }
         for (Direccion direccion : Direccion.values()) {
             if (this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino)) {
                 return direccion;
@@ -54,6 +58,15 @@ public class Casilla implements Celda {
         return this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino);
     }
 
+    public boolean estaEnLineaRectaCon(Celda destino) {
+        for (Direccion direccion : Direccion.values()) {
+            if (this.vecinaAl(direccion).estaEnLineaRectaHacia(direccion, destino)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void recibir(Ataque ataque) {
         ataque.impactarEn(this);
@@ -62,6 +75,14 @@ public class Casilla implements Celda {
     @Override
     public void propagar(Direccion direccion, Ataque ataque) {
         this.vecinaAl(direccion).recibir(ataque);
+    }
+
+    @Override
+    public Optional<Casilla> primerBloqueoEn(Direccion direccion) {
+        if (this.detieneProyectil()) {
+            return Optional.of(this);
+        }
+        return this.vecinaAl(direccion).primerBloqueoEn(direccion);
     }
 
     public void empujarEnTodasLasDirecciones() {
@@ -78,6 +99,8 @@ public class Casilla implements Celda {
         Celda celdaDestino = this.vecinaAl(direccion);
         if (celdaDestino.recibirUnidadEmpujada(this.unidad)) {
             this.unidad = null;
+        } else {
+            this.limpiarSiEstaMuerta();
         }
     }
 
@@ -91,6 +114,7 @@ public class Casilla implements Celda {
         this.colocarUnidad(unidadEmpujada);
         return true;
     }
+
 
     public void recibirDanio(int danio) {
         if (this.estaOcupada()) {
@@ -119,6 +143,9 @@ public class Casilla implements Celda {
     public Unidad quitarUnidad() {
         Unidad unidadRetirada = this.unidad;
         this.unidad = null;
+        if (unidadRetirada != null) {
+            unidadRetirada.abandonarCasilla();
+        }
         return unidadRetirada;
     }
 
@@ -134,7 +161,7 @@ public class Casilla implements Celda {
 
     private void limpiarSiEstaMuerta() {
         if (this.estaOcupada() && this.unidad.getVidaActual() == 0) {
-            this.unidad = null;
+            this.quitarUnidad();
         }
     }
 
@@ -144,6 +171,10 @@ public class Casilla implements Celda {
 
     public boolean estaOcupada() {
         return this.unidad != null;
+    }
+
+    public boolean contieneUnidad(Unidad unidad) {
+        return this.unidad == unidad;
     }
 
     public boolean detieneProyectil() {

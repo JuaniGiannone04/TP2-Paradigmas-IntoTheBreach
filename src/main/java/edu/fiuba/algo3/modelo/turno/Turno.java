@@ -3,6 +3,7 @@ package edu.fiuba.algo3.modelo.turno;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Vek;
 
@@ -89,12 +90,19 @@ public class Turno {
 
     public void moverVek(Casilla origen) {
         if (!(faseActual instanceof FaseVek)) {
-            throw new IllegalStateException("Solo se mueven los Vek en la Fase Vek");
+            throw new IllegalStateException(
+                    "Solo se mueven los Vek en la Fase Vek"
+            );
         }
-        Casilla destino = ((FaseVek) faseActual).destinoHaciaEdificio(origen);
+
+        Casilla destino = ((FaseVek) faseActual)
+                .destinoHaciaEdificio(origen);
+
         if (destino != null) {
             if (destino.estaOcupada()) {
-                throw new IllegalStateException("La casilla destino está ocupada");
+                throw new IllegalStateException(
+                        "La casilla destino está ocupada"
+                );
             }
             origen.moverUnidadHacia(destino);
         }

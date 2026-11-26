@@ -23,8 +23,34 @@ public class PrioridadAcercamiento extends PrioridadEncadenada {
         return evaluarSiguiente(vek, tablero, alcanzables);
     }
 
+
+
     private DecisionVek buscarAcercamiento(Vek vek, Tablero tablero, List<Casilla> alcanzables) {
-        // PENDIENTE LA FORMA PARA QUE, ANTE LA AUSENCIA DE EDIFICIO O MECH PARA ATACAR, PUEDA ACERCARSE
-        return null;
+        List<Casilla> edificios = tablero.obtenerCasillasConEdificios();
+        Casilla mejorCasilla = null;
+        int menorDistancia = Integer.MAX_VALUE;
+        for (Casilla edificio : edificios) {
+            int distancia = tablero.distanciaEntre(vek.getCasillaActual(), edificio);
+
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
+            }
+        }
+
+        for (Casilla origen : alcanzables) {
+            for (Casilla edificio : edificios) {
+                int distancia = tablero.distanciaEntre(origen, edificio);
+                if (distancia < menorDistancia) {
+                    menorDistancia = distancia;
+                    mejorCasilla = origen;
+                }
+            }
+        }
+        if (mejorCasilla == null) {
+            return null;
+        }
+        return new DecisionVek(mejorCasilla, null);
     }
+
+
 }

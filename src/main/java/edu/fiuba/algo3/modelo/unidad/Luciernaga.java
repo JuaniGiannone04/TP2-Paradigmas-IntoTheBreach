@@ -17,6 +17,17 @@ public class Luciernaga extends Vek {
     public void aplicarEfectoAgua() {
         this.recibirDanio(this.getVidaActual());
     }
+    @Override
+    public boolean puedeAtacarDesde(Casilla origen, Casilla destino) {
+        if (origen == destino || !origen.estaEnLineaRectaCon(destino)) {
+            return false;
+        }
+        Direccion direccion = origen.direccionHacia(destino);
+        return origen.vecinaAl(direccion)
+                .primerBloqueoEn(direccion)
+                .map(bloqueo -> bloqueo == destino)
+                .orElse(false);
+    }
 
     @Override
     public void atacar(Celda origen, Celda destino) {
