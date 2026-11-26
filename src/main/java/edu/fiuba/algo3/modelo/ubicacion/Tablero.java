@@ -87,6 +87,10 @@ public class Tablero {
         return casillasConMechs;
     }
 
+    public int cantidadDeMechs() {
+        return obtenerCasillasConMechs().size();
+    }
+
     // BFS PARA CALCULAR LA DISTANCIA ENTRE 2 CASILLAS (INDEPENDIENTE DE CUANTO PUEDA MOVERSE EL VEK)
     public int distanciaEntre(Casilla origen, Casilla destino) {
 
