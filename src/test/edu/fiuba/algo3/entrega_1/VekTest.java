@@ -339,7 +339,7 @@ public class VekTest {
 
         assertThrows(IllegalArgumentException.class, () -> saltador.atacar(origen, destino));
     }
-/*
+
     @Test
     public void test22VekEsEmpujadoYSuAtaqueAnunciadoSeDesplazaConElYAtacaAotroVek() {
         Saltador saltador = new Saltador();
@@ -362,9 +362,8 @@ public class VekTest {
         otroVek.colocarUnidad(avispon);
 
     }
-    */
 
-/*
+
     @Test
     public void test23LuciernagaContaminaSoloAlPrimerObjetivoEnLineaRecta(){
         Casilla origen = new Casilla(new Suelo());
@@ -390,5 +389,5 @@ public class VekTest {
         assertEquals(3, segundoMech.getVidaActual());
         assertFalse(segundoMech.estaContaminado());
     }
-*/
+
 }

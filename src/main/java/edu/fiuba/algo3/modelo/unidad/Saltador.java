@@ -24,10 +24,12 @@ public class Saltador extends Vek {
 
     @Override
     public void atacar(Celda origen, Celda destino) {
+        if (!origen.esAdyacenteA(destino)) {
+            throw new IllegalArgumentException("El Saltador solo puede atacar casillas adyacentes");
+        }
         Direccion direccion = origen.direccionHacia(destino);
         origen.propagar(direccion, new GolpeCuerpoACuerpo(direccion, 2));
     }
-
     @Override
     public boolean puedeTransitar(Terreno terreno) {
         return terreno.esTransitablePorTerrestre();
