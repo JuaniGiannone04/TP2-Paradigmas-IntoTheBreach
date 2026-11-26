@@ -625,4 +625,60 @@ public class TurnoTest {
         assertFalse(origen.estaOcupada());
     }
 
+    @Test
+    public void test30AtaqueAnunciadoSeEjecutaUnaSolaVez(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla objetivo = new  Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, objetivo);
+
+        Saltador saltador = new Saltador();
+        Mech mech =  new Mech(new Punio(), 6);
+        origen.colocarUnidad(saltador);
+        objetivo.colocarUnidad(mech);
+
+        Turno turno =  crearTurno(origen, objetivo);
+        AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
+
+        turno.registrarAtaque(ataque);
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.ejecutarResolucion();
+
+        assertEquals(4, mech.getVidaActual());
+        assertEquals(0, turno.cantidadDeAtaquesAnunciados());
+
+        assertTrue(turno.ejecutarResolucion().isEmpty());
+        assertEquals(4, mech.getVidaActual());
+    }
+
+    @Test
+    public void test31AtaqueAnunciadoDeVekMuertoSeDescarta(){
+        Casilla origen = new Casilla(new Suelo());
+        Casilla objetivo = new  Casilla(new Suelo());
+
+        origen.conectarVecina(Direccion.ESTE, objetivo);
+
+        Saltador saltador = new Saltador();
+        Mech mech =  new Mech(new Punio(), 6);
+        origen.colocarUnidad(saltador);
+        objetivo.colocarUnidad(mech);
+
+        Turno turno =  crearTurno(origen, objetivo);
+        AtaqueAnunciado ataque = new AtaqueAnunciado(saltador, Direccion.ESTE);
+
+        turno.registrarAtaque(ataque);
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        origen.recibirDanio(2);
+        turno.ejecutarResolucion();
+
+        assertEquals(6, mech.getVidaActual());
+        assertEquals(0, turno.cantidadDeAtaquesAnunciados());
+
+        assertTrue(turno.ejecutarResolucion().isEmpty());
+        assertFalse(origen.estaOcupada());
+    }
+
 }

@@ -7,6 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Vek;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -80,17 +81,15 @@ public class Turno {
     }
 
     public List<Vek> ejecutarResolucion() {
-        if (!(faseActual instanceof FaseResolucion)) {
-            throw new IllegalStateException("Solo se ejecutan ataques en la Fase Resolución");
-        }
         List<Vek> ejecutados = new ArrayList<>();
+
         for (AtaqueAnunciado ataque : ataquesAnunciados) {
-            Vek vek = ataque.getAtacante();
-            if (vek.getVidaActual() > 0) {
-                ataque.ejecutar();
-                ejecutados.add(vek);
+            if (ataque.ejecutar()) {
+                ejecutados.add(ataque.getAtacante());
             }
         }
+        ataquesAnunciados.clear();
+
         return ejecutados;
     }
 
