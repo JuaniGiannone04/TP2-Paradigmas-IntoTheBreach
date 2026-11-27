@@ -5,6 +5,7 @@ import edu.fiuba.algo3.modelo.terreno.Terreno;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -191,5 +192,49 @@ public class Casilla implements Celda {
 
     public Unidad getUnidad() {
         return this.unidad;
+    }
+
+    public Casilla moverUnidadPor(List<Direccion> camino) {
+        if (!this.estaOcupada()) {
+            throw new IllegalStateException("No hay unidad para mover en la casilla de origen.");
+        }
+        if (camino == null || camino.isEmpty()) {
+            throw new IllegalArgumentException("El movimiento debe tener al menos un paso.");
+        }
+
+        int pasosPrevios = this.unidad.guardarPasos();
+        try {
+            Casilla destino = this.vecinaAl(camino.get(0)).avanzarMovimiento(this.unidad, camino, 0);
+            this.unidad = null;
+            return destino;
+        } catch (RuntimeException e) {
+            this.unidad.restaurarPasos(pasosPrevios);
+            throw e;
+        }
+    }
+
+    @Override
+    public Casilla avanzarMovimiento(Unidad unidad, List<Direccion> camino, int pasoActual) {
+        unidad.darPaso();
+
+        boolean esUltimoPaso = (pasoActual == camino.size() - 1);
+        if (esUltimoPaso) {
+            if (!this.puedeSerOcupadaPor(unidad)) {
+                throw new IllegalStateException("La casilla destino está ocupada o no es transitable.");
+            }
+            this.colocarUnidad(unidad);
+            return this;
+        }
+
+        if (!this.puedeSerAtravesadaPor(unidad)) {
+            throw new IllegalStateException("El camino está bloqueado.");
+        }
+
+        Direccion siguienteDireccion = camino.get(pasoActual + 1);
+        return this.vecinaAl(siguienteDireccion).avanzarMovimiento(unidad, camino, pasoActual + 1);
+    }
+
+    public boolean puedeSerAtravesadaPor(Unidad unidad) {
+        return this.puedeSerOcupadaPor(unidad);
     }
 }

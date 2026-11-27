@@ -14,5 +14,7 @@ public interface Unidad {
     boolean estaContaminado();
     void asignarCasilla(Casilla casilla);
     void abandonarCasilla();
-
+    default void darPaso() {}
+    default int guardarPasos() { return 0; }
+    default void restaurarPasos(int pasos) {}
 }

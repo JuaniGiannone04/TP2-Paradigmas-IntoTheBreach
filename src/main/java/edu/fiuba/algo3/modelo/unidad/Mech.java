@@ -6,17 +6,51 @@ import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 
 public class Mech implements Unidad {
+    private static final int MOVIMIENTO_POR_DEFECTO = 3;
+
     private final Arma arma;
+    private final int movimientoMaximo;
+    private int pasosRestantes;
     private int vidaActual;
     private EstadoAtaque estadoAtaque;
     private EstadoSalud estadoSalud;
-    private Casilla casillaActual;
 
     public Mech(Arma arma, int vidaInicial) {
+        this(arma, vidaInicial, MOVIMIENTO_POR_DEFECTO);
+    }
+
+    public Mech(Arma arma, int vidaInicial, int movimientoMaximo) {
         this.arma = arma;
         this.vidaActual = vidaInicial;
+        this.movimientoMaximo = movimientoMaximo;
+        this.pasosRestantes = movimientoMaximo;
         this.estadoSalud = new Sano();
         this.estadoAtaque = new PuedeAtacar();
+    }
+
+    @Override
+    public void darPaso() {
+        if (this.vidaActual == 0) {
+            throw new IllegalStateException("Un Mech destruido no puede moverse.");
+        }
+        if (this.pasosRestantes == 0) {
+            throw new IllegalStateException("El Mech no tiene más pasos disponibles.");
+        }
+        this.pasosRestantes--;
+    }
+
+    @Override
+    public int guardarPasos() {
+        return this.pasosRestantes;
+    }
+
+    @Override
+    public void restaurarPasos(int pasos) {
+        this.pasosRestantes = pasos;
+    }
+
+    public void reiniciarPasos() {
+        this.pasosRestantes = this.movimientoMaximo;
     }
 
     @Override
@@ -65,13 +99,11 @@ public class Mech implements Unidad {
 
     @Override
     public void asignarCasilla(Casilla casilla) {
-        this.casillaActual = casilla;
         this.estadoAtaque = new PuedeAtacar();
     }
 
     @Override
     public void abandonarCasilla() {
-        this.casillaActual = null;
         this.estadoAtaque = new PuedeAtacar();
     }
 }
