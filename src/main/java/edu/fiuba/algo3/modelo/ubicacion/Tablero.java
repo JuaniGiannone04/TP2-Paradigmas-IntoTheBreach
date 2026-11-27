@@ -3,6 +3,7 @@ package edu.fiuba.algo3.modelo.ubicacion;
 import edu.fiuba.algo3.modelo.terreno.Edificio;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Unidad;
+import edu.fiuba.algo3.modelo.unidad.Vek;
 
 import java.util.*;
 
@@ -129,4 +130,14 @@ public class Tablero {
         return Integer.MAX_VALUE;
     }
 
+    public List<Vek> obtenerVeks() {
+        List<Vek> veks = new ArrayList<>();
+
+        for(Casilla casilla : this.casillas) {
+            if(casilla.getUnidad() instanceof Vek){
+                veks.add((Vek) casilla.getUnidad());
+            }
+        }
+        return veks;
+    }
 }

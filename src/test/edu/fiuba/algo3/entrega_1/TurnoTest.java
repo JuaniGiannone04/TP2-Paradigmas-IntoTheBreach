@@ -10,6 +10,7 @@ import edu.fiuba.algo3.modelo.turno.*;
 import edu.fiuba.algo3.modelo.ubicacion.Casilla;
 import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
+import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 import edu.fiuba.algo3.modelo.unidad.Luciernaga;
 import edu.fiuba.algo3.modelo.unidad.Mech;
 import edu.fiuba.algo3.modelo.unidad.Saltador;
@@ -429,4 +430,90 @@ public class TurnoTest {
         assertSame(mech, destino.getUnidad());
         assertFalse(origen.estaOcupada());
     }
+
+    @Test
+    public void test25FaseVekEjecutaMovimientoYAnunciaAtaque(){
+        RedElectrica red =  new RedElectrica(5);
+        Casilla[] casillas = new Casilla[4];
+
+        for(int i = 0; i < 3; i++){
+            casillas[i] = new Casilla(new Suelo());
+        }
+
+        casillas[3] = new Casilla(new Edificio(red));
+
+        for(int i = 0; i < 3; i++){
+            casillas[i].conectarVecina(Direccion.ESTE, casillas[i + 1]);
+            casillas[i + 1].conectarVecina(Direccion.OESTE, casillas[i]);
+        }
+
+        Saltador vek = new Saltador();
+        casillas[0].colocarUnidad(vek);
+
+        Tablero tablero = new Tablero(List.of(casillas));
+        Turno turno = new Turno(tablero);
+
+        turno.avanzarFase();
+
+        assertSame(vek, casillas[2].getUnidad());
+        assertFalse(casillas[0].estaOcupada());
+        assertEquals(5, red.getEnergia());
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        assertEquals(4, red.getEnergia());
+    }
+
+    @Test
+    public void test26FaseEmergenciaColocaVekEnCasillaLibre(){
+        Casilla destino = new Casilla(new Suelo());
+        Saltador nuevoVek = new Saltador();
+
+        Turno turno = new  Turno();
+        FaseVek faseVek = (FaseVek) turno.faseActual();
+
+        faseVek.programarEmergencia(destino, nuevoVek);
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        assertFalse(destino.estaOcupada());
+
+        turno.avanzarFase();
+
+        assertSame(nuevoVek, destino.getUnidad());
+        assertEquals(2, turno.obtenerNumero());
+
+
+    }
+
+    @Test
+    public void test27FaseEmergenciaColocaVekEnCasillaOcupadaAplicaUnoDeDanioAlOcupante(){
+        Casilla destino = new Casilla(new Suelo());
+
+        Saltador nuevoVek = new Saltador();
+        Mech mech = new Mech(new  Punio(), 3);
+        destino.colocarUnidad(mech);
+
+        Turno turno = new  Turno();
+        FaseVek faseVek = (FaseVek) turno.faseActual();
+
+        faseVek.programarEmergencia(destino, nuevoVek);
+
+        turno.avanzarFase();
+        turno.avanzarFase();
+        turno.avanzarFase();
+
+        turno.avanzarFase();
+
+        assertSame(mech, destino.getUnidad());
+        assertEquals(2, mech.getVidaActual());
+        assertEquals(2, turno.obtenerNumero());
+
+
+    }
+
+
 }
