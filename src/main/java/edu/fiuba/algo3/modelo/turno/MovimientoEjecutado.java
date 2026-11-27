@@ -26,6 +26,10 @@ public class MovimientoEjecutado {
     }
 
     public void deshacer() {
+        if(!destino.contieneUnidad(mech)){
+            throw new IllegalStateException("El Mech ya no ocupa la casilla de destino");
+        }
+
         destino.moverUnidadHacia(origen);
         mech.restaurarEstadoSalud(estadoAnterior);
     }

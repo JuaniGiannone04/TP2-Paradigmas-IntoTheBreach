@@ -19,19 +19,17 @@ public class AtaqueAnunciado {
         return this.direccion;
     }
 
-    public Vek getAtacante() {
-        return this.atacante;
-    }
 
-    public void ejecutar() {
+    public boolean ejecutar() {
         Casilla origenActual = atacante.getCasillaActual();
 
         if (origenActual == null || atacante.getVidaActual() == 0) {
-            return;
+            return false;
         }
 
         Celda destino = origenActual.vecinaAl(direccion);
 
         atacante.atacar(origenActual, destino);
+        return true;
     }
 }
