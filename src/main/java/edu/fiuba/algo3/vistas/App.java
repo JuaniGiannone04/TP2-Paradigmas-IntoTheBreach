@@ -1,24 +1,21 @@
 package edu.fiuba.algo3.vistas;
 
-import edu.fiuba.algo3.SystemInfo;
+import edu.fiuba.algo3.modelo.Juego;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        var javaVersion = SystemInfo.javaVersion();
-        var javafxVersion = SystemInfo.javafxVersion();
+        Juego juego = new Juego();
+        GeneradorVistaTablero generadorVista = new GeneradorVistaTablero();
+        VistaTablero vistaTablero = generadorVista.generar(juego.getTablero());
 
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        var scene = new Scene(new StackPane(label), 640, 480);
+        Scene scene = new Scene(new StackPane(vistaTablero), 800, 650);
+        stage.setTitle("Into the Breach - Tablero");
         stage.setScene(scene);
         stage.show();
     }
@@ -26,5 +23,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }

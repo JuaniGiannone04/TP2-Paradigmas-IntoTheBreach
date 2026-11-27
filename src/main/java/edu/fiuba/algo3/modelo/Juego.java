@@ -6,12 +6,13 @@ import edu.fiuba.algo3.modelo.turno.Turno;
 import edu.fiuba.algo3.modelo.ubicacion.Tablero;
 
 public class Juego {
-    private static final int ENERGIA_INICIAL = 5;
+    private  int ENERGIA_INICIAL = 5;
     private final Tablero tablero;
     private final RedElectrica redElectrica;
     private final Turno turno;
     private EstadoPartida estado = new EnCurso();
 
+// se le puede inyectar el turno y creo el tablero tambien.
 
 
     public Juego() {

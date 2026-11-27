@@ -87,7 +87,9 @@ public class Tablero {
 
         return casillasConMechs;
     }
-
+    public List<Casilla> obtenerCasillas() {
+        return Collections.unmodifiableList(this.casillas);
+    }
     public int cantidadDeMechs() {
         return obtenerCasillasConMechs().size();
     }

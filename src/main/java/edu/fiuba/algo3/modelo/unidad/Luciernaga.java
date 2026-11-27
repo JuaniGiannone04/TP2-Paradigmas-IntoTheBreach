@@ -7,7 +7,7 @@ import edu.fiuba.algo3.modelo.ubicacion.Celda;
 import edu.fiuba.algo3.modelo.ubicacion.Direccion;
 
 public class Luciernaga extends Vek {
-
+// que reciba un arma por parametro la luciernaga tambien?
     public Luciernaga() {
         super(3, 2);
 
@@ -22,6 +22,8 @@ public class Luciernaga extends Vek {
         if (origen == destino || !origen.estaEnLineaRectaCon(destino)) {
             return false;
         }
+
+        // revisar la almda funciont
         Direccion direccion = origen.direccionHacia(destino);
         return origen.vecinaAl(direccion)
                 .primerBloqueoEn(direccion)

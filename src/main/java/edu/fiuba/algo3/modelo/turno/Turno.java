@@ -12,7 +12,7 @@ public class Turno {
     private int ultimoTurnoCompletado = 0;
     private Optional<Tablero> tablero;
 
-
+// se le puede inyectar una fase al turno
     public Turno() {
         this.faseActual = new FaseVek();
         this.tablero = Optional.empty();
